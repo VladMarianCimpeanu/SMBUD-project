@@ -1,6 +1,6 @@
 # SMBUD project
 
-## Neo4J assignement
+## Neo4J assignment
 ### Specification
 Goal of this project is to design a graph database in Neo4J in order to assist tracking applications and Covid19 spread visualization.
 The database must register all the necessary information about the users including vaccines and Covid swabs. The application using this database will be able to exploit all the data coming from tracking applications and from all the facilities.
