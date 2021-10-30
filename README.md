@@ -7,7 +7,7 @@ The database must register all the necessary information about the users includi
 
 ### Hypothesis
 The assumptions taken into account are the following:
-- People belonging to the same family live in the same home if not explicitly specified. Using the concept of "home" instead of "family", it is offered the possibility to differentiate domicile from residence.
+- People belonging to the same family live in the same house if not explicitly specified. Using the concept of "house" instead of "family", it is offered the possibility to differentiate domicile from residence.
 - All the personal data are verified by an authoritative figure, for instance the governament.
 - The domicile declaration is assumed to be truthful.
 - All the data coming from public spaces are always considered true and complete.
