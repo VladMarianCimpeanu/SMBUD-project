@@ -14,5 +14,5 @@ The assumptions taken into account are the following:
 - People always provide all the necessary information to the staff when they visit a certain public space.
 
 Below the ER diagram is shown. ![ER diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/er.png)
-
+Below the graph diagram is shown. ![graph diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/Graph_diagram.png)
 ### Conclusions
