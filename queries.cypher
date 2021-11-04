@@ -8,7 +8,7 @@ CREATE (p:Person{
 })
 
 // command: create relation MEETS
-//TODO: we are assigning a date to the timestamp attribute. We shall change the type attribute or the assignement.
+//TODO: we are assigning a date to the timestamp attribute. We shall change the type attribute or the assignment.
 MATCH (a: Person),
       (b: Person)
 WHERE a.SSN = 'FRRLCU94C07F205O' AND b.SSN = 'RSSMRA90C07F205U'
@@ -85,4 +85,4 @@ RETURN otherVisitor
 UNION
 MATCH (infected: Person)-[m: meets]->(personMet: Person)
 WHERE infected.SSN = "FRRLCU94C07F205O" AND duration.between(date(m.date), date()).days <= 10
-RETURN otherVisitor
+RETURN personMet
