@@ -48,13 +48,18 @@ class PopulateDB:
     def clear_db(self):
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
-
+    
+    def create_vaccines(self):
+        with self.driver.session() as session:
+            names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
+            for name in names:
+                session.write_transaction(self._create_vaccine, name)
+            
     @staticmethod
-    def _create_and_return_greeting(tx, message):
-        result = tx.run("CREATE (a:Greeting) "
-                        "SET a.message = $message "
-                        "RETURN a.message + ', from node ' + id(a)", message=message)
-        return result.single()[0]
+    def _create_vaccine(tx,name):
+        result = tx.run("CREATE (a:Vaccine{"
+                       "name :$name"
+                        "})", name = name)
 
     @staticmethod
     def _create_person(tx, name, surname, ssn, birth, sex, birthplace):
@@ -106,8 +111,9 @@ if __name__ == "__main__":
     
     sex = ["M", "F"]
     """
-    populator = PopulateDB("bolt://localhost:7687", "neo4j", "neo4jnew")
+    populator = PopulateDB("bolt://localhost:7687", "neo4j", "garden-civil-karate-bonjour-size-620")
     populator.clear_db()
     # populator.create_people()
     populator.create_family(10)
+    populator.create_vaccines()
     populator.close()
