@@ -3564,7 +3564,7 @@ Florestina
 Floretta
 Flori
 Floria
-"Florian, franck"
+Florian
 Floriana
 Florianna
 Floriano
@@ -3688,6 +3688,7 @@ Franco
 Francolina
 Francolino
 Francuccia
+Frank
 Frangiotto
 Fransina
 Franza
