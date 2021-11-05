@@ -14,8 +14,9 @@ class RandomItalianPerson:
     surnames = None
     addresses = None
 
-    def __init__(self):
+    def __init__(self, address=None, surname=None):
         """Create a new random Italian person."""
+        self.address = address
         if RandomItalianPerson.municipalities is None:
             RandomItalianPerson.municipalities = pd.read_csv(
                 "{}/datasets/municipalities.csv".format(
@@ -46,7 +47,11 @@ class RandomItalianPerson:
                 dtype={"cap": str}
             )
 
-        surname_data = RandomItalianPerson.surnames.sample(n=1)
+        if surname is None:
+            surname_data = RandomItalianPerson.surnames.sample(n=1)
+        else:
+            surname_data = surname
+
         name_data = RandomItalianPerson.names.iloc[np.random.choice(
             RandomItalianPerson.names.index, p=RandomItalianPerson.frequencies)]
         municipality_data = RandomItalianPerson.municipalities[
@@ -54,7 +59,10 @@ class RandomItalianPerson:
                 surname_data.province)
         ].sample(n=1)
 
-        address_data = RandomItalianPerson.addresses.sample(n=1)
+        if self.addresses is None:
+            address_data = RandomItalianPerson.addresses.sample(n=1)
+        else:
+            address_data = self.addresses
 
         self._data = {
             **surname_data.reset_index(drop=True).iloc[0].to_dict(),
@@ -74,6 +82,8 @@ class RandomItalianPerson:
             birthdate=self.birthdate,
             birthplace=self.birthplace
         )
+
+        self.surname_data = surname_data
 
     @property
     def name(self) -> str:

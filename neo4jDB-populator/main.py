@@ -3,7 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
-from random_italian_person import RandomItalianPerson
+from random_italian_things import RandomItalianPerson, RandomItalianHouse
 
 
 class PopulateDB:
@@ -15,6 +15,7 @@ class PopulateDB:
     def close(self):
         self.driver.close()
 
+    """
     def create_people(self):
         with self.driver.session() as session:
             for i in range(100):
@@ -25,16 +26,17 @@ class PopulateDB:
                 self.people.append(ssn_created)
                 print(ssn_created + " created")
             # print(greeting1)
+    """
 
-    def create_family(self, towns, addresses, num_family):
+    def create_family(self, num_family):
         with self.driver.session() as session:
             for i in range(num_family):
-                town = random.choice(towns)
-                address = random.choice(addresses)
-                id_house = session.write_transaction(self._create_house, town[0], address[0])
+                house = RandomItalianHouse()
+                family_surname_data = RandomItalianPerson().surname_data  # Picking random family surname
+                id_house = session.write_transaction(self._create_house, house.municipality, house.address)
                 ssn_family = []
                 for j in range(random.randint(1, 6)):
-                    person = RandomItalianPerson()
+                    person = RandomItalianPerson(surname=family_surname_data)
                     ssn_family_member = session.write_transaction(self._create_person, person.name, person.surname,
                                                                   person.data["codice_fiscale"], person.birthdate,
                                                                   person.sex,
@@ -98,14 +100,14 @@ if __name__ == "__main__":
     txt_parser = NameParser()
     names = pd.read_csv('nomi.txt', sep='\n')
     surnames = pd.read_csv('cognomi.txt', sep='\n', header=None)
-    """
+    
     towns = pd.read_csv('comuni.csv', header=None)
     addresses = pd.read_csv('addresses.csv', header=None)
-    """
+    
     sex = ["M", "F"]
     """
     populator = PopulateDB("bolt://localhost:7687", "neo4j", "neo4jnew")
     populator.clear_db()
     # populator.create_people()
-    populator.create_family(towns.values.tolist(), addresses.values.tolist(), 5)
+    populator.create_family(10)
     populator.close()
