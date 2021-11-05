@@ -1,4 +1,5 @@
 import random
+import os
 import time
 import numpy as np
 import pandas as pd
@@ -11,6 +12,13 @@ class PopulateDB:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.people = []
+        self.cities = {}  # dictionary which keys are cities and values are their citizens.
+        self.names_city = []  # list with the keys of self.cities
+        # read 'datasets_to_read' that contains as keys the name of the available city
+        configuration_file = pd.read_csv("{}/random_italian_things/datasets/datasets_to_read.txt".format(os.path.dirname(os.path.abspath(__file__))))
+        for index, row in configuration_file.iterrows():
+            self.cities[row['key']] = []
+            self.names_city.append(row['key'])
 
     def close(self):
         self.driver.close()
@@ -31,7 +39,8 @@ class PopulateDB:
     def create_family(self, num_family):
         with self.driver.session() as session:
             for i in range(num_family):
-                house = RandomItalianHouse()
+                city = random.choice(self.names_city)
+                house = RandomItalianHouse(city)
                 family_surname_data = RandomItalianPerson().surname_data  # Picking random family surname
                 id_house = session.write_transaction(self._create_house, house.municipality, house.address)
                 ssn_family = []
@@ -42,6 +51,7 @@ class PopulateDB:
                                                                   person.sex,
                                                                   person.birthplace)
                     ssn_family.append(ssn_family_member)
+                    self.cities[city].append(ssn_family_member)
 
                 session.write_transaction(self._create_lives, ssn_family, id_house)
 
@@ -56,10 +66,10 @@ class PopulateDB:
                 session.write_transaction(self._create_vaccine, name)
 
     @staticmethod
-    def _create_vaccine(tx,name):
+    def _create_vaccine(tx, name):
         result = tx.run("CREATE (a:Vaccine{"
-                       "name :$name"
-                        "})", name = name)
+                        "name :$name"
+                        "})", name=name)
 
     @staticmethod
     def _create_person(tx, name, surname, ssn, birth, sex, birthplace):
