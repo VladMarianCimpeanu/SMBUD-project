@@ -101,19 +101,8 @@ class PopulateDB:
 
 
 if __name__ == "__main__":
-    """
-    txt_parser = NameParser()
-    names = pd.read_csv('nomi.txt', sep='\n')
-    surnames = pd.read_csv('cognomi.txt', sep='\n', header=None)
-    
-    towns = pd.read_csv('comuni.csv', header=None)
-    addresses = pd.read_csv('addresses.csv', header=None)
-    
-    sex = ["M", "F"]
-    """
     populator = PopulateDB("bolt://localhost:7687", "neo4j", "garden-civil-karate-bonjour-size-620")
     populator.clear_db()
-    # populator.create_people()
     populator.create_family(10)
     populator.create_vaccines()
     populator.close()
