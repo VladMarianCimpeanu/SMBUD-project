@@ -48,13 +48,13 @@ class PopulateDB:
     def clear_db(self):
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
-    
+
     def create_vaccines(self):
         with self.driver.session() as session:
             names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
             for name in names:
                 session.write_transaction(self._create_vaccine, name)
-            
+
     @staticmethod
     def _create_vaccine(tx,name):
         result = tx.run("CREATE (a:Vaccine{"
@@ -101,8 +101,11 @@ class PopulateDB:
 
 
 if __name__ == "__main__":
-    populator = PopulateDB("bolt://localhost:7687", "neo4j", "garden-civil-karate-bonjour-size-620")
-    populator.clear_db()
-    populator.create_family(10)
-    populator.create_vaccines()
-    populator.close()
+    with open("password.txt", "r") as pass_reader:
+        neo4j_password = pass_reader.readline().split()[0]
+        populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
+        populator.clear_db()
+        # populator.create_people()
+        populator.create_family(10)
+        populator.create_vaccines()
+        populator.close()
