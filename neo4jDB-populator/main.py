@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
 from random import choices
-from random_italian_things import RandomItalianPerson, RandomItalianHouse
+from random_italian_things import RandomItalianPerson, RandomItalianHouse, random_amenity
 import date_generator as dg
 
 
@@ -78,41 +78,59 @@ class PopulateDB:
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
 
+    def create_amenities(self):
+        with self.driver.session() as session:
+            for amenity in range(20):
+                amenity = random_amenity.Amenity(random.choice(self.names_city))
+                session.write_transaction(
+                    self._create_amenity, amenity.amenity, amenity.city, amenity.name, amenity.street)
+
+    @staticmethod
+    def _create_amenity(tx, amenity_type: str, city: str, name: str, street: str):
+        tx.run("CREATE (amenity: PublicSpace {"
+               "type: $type,"
+               "name: $name,"
+               "city: $city,"
+               "street: $street"
+               "})", type=amenity_type, name=name, city=city, street=street)
+
     def create_vaccines(self):
         with self.driver.session() as session:
             names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
             for name in names:
                 session.write_transaction(self._create_vaccine, name)
-                            
-    def _create_vaccinates_relationship(self,tx,person_id,vaccine_name,lotto,date):
+
+    @staticmethod
+    def _create_vaccinates_relationship(tx,person_id,vaccine_name,lotto,date):
         result = tx.run("MATCH (a:Vaccine),(b:Person) WHERE a.name = $vaccine_name AND ID(b) = $person_id "
                            "CREATE (b)-[v:VACCINATES{lotto : $lotto, date: $date}] -> (a)", person_id = person_id,
                         vaccine_name = vaccine_name, lotto = lotto,date = date)
 
-    def _get_people_id(self,tx):
+    @staticmethod
+    def _get_people_id(tx):
         people_ids = []
         result = tx.run("MATCH (a:Person) RETURN ID(a)")
         for id in result:
             people_ids.append(id.values())
         return people_ids
-    
-    def _get_vaccines_id(self,tx):
+
+    @staticmethod
+    def _get_vaccines_id(tx):
         vaccine_ids = []
         result = tx.run("MATCH (a:Vaccine) RETURN ID(a), a.name")
         for tuple in result:
             vaccine_ids.append(tuple.values())
         return vaccine_ids
 
+    # create vaccinates relationship
 
-    #create vaccinates relationship
-    
     def _create_vaccinates(self):
         with self.driver.session() as session:
-            person_ids = session.read_transaction(self._get_people_id) #get people ids
-            vaccine_name_id = session.read_transaction(self._get_vaccines_id) #get vaccines id and name
+            person_ids = session.read_transaction(self._get_people_id)  # get people ids
+            vaccine_name_id = session.read_transaction(self._get_vaccines_id)  # get vaccines id and name
             lottos = pd.read_csv('vaccine_lotto.csv', sep = ';')
             for id in person_ids:
-                prob = random.random() #with some probability a person has one, two or three vaccinates relationships
+                prob = random.random()  # with some probability a person has one, two or three vaccinates relationships
                 if prob > 0.3:
                     v_name = random.choice(vaccine_name_id)[1]
                     lotto = random.choice(lottos[v_name])
@@ -121,12 +139,12 @@ class PopulateDB:
                     if prob > 0.6:
                         lotto = random.choice(lottos[v_name])
                         date2 = dg.DateGenerator().random_datetimes_or_dates()
-                        #can't vaccinate twice in the same day, other temporal constraints are out of scope
-                        while (date2 == random_date): date2 = dg.DateGenerator().random_datetimes_or_dates()
+                        #  can't vaccinate twice in the same day, other temporal constraints are out of scope
+                        while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
                         session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
                         if prob > 0.95:
                             lotto = random.choice(lottos[v_name])
-                            while (date2 == random_date): date2 = dg.DateGenerator().random_datetimes_or_dates()
+                            while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
                             session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
 
     @staticmethod
@@ -197,4 +215,5 @@ if __name__ == "__main__":
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
+        populator.create_amenities()  # just for testing
         populator.close()

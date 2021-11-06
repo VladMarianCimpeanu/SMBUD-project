@@ -1,4 +1,4 @@
-,amenity,name,addr:street,addr:housenumber,addr:city
+id,amenity,name,addr:street,addr:housenumber,addr:city
 0,cinema,Reale,Piazza Sidney Sonnino,3,Roma
 1,cinema,Quattro Fontane,Via delle Quattro Fontane,23,Roma
 2,restaurant,Pizzeria ai Marmi,Viale di Trastevere,53,Roma

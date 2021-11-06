@@ -1,4 +1,4 @@
-,amenity,name,addr:street,addr:housenumber,addr:city
+id,amenity,name,addr:street,addr:housenumber,addr:city
 7,restaurant,Trattoria da Nennella,Vico Teatro Nuovo,105,Napoli
 8,restaurant,Il Pomodorino,Via San Carlo,27;28;29;30;31,Napoli
 38,restaurant,L.u.i.s.e.,Via Toledo,266,Napoli

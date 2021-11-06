@@ -1,4 +1,4 @@
-,amenity,name,addr:street,addr:housenumber,addr:city
+id,amenity,name,addr:street,addr:housenumber,addr:city
 2,cinema,The Space Cinema Odeon,Via Santa Radegonda,8,Milano
 4,restaurant,Da Marco,Via Rovereto,1,Milano
 6,cinema,Orfeo,Viale Coni Zugna,50,Milano
