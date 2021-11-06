@@ -64,6 +64,42 @@ class PopulateDB:
             names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
             for name in names:
                 session.write_transaction(self._create_vaccine, name)
+                            
+    def _create_vaccinates_relationship(self,tx,person_id,vaccine_name,lotto):
+        result = tx.run("MATCH (a:Vaccine),(b:Person) WHERE a.name = $vaccine_name AND ID(b) = $person_id "
+                           "CREATE (b)-[v:VACCINATES{lotto : $lotto}] -> (a)", person_id = person_id,vaccine_name = vaccine_name, lotto = lotto)
+
+    def _get_people_id(self,tx):
+        people_ids = []
+        result = tx.run("MATCH (a:Person) RETURN ID(a)")
+        for id in result:
+            people_ids.append(id.values())
+        return people_ids
+    
+    def _get_vaccines_id(self,tx):
+        vaccine_ids = []
+        result = tx.run("MATCH (a:Vaccine) RETURN ID(a), a.name")
+        for tuple in result:
+            vaccine_ids.append(tuple.values())
+        return vaccine_ids
+    
+    def _create_vaccinates(self):
+        with self.driver.session() as session:
+            person_ids = session.read_transaction(self._get_people_id)
+            vaccine_name_id = session.read_transaction(self._get_vaccines_id)
+            lottos = pd.read_csv('vaccine_lotto.csv', sep = ';')
+            for id in person_ids:
+                prob = random.random()
+                if prob > 0.3:
+                    v_name = random.choice(vaccine_name_id)[1]
+                    lotto = random.choice(lottos[v_name])
+                    session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
+                    if prob > 0.6:
+                        lotto = random.choice(lottos[v_name])
+                        session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
+                        if prob > 0.95:
+                            lotto = random.choice(lottos[v_name])
+                            session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
 
     @staticmethod
     def _create_vaccine(tx, name):
@@ -118,4 +154,5 @@ if __name__ == "__main__":
         # populator.create_people()
         populator.create_family(10)
         populator.create_vaccines()
+        populator._create_vaccinates()
         populator.close()
