@@ -21,5 +21,8 @@ class DateGenerator:
         end = self.end
         start_u = start.value // divide_by
         end_u = end.value // divide_by
-    
-        return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%d/%m/%Y") #.tolist()[0]
+
+        if out_format == 'datetime':
+            return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%m/%d/%Y, %H:%M:%S")
+        else:
+            return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%d/%m/%Y") #.tolist()[0]

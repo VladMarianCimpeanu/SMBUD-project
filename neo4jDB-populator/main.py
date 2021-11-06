@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
+from random import choices
 from random_italian_things import RandomItalianPerson, RandomItalianHouse
 import date_generator as dg
 
@@ -57,6 +58,23 @@ class PopulateDB:
 
                 session.write_transaction(self._create_lives, ssn_family, id_house)
 
+    def create_swabs(self):
+        with self.driver.session() as session:
+            session.write_transaction(self._create_swab)
+
+    def create_tests(self):
+        range_tests = [0, 1, 2, 3, 4, 5, 6, 7]
+        prob_range_tests = [0.3, 0.26, 0.17, 0.12, 0.7, 0.5, 0.02, 0.01]
+        results = ['Positive', 'Negative']
+        prob_results = [0.05, 0.95]
+        with self.driver.session() as session:
+            person_ids = session.read_transaction(self._get_people_id)
+            for id_person in person_ids:
+                for i in range(choices(range_tests, prob_range_tests)[0]):
+                    timestamp = dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0]
+                    res = choices(results, prob_results)[0]
+                    session.write_transaction(self._create_test, id_person[0], timestamp, res)
+
     def clear_db(self):
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
@@ -85,7 +103,8 @@ class PopulateDB:
         for tuple in result:
             vaccine_ids.append(tuple.values())
         return vaccine_ids
-    
+
+
     #create vaccinates relationship
     
     def _create_vaccinates(self):
@@ -150,6 +169,18 @@ class PopulateDB:
         return result.single()[0]
 
     @staticmethod
+    def _create_swab(tx):
+        result = tx.run("CREATE (a:Swab {name: 'Covid Swab'})")
+
+    @staticmethod
+    def _create_test(tx, id_person, timestamp, res):
+        result = tx.run("MATCH (a:Person), (b:Swab) "
+                        "WHERE id(a) = $id_person AND b.name='Covid Swab' "
+                        "CREATE (a)-[r:TESTS {timestamp : $timestamp, res : $res}]->(b) "
+                        "RETURN r ", id_person=id_person, timestamp=timestamp, res=res)
+        return 1
+
+    @staticmethod
     def _clear_db(tx):
         result = tx.run("MATCH (n) DETACH DELETE n")
         result_summary = result.consume()
@@ -165,4 +196,6 @@ if __name__ == "__main__":
         populator.create_family(10)
         populator.create_vaccines()
         populator._create_vaccinates()
+        populator.create_swabs()
+        populator.create_tests()
         populator.close()
