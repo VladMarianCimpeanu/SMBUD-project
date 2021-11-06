@@ -4,7 +4,7 @@ import os
 
 class Amenity:
 
-    _amenities = None  # this static attribute contain all the available amenities
+    _amenities = None  # this static attribute contains all the available amenities
 
     def __init__(self, city: str):
         if Amenity._amenities is None:

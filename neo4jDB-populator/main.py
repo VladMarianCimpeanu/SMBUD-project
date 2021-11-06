@@ -7,6 +7,7 @@ from neo4j import GraphDatabase
 from random import choices
 from random_italian_things import RandomItalianPerson, RandomItalianHouse, random_amenity
 import date_generator as dg
+from random_italian_things.utils import date_facilities
 
 
 class PopulateDB:
@@ -16,10 +17,12 @@ class PopulateDB:
         self.people = []
         self.cities = {}  # dictionary which keys are cities and values are their citizens.
         self.names_city = []  # list with the keys of self.cities
+        self.amenities = {}  # dictionary containing public spaces per each city
         # read 'datasets_to_read' that contains as keys the name of the available city
         configuration_file = pd.read_csv("{}/random_italian_things/datasets/datasets_to_read.txt".format(os.path.dirname(os.path.abspath(__file__))))
         for index, row in configuration_file.iterrows():
             self.cities[row['key']] = []
+            self.amenities[row['key']] = []
             self.names_city.append(row['key'])
 
     def close(self):
@@ -78,10 +81,12 @@ class PopulateDB:
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
 
-    def create_amenities(self):
+    def create_amenities(self, num_public_spaces: int):
         with self.driver.session() as session:
-            for amenity in range(20):
-                amenity = random_amenity.Amenity(random.choice(self.names_city))
+            for amenity in range(num_public_spaces):
+                city = random.choice(self.names_city)
+                amenity = random_amenity.Amenity(city)
+                self.amenities[city].append(amenity)
                 session.write_transaction(
                     self._create_amenity, amenity.amenity, amenity.city, amenity.name, amenity.street)
 
@@ -93,6 +98,30 @@ class PopulateDB:
                "city: $city,"
                "street: $street"
                "})", type=amenity_type, name=name, city=city, street=street)
+
+    def create_visits_relations(self, min_freq: int, max_freq: int, starting_date: tuple, ending_date: tuple):
+        with self.driver.session() as session:
+            for city_name in self.names_city:
+                for person in self.cities[city_name]:
+                    time_series = date_facilities.random_dates(max_freq, min_freq, starting_date, ending_date)
+                    for d in time_series:
+                        amenity = random.choice(self.amenities[city_name])
+                        session.write_transaction(
+                            self._create_visits,
+                            amenity.name,
+                            amenity.street,
+                            amenity.city,
+                            person,
+                            d
+                        )
+
+    @staticmethod
+    def _create_visits(tx, amenity_name, amenity_street, amenity_city, ssn, date):
+        tx.run("MATCH (person: Person), (ps: PublicSpace) "
+               "WHERE person.ssn = $ssn AND ps.name = $name AND ps.street = $street AND ps.city = $city "
+               "CREATE (person)-[r:VISITS {"
+               "date : $date"
+               "}]->(ps)", name=amenity_name, street=amenity_street, city=amenity_city, ssn=ssn, date=date)
 
     def create_vaccines(self):
         with self.driver.session() as session:
@@ -215,5 +244,6 @@ if __name__ == "__main__":
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
-        populator.create_amenities()  # just for testing
+        populator.create_amenities(30)
+        populator.create_visits_relations(30, 20, (2020, 6, 19), (2021, 6, 19))
         populator.close()

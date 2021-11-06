@@ -15,3 +15,4 @@ def random_birthday():
     int_delta = (delta.days * 24 * 60 * 60) + delta.seconds
     random_second = randrange(int_delta)
     return datetime.date(start + timedelta(seconds=random_second))
+
