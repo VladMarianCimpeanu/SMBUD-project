@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
 from random_italian_things import RandomItalianPerson, RandomItalianHouse
+import date_generator as dg
+
 
 
 class PopulateDB:
@@ -65,9 +67,10 @@ class PopulateDB:
             for name in names:
                 session.write_transaction(self._create_vaccine, name)
                             
-    def _create_vaccinates_relationship(self,tx,person_id,vaccine_name,lotto):
+    def _create_vaccinates_relationship(self,tx,person_id,vaccine_name,lotto,date):
         result = tx.run("MATCH (a:Vaccine),(b:Person) WHERE a.name = $vaccine_name AND ID(b) = $person_id "
-                           "CREATE (b)-[v:VACCINATES{lotto : $lotto}] -> (a)", person_id = person_id,vaccine_name = vaccine_name, lotto = lotto)
+                           "CREATE (b)-[v:VACCINATES{lotto : $lotto, date: $date}] -> (a)", person_id = person_id,
+                        vaccine_name = vaccine_name, lotto = lotto,date = date)
 
     def _get_people_id(self,tx):
         people_ids = []
@@ -83,23 +86,30 @@ class PopulateDB:
             vaccine_ids.append(tuple.values())
         return vaccine_ids
     
+    #create vaccinates relationship
+    
     def _create_vaccinates(self):
         with self.driver.session() as session:
-            person_ids = session.read_transaction(self._get_people_id)
-            vaccine_name_id = session.read_transaction(self._get_vaccines_id)
+            person_ids = session.read_transaction(self._get_people_id) #get people ids
+            vaccine_name_id = session.read_transaction(self._get_vaccines_id) #get vaccines id and name
             lottos = pd.read_csv('vaccine_lotto.csv', sep = ';')
             for id in person_ids:
-                prob = random.random()
+                prob = random.random() #with some probability a person has one, two or three vaccinates relationships
                 if prob > 0.3:
                     v_name = random.choice(vaccine_name_id)[1]
                     lotto = random.choice(lottos[v_name])
-                    session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
+                    random_date = dg.DateGenerator().random_datetimes_or_dates()
+                    session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,random_date.tolist()[0])
                     if prob > 0.6:
                         lotto = random.choice(lottos[v_name])
-                        session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
+                        date2 = dg.DateGenerator().random_datetimes_or_dates()
+                        #can't vaccinate twice in the same day, other temporal constraints are out of scope
+                        while (date2 == random_date): date2 = dg.DateGenerator().random_datetimes_or_dates()
+                        session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
                         if prob > 0.95:
                             lotto = random.choice(lottos[v_name])
-                            session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto)
+                            while (date2 == random_date): date2 = dg.DateGenerator().random_datetimes_or_dates()
+                            session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
 
     @staticmethod
     def _create_vaccine(tx, name):
@@ -151,7 +161,7 @@ if __name__ == "__main__":
         neo4j_password = pass_reader.readline().split()[0]
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
-        # populator.create_people()
+        #populator.create_people()
         populator.create_family(10)
         populator.create_vaccines()
         populator._create_vaccinates()

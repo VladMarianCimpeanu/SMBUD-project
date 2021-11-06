@@ -4,8 +4,8 @@ import pandas as pd
 
 class DateGenerator:
     def __init__(self):
-        self.start = pd.to_datetime('1921-01-01')
-        self.end = pd.to_datetime('2015-01-01')
+        self.start = pd.to_datetime('2020-06-19')
+        self.end = pd.to_datetime('2021-06-19')
 
     def random_datetimes_or_dates(self, out_format='not datetime', n=1):
         """
@@ -21,5 +21,5 @@ class DateGenerator:
         end = self.end
         start_u = start.value // divide_by
         end_u = end.value // divide_by
-
-        return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%d/%m/%Y").tolist()[0]
+    
+        return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%d/%m/%Y") #.tolist()[0]

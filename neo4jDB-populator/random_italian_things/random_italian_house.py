@@ -11,15 +11,13 @@ class RandomItalianHouse:
 
     addresses = None
 
-    def __init__(self, city: str):
+    def __init__(self,city:str):
         """Create a new random Italian house."""
-
         if RandomItalianHouse.addresses is None:
-            if RandomItalianHouse.addresses is None:
-                self._load_data()
+            self._load_data()
 
         address_data = RandomItalianHouse.addresses[city].sample(n=1)
-
+        
         self._data = {
             **address_data.reset_index(drop=True).iloc[0].to_dict()
         }
