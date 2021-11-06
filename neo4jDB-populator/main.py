@@ -9,7 +9,6 @@ from random_italian_things import RandomItalianPerson, RandomItalianHouse
 import date_generator as dg
 
 
-
 class PopulateDB:
 
     def __init__(self, uri, user, password):

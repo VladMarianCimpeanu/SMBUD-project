@@ -1,0 +1,862 @@
+,amenity,name,addr:street,addr:housenumber,addr:city
+2,cinema,The Space Cinema Odeon,Via Santa Radegonda,8,Milano
+4,restaurant,Da Marco,Via Rovereto,1,Milano
+6,cinema,Orfeo,Viale Coni Zugna,50,Milano
+7,restaurant,Volta Street,Via Alessandro Volta,3,Milano
+9,restaurant,Bomaki,Largo La Foppa,1,Milano
+11,restaurant,Ai Muciaccia,Via Giacomo Boni,16,Milano
+15,restaurant,Da Berti,Via Francesco Algarotti,20,Milano
+16,restaurant,Trattoria Casa Fontana - 23 risotti,Piazza Carbonari,5,Milano
+17,restaurant,a Riccione,Via Torquato Taramelli,70,Milano
+18,restaurant,Daniel,Via Castelfidardo,7,Milano
+20,restaurant,Fabbrica,Alzaia Naviglio Grande,68,Milano
+21,restaurant,Rifugio Delicatessen,Via Paolo Lomazzo,67,Milano
+22,bar,Club Decò,Via San Galdino,5,Milano
+25,restaurant,Lo Scoglio sul Naviglio,Via Lodovico il Moro,55,Milano
+29,restaurant,Kapuziner Platz,Viale Monte Nero,34,Milano
+32,restaurant,Meat me,Via Ugo Bassi,1/A,Milano
+33,restaurant,Titanic,Via Giacomo Watt,32,Milano
+34,restaurant,La Fabbrica,Viale Pasubio,2,Milano
+40,restaurant,Rossopomodoro,Largo La Foppa,1,Milano
+41,bar,Union,Via Moretto Da Brescia,36,Milano
+42,bar,Bar Plaza,Via Moretto Da Brescia,31,Milano
+45,restaurant,Pomodorino,Via Crema,3,Milano
+47,cinema,Arcobaleno Film Center,Viale Tunisia,11,Milano
+48,bar,Next,Via Crema,7,Milano
+49,restaurant,Pepe Nero,Viale Umbria,11,Milano
+50,cinema,Ariosto,Via Lodovico Ariosto,16,Milano
+51,cinema,Centrale,Via Torino,30;32,Milano
+52,cinema,Colosseo,Viale Monte Nero,84,Milano
+59,restaurant,La Darsena 2,Via Giovanni Pezzotti,11,Milano
+60,restaurant,Tutta 'Nata Storia,Via Giuseppe Meda,43,Milano
+66,restaurant,Il Paquito,Via Ruggero Bonghi,12,Milano
+70,bar,Yguana,Via Papa Gregorio Quattordicesimo,16,Milano
+72,bar,My Life Cafè,Corso Sempione,63,Milano
+75,bar,55 Milano,Via Piero della Francesca,55,Milano
+80,bar,L'Angolo,Via Losanna,15,Milano
+81,restaurant,Al Toscanaccio,Via privata Chieti,1,Milano
+82,restaurant,Positano,Via Losanna,11,Milano
+83,restaurant,Contro Vento,Via Giovanni Battista Fauche',8,Milano
+86,restaurant,La Rosa dei Venti,Via Piero della Francesca,34,Milano
+87,bar,Mister Bar,Via Domodossola,21,Milano
+88,restaurant,Fresco,Corso Sempione,41,Milano
+90,restaurant,Aquarius,Corso Sempione,49,Milano
+95,restaurant,Cucina In,Piazza Gerusalemme,7,Milano
+96,restaurant,3 Jolie,Via Fratelli Induno,1,Milano
+98,restaurant,Ristorante Brasile,Via privata Mottarone,5,Milano
+101,restaurant,Lleva Taps,Via Ariberto,31,Milano
+105,restaurant,Dal Bolognese,Via Amedei,8,Milano
+106,bar,Bar One,Via Pantano,19,Milano
+108,restaurant,Troppa Pizza,Via Carlo Torre,22/b,Milano
+109,restaurant,Ghea,Via Valenza,5,Milano
+110,restaurant,Akropolis,Via Guglielmo Pepe,38,Milano
+115,bar,Jazz Cafè,Corso Sempione,8,Milano
+116,restaurant,Pop Up,Via Luigi Cagnola,9,Milano
+118,bar,Pils Pub,Via Agostino Bertani,2,Milano
+122,restaurant,Osteria della Via Appia,Via Vincenzo Monti,27,Milano
+124,restaurant,Settembrini 18,Via Luigi Settembrini,18,Milano
+125,restaurant,Guo,Via Mauro Macchi,3,Milano
+126,bar,Vanilla,Viale Certosa,41,Milano
+128,bar,La Rocchetta,Via Giosuè Carducci,2,Milano
+133,restaurant,Seven,Viale Monte Nero,29,Milano
+137,restaurant,II Principe dei Navigli,Via Giovanni Enrico Pestalozzi,2,Milano
+138,restaurant,Taverna degli Amici,Via Spartaco,4,Milano
+139,restaurant,Hosteria della musica,Vicolo Fiori,2,Milano
+140,restaurant,California Bakery,Piazza Sant'Eustorgio,4,Milano
+141,restaurant,La Magolfa,Via Magolfa,15,Milano
+144,restaurant,Langosteria Bistrot,Via privata Bobbio,2,Milano
+146,restaurant,Il Tiglio,Via Giulio e Corrado Venini,54,Milano
+149,restaurant,La Cornucopia,Via Carlo Foldi,1,Milano
+150,restaurant,Lanzhou Ramen,Via Lecco,12,Milano
+151,restaurant,Mela Rossa,Via Piero della Francesca,38,Milano
+152,restaurant,Bon Wei,Via Lodovico Castelvetro,16,Milano
+153,restaurant,Osteria delle Corti,Via Giovanni Battista Fauche',11,Milano
+155,bar,Lost in Town,Via Piero della Francesca,38,Milano
+156,restaurant,Osteria dei Vecchi Sapori,Via Carmagnola,3,Milano
+159,restaurant,Spontini,Via Gaspare Spontini,4,Milano
+160,restaurant,Ristorante Nuova Arena,Piazza Lega Lombarda,5,Milano
+161,bar,Bar Bianco,Viale Ibsen,4,Milano
+162,restaurant,Qui si mangia,Via Carlo Ilarione Petitti,11,Milano
+165,restaurant,PizzaBig,Viale Brianza,30,Milano
+168,restaurant,Yang,Via Gerolamo Cardano,8,Milano
+172,restaurant,Osteria del binari,Via Tortona,1,Milano
+176,restaurant,Mamma Oliva,Via Luisa Battistotti Sassi,11,Milano
+180,restaurant,Bontà Più,Via Filippino Lippi,7,Milano
+193,restaurant,Osteria Il Trullo,Via Achille Maiocchi,14,Milano
+194,restaurant,Zero Due,Corso di Porta Ticinese,6,Milano
+196,bar,La liberazione,Via Lomellina,14,Milano
+198,restaurant,Il Doge di Amalfi,Via Sangallo,41,Milano
+201,restaurant,Ristorante Nectare,Via Emilio Cornalia,32,Milano
+202,bar,12oz Coffee Joint,Via Giosuè Carducci,11,Milano
+203,restaurant,Cantina Carducci,Via Giosuè Carducci,9,Milano
+206,restaurant,Maitò,Piazzale Susa,7,Milano
+208,restaurant,Antica Trattoria Salutati,Via Coluccio Salutati,15,Milano
+209,restaurant,Cantun,Via Polibio,1,Milano
+218,restaurant,Milanese Cafè,Piazza Cavour,3,Milano
+220,restaurant,Il Marchesino,Via Filodrammatici,2,Milano
+221,restaurant,Le Biciclette,Via Conca del Naviglio,10,Milano
+225,restaurant,Panino Giusto,Via Borgogna,5,Milano
+228,restaurant,Moulin Rouge,Viale Lombardia,96,Milano
+230,restaurant,Bottega Ghiotta,Piazza Armando Diaz,6,Milano
+231,restaurant,Osteria La Carbonella,Via Terraggio,9,Milano
+234,restaurant,Crocetta,Piazza Armando Diaz,5,Milano
+235,restaurant,Pianeta Luna,Via Antonio da Recanate,1,Milano
+238,restaurant,"Trattoria Tuscana ""Il Cerchio""",Via Luigi Galvani,15,Milano
+239,bar,Gran Bar Tunisia,Viale Tunisia,41,Milano
+241,restaurant,La Cuccuma,Via Giovanni Pacini,26,Milano
+249,cinema,Spazio Oberdan,Viale Vittorio Veneto,2,Milano
+251,restaurant,Old Wild West,Corso Sempione,3,Milano
+253,restaurant,Piazza Repubblica,Via Aldo Manuzio,11,Milano
+259,bar,Lab Milano,Viale Premuda,7,Milano
+265,restaurant,Osteria delizia del mare,Piazzale Medaglie d'Oro,3,Milano
+272,restaurant,La Gavetta,Via Pompeo Litta,4,Milano
+273,restaurant,Osteria Scalo Farini,Via Carlo Farini,27,Milano
+276,restaurant,La cantina del Giannone,Via Pietro Giannone,10,Milano
+284,restaurant,Antica Osteria Cavallini,Via Mauro Macchi,2,Milano
+286,restaurant,Taj Mahal,Via Luigi Porro Lambertenghi,23,Milano
+288,restaurant,Vasinikò,Piazza Venticinque Aprile,1,Milano
+289,restaurant,Rovereto,Viale Monza,82,Milano
+291,bar,Dito Divino,Via Gaetano Negri,8,Milano
+293,restaurant,Le Banque,Via Bassano Porrone,6,Milano
+305,restaurant,Shiva,Viale Gian Galeazzo,7,Milano
+310,restaurant,Capuano's,Via Pietro Orseolo,1,Milano
+320,restaurant,Cost,Via Pietro Maroncelli,8,Milano
+321,restaurant,Enoteca Huaxia,Via Maurizio Quadrio,23,Milano
+322,restaurant,Il Gusto della Nebbia,Via privata Nino Bonnet,11,Milano
+323,restaurant,Spontini,Viale Papiniano,43,Milano
+324,restaurant,Acero,Viale Papiniano,57,Milano
+329,restaurant,God Save the Food,Via Tortona,34,Milano
+334,restaurant,La Colonna,Via Santa Maria alla Porta,10,Milano
+335,restaurant,Dalla Pagnotta,Via Santa Maria alla Porta,12,Milano
+336,restaurant,Carlo e Camilla in Duomo,Via Victor Hugo,4,Milano
+337,restaurant,Rugantino,Via dei Fabbri,1,Milano
+338,restaurant,Panda Club Restaurant,Piazza Enrico Bottini,6,Milano
+340,restaurant,el Brellìn ristorante,Alzaia Naviglio Grande,14,Milano
+342,bar,Tatanka,Via Emilio Olivari,3,Milano
+349,restaurant,13 Giugno di Brera,Via San Fermo,1,Milano
+350,restaurant,Rocking Horse,Corso Como,12,Milano
+351,restaurant,Shiki,Via privata Nino Bonnet,11,Milano
+352,bar,Pitbull,Corso Como,11,Milano
+353,restaurant,Flash,Via Bergamini,1,Milano
+356,restaurant,Gino's,Via Giovanni Berchet,1,Milano
+357,restaurant,Pani e Tulipani,Via Fabio Filzi,12,Milano
+358,restaurant,Roadhouse,Piazza Duca d'Aosta,1,Milano
+359,restaurant,Pizzeria Gino Sorbillo,Via Montevideo,4,Milano
+361,restaurant,Mozzarella e basilico,Piazzetta Pattari,4,Milano
+362,restaurant,Replay,Piazzetta Pattari,1,Milano
+367,restaurant,Cinque Vie,Via del Bollo,8,Milano
+371,restaurant,Ristorante La Piedra del Sol,Via Emilio Cornalia,2,Milano
+372,restaurant,Salsamenteria di Parma,Via San Pietro all'Orto,9,Milano
+374,restaurant,Pizzeria Karinans,Piazzale Susa,7,Milano
+375,restaurant,Alexander,Corso Giuseppe Garibaldi,108,Milano
+376,restaurant,Osteria Brunello,Corso Giuseppe Garibaldi,117,Milano
+377,restaurant,Burgetr Italy,Via della Moscova,52,Milano
+379,restaurant,Zushi,Via Alessandro Volta,21,Milano
+381,restaurant,Il Tavolino,Via Gustavo Fara,23,Milano
+382,restaurant,Calipso,Via Giovanni Battista Sammartini,19,Milano
+383,restaurant,L'Osteria di Brera,Via Fiori Chiari,8,Milano
+385,restaurant,Ristorante Nabucco,Via Fiori Chiari,10,Milano
+386,restaurant,Rosso di Brera,Via Marco Formentini,7,Milano
+387,restaurant,Ta Hua,Via Gustavo Fara,15,Milano
+388,restaurant,Taverna del Borgo Antico,Via Madonnina,27,Milano
+392,restaurant,Ristorante al Tronco,Via Genova Thaon Di Revel,10,Milano
+393,restaurant,Old Wild West,Viale Zara,13,Milano
+398,restaurant,Il Bottegone,Via Pietro Borsieri,25,Milano
+399,restaurant,Ristorante Pizzeria Notre Dame,Via Jacopo Dal Verme,11,Milano
+400,restaurant,La Balena,Via Pietro Borsieri,28,Milano
+401,bar,Golden Gate,Via Garigliano,8,Milano
+410,restaurant,Trattoria il Marinaio,Via Guglielmo Pepe,12,Milano
+411,restaurant,Vivà,Via Pietro Borsieri,5,Milano
+412,restaurant,Little Italy Pizza,Via Pietro Borsieri,5,Milano
+413,restaurant,Yao Fusion Restaurant Isola,Via Sebenico,14,Milano
+414,restaurant,California Bakery,Corso Como,5,Milano
+418,bar,Davai,Largo La Foppa,5,Milano
+419,restaurant,Osteria La Vecchia Lira,Largo La Foppa,5,Milano
+420,restaurant,Verger,Via Varese,1,Milano
+421,restaurant,Ristorante Santa Marta,Via Santa Marta,6,Milano
+422,restaurant,Trattoria Milanese,Via Santa Marta,11,Milano
+423,restaurant,Tre Cristi,Via Galileo Galilei,5,Milano
+424,restaurant,Fiori e Fornelli & Capra e Cavoli,Via Pastrengo,18,Milano
+425,restaurant,Ristorante Le Regioni,Via Pietro Borsieri,9,Milano
+426,restaurant,Osteria Dal Verme,Via Jacopo Dal Verme,19,Milano
+427,restaurant,Bar Pizzeria L'Isola,Via Carmagnola,13,Milano
+428,restaurant,La Cantinetta,Piazzale Carlo Archinto,7,Milano
+430,restaurant,L'Isola del gusto,Via Angelo della Pergola,4,Milano
+432,restaurant,Obicà,Via Mercato,28,Milano
+433,restaurant,Torre di Pisa,Via Fiori Chiari,21/5,Milano
+434,restaurant,Bar Ristorante Sapori,Viale Francesco Restelli,3,Milano
+435,restaurant,Kiki,Piazza Tito Minniti,5,Milano
+436,restaurant,Il Cormorano,Via Luigi Porro Lambertenghi,34,Milano
+437,restaurant,Il Pesciolone,Via Pietro Borsieri,27,Milano
+438,bar,Beer Garden,Via Luigi Porro Lambertenghi,19,Milano
+439,restaurant,Il Bue e la Patata,Via Luigi Porro Lambertenghi,24,Milano
+440,restaurant,Gen Kai,Via Medardo Rosso,19,Milano
+441,restaurant,Sapori di Casa,Via Ugo Bassi,22,Milano
+442,restaurant,Avocado Milano,Piazzale Segrino,5,Milano
+443,restaurant,Ristorante Pizzeria Segrino,Via Alserio,30,Milano
+444,restaurant,Sticaus,Via Alserio,9,Milano
+445,restaurant,Trattoria Il Marinaio,Via Vincenzo Civerchio,9,Milano
+448,restaurant,SeRist,Piazza Leonardo da Vinci,32,Milano
+449,restaurant,California Bakery,Piazza Sant'Ambrogio,16,Milano
+450,restaurant,Da Cenciaioli,Via Vincenzo Monti,26,Milano
+453,bar,BoGu,Via Pietro da Cortona,13,Milano
+454,restaurant,Ristorante Toscano al Pozzo,Via San Carpoforo,7,Milano
+455,restaurant,The Bagel Factory,Piazza Ventiquattro Maggio,1/8,Milano
+456,bar,Birreria Tortuga,Via Francesco Burlamacchi,1,Milano
+457,restaurant,Pizzeria Il Faraone,Via Orti,7,Milano
+462,restaurant,Kota-Radja,Piazzale Francesco Baracca,6,Milano
+467,restaurant,Home,Corso di Porta Ticinese,106,Milano
+486,restaurant,al  Matarel,Via Laura Solera Mantegazza,2,Milano
+487,restaurant,BLAH Bar,Via Filippo Turati,8,Milano
+495,restaurant,Brand,Largo Riccardo Zandonai,3,Milano
+499,restaurant,Ciripizza,Via Paolo Sarpi,63,Milano
+504,restaurant,Osteria della Pasta e Fagioli,Via Giulio e Corrado Venini,54,Milano
+507,restaurant,Il Montalcino,Via Valenza,17,Milano
+508,bar,Music Viga Bar,Via Francesco Viganò,4,Milano
+509,restaurant,AD Sushi and More,Via Gaspare Rosales,9,Milano
+510,bar,Pixel Bar,Corso Como,12,Milano
+511,restaurant,Ristorante Pizzeria All'Isola,Corso Como,12,Milano
+512,bar,Dom Cafè,Corso Como,5,Milano
+513,bar,10 Corso Como,Corso Como,10,Milano
+514,restaurant,Alla Cucina delle Langhe,Corso Como,6,Milano
+515,bar,Blenderino,Piazza Venticinque Aprile,14,Milano
+516,restaurant,Ganas,Corso Como,2,Milano
+517,bar,Maf Bar,Corso Como,6,Milano
+518,restaurant,Pizzeria di Porta Garibaldi,Corso Como,6,Milano
+519,bar,Miami Lounge Bar,Via Gaspare Rosales,1,Milano
+520,restaurant,Sakura,Piazza Venticinque Aprile,12,Milano
+521,restaurant,The Prime,Via Gaspare Rosales,1,Milano
+522,restaurant,Non Solo Pizza,Via Vallazze,20,Milano
+534,restaurant,Pizzeria Naturale,Ripa di Porta Ticinese,79,Milano
+551,bar,Lounge Bar,Via Magolfa,27,Milano
+552,restaurant,Wasabi,Via Ponte Vetero,14,Milano
+553,bar,Noor,Via San Carpoforo,7,Milano
+554,restaurant,Osteria del Batti Batti,Corso Giuseppe Garibaldi,41,Milano
+555,restaurant,Ristorante Il Cestino,Via Madonnina,27,Milano
+565,restaurant,Chiù,Via Vincenzo Monti,32,Milano
+566,restaurant,Cecco,Via Vincenzo Monti,34,Milano
+567,bar,BQ de Nott,Via Dionigi Bussola,9,Milano
+569,restaurant,Antica Trattoria della Pesa,Viale Pasubio,10,Milano
+570,restaurant,La Griglia di Varrone,Via Alessio di Tocqueville,7/A,Milano
+571,restaurant,Wasabi,Via Antonio Pollaiuolo,8,Milano
+572,restaurant,Rossopomodoro,Via Durini,28,Milano
+574,bar,Straf Bar,Via San Raffaele,3,Milano
+575,restaurant,Quattro Mori,Largo Maria Callas,1,Milano
+576,restaurant,Farinella,Foro Buonaparte,71,Milano
+581,restaurant,Petrus,Via Fiori Chiari,13,Milano
+585,restaurant,Fresco,Via Dante,16 N01,Milano
+587,bar,Santa Tecla,Via Santa Tecla,3,Milano
+588,restaurant,Fresco & Cimmino,Via Ugo Foscolo,4,Milano
+589,restaurant,Da Martino 1950,Via Carlo Farini,8,Milano
+590,restaurant,Myke My Kitchen,Via Maurizio Quadrio,25,Milano
+591,restaurant,Tang Court Barbecue,Via Carlo Farini,4,Milano
+592,restaurant,Da Franco,Via Carlo Farini,3,Milano
+593,restaurant,Jasmin Orange,Via Carlo Farini,6,Milano
+594,restaurant,Mics,Via Pietro Maroncelli,15,Milano
+595,restaurant,Mitsui,Via Carlo Farini,4,Milano
+596,restaurant,Mythos,Via Maurizio Quadrio,23,Milano
+597,restaurant,You Yi,Via Carlo Farini,8,Milano
+598,bar,Ceresio 7,Via Ceresio,7,Milano
+599,restaurant,Poporoya,Via Bartolomeo Eustachi,17,Milano
+600,restaurant,Pescetto,Via Alessandro Volta,9,Milano
+608,restaurant,Radicetonda,Via Lazzaro Spallanzani,16,Milano
+609,restaurant,Curò Ristorante,Viale Monte Grappa,9,Milano
+610,restaurant,Sciatt a Porter,Viale Monte Grappa,18,Milano
+611,restaurant,La Filetteria Italiana,Via Amerigo Vespucci,3,Milano
+616,restaurant,La collina d'oro,Via Pietro Rubens,24,Milano
+617,restaurant,Pizzeria Spontini,Via Cenisio,37,Milano
+618,restaurant,Da Luigi e Anna,Via Balilla,32,Milano
+621,restaurant,Serendipico,Piazza Castello,1,Milano
+622,restaurant,Stravagario Bistrot,Via Garigliano,3,Milano
+623,restaurant,Berberè,Via Sebenico,21,Milano
+624,restaurant,Corti Abbadesse,Via degli Assereto,19,Milano
+625,restaurant,L'Anima,Via Garigliano,6,Milano
+626,restaurant,Japonito,Piazzale Segrino,1,Milano
+627,restaurant,Osteria Borsieri,Via Pietro Borsieri,39,Milano
+630,restaurant,Zio Pesce,Via Andrea Maffei,12,Milano
+631,restaurant,U Barba,Via Pier Candido Decembrio,33,Milano
+633,restaurant,Nerino Dieci Trattoria,Via Nerino,10,Milano
+637,restaurant,Osteria Angelino,Via Fabio Filzi,9,Milano
+638,restaurant,Osteria della Carne,Via Fabio Filzi,11,Milano
+639,restaurant,Ristorante Limone,Via Fabio Filzi,7,Milano
+640,restaurant,Farinami,Via Vittor Pisani,19,Milano
+641,restaurant,Hosteria La Cadrega,Via Gustavo Fara,1,Milano
+642,restaurant,Antares,Via Vittor Pisani,16,Milano
+643,restaurant,Nima,Via Vittor Pisani,14,Milano
+644,bar,Metropolis,Via Vittor Pisani,5,Milano
+645,restaurant,Ristorante Berton,Via Mike Bongiorno,13,Milano
+648,restaurant,Al tempio d'oro,Via delle Leghe,23,Milano
+652,restaurant,La Cantina,Via Giuseppe Meda,31,Milano
+653,restaurant,La Gravina,Via Giovanni Pezzotti,46,Milano
+655,restaurant,Il Salumaio di Montenapoleone,Via Santo Spirito,10,Milano
+656,restaurant,Zaza Ramen,Via Solferino,48,Milano
+657,cinema,Anteo Spazio Cinema,Piazza Venticinque Aprile,8,Milano
+658,restaurant,Ristorante Solferino,Via Castelfidardo,2,Milano
+659,restaurant,La Briciola,Via Solferino,25,Milano
+660,restaurant,Meatbar,Via Solferino,41,Milano
+661,restaurant,Wasabi,Via Solferino,27,Milano
+665,restaurant,Ristorante La bisBistecca,Piazzale Principessa Clotilde,10,Milano
+671,restaurant,Da Pippo si magna,Via Achille Bizzoni,7,Milano
+672,restaurant,Le Chalet,Via Tonale,6,Milano
+673,restaurant,Andry Bistrot,Via San Giovanni sul Muro,13,Milano
+674,restaurant,Riso e Latte,Via Manfredo Camperio,6,Milano
+677,restaurant,Viveca,Via Alessandro Tadino,9,Milano
+679,bar,Opera 33,Via Carlo Farini,33,Milano
+680,restaurant,L'Angolino,Via Luigi Porro Lambertenghi,1,Milano
+681,restaurant,L'Aquila d'Oro,Via Carlo Farini,31,Milano
+682,restaurant,Spago,Via Ugo Bassi,3,Milano
+683,restaurant,Verdi's,Via Nirone,2,Milano
+684,bar,Happy Bar,Corso Magenta,25,Milano
+685,restaurant,Anthony,Via Giovanni Pacini,67,Milano
+686,restaurant,Good Morgan,Via Plinio,37,Milano
+687,restaurant,Antica Focacceria San Francesco,Via Panfilo Castaldi,37,Milano
+688,bar,Bada Boom,Corso Sempione,7,Milano
+691,restaurant,Bar Miró,Via Broletto,41,Milano
+694,restaurant,I Tesori del Mare,Viale Monte Grappa,2,Milano
+695,bar,Boombastic Cafè,Via Carlo De Cristoforis,2,Milano
+696,restaurant,Il Liberty,Viale Monte Grappa,6,Milano
+697,restaurant,Mare Blu,Via Lomellina,12,Milano
+698,bar,Bar Fusina Di Crescente Nicola,Piazza Andrea Fusina,1,Milano
+709,restaurant,L'Antro della Sibilla,Via San Gregorio,37,Milano
+712,restaurant,Ciccio Pizza,Via Teodosio,37,Milano
+713,restaurant,Al Less,Viale Lombardia,28,Milano
+714,restaurant,Lee's,Viale Lombardia,32,Milano
+715,restaurant,Acanto,Piazza della Repubblica,17,Milano
+716,restaurant,Arigatò,Viale Vittorio Veneto,32,Milano
+717,restaurant,Il Desiderio 2,Via Carlo Farini,37,Milano
+718,restaurant,Viva la Vida,Via Arnaldo da Brescia,1,Milano
+719,restaurant,Chini,Via Panfilo Castaldi,4,Milano
+720,restaurant,Clotilde Bistrot,Via Galileo Galilei,2,Milano
+721,restaurant,La Tana del Lupo,Viale Vittorio Veneto,30,Milano
+722,restaurant,STK Milan,Piazza della Repubblica,13,Milano
+723,restaurant,L'Aquarius,Via Valtellina,4,Milano
+724,restaurant,Ai tre ponti,Viale Corsica,95,Milano
+726,restaurant,Vento di Sardegna,Via Edmondo De Amicis,44,Milano
+730,restaurant,Little Lamb,Via Paolo Sarpi,8,Milano
+731,restaurant,Jubin,Via Paolo Sarpi,11,Milano
+732,restaurant,Ha Long Bay,Piazzale Antonio Baiamonti,5,Milano
+733,restaurant,Dong Ya,Via Paolo Sarpi,5,Milano
+737,restaurant,Arepa'z,Viale Cassala,9,Milano
+742,restaurant,Caffe' Verdi,Via Giuseppe Verdi,6,Milano
+744,restaurant,Simon's,Via San Vittore,6,Milano
+745,restaurant,Shanji,Via Alessandro Volta,20,Milano
+746,restaurant,Sumire,Via Varese,1,Milano
+747,restaurant,Gialle,Via Alessandro Volta,12,Milano
+748,restaurant,Wakaba,Piazzale Antonio Baiamonti,2,Milano
+749,restaurant,Nook,Viale Pasubio,14,Milano
+750,restaurant,Lievità Pizzeria gourmet,Via Varese,4,Milano
+751,restaurant,Himalaya,Viale Pasubio,12,Milano
+752,bar,Melabevo,Via Alessandro Volta,14,Milano
+753,restaurant,Mun,Piazzale Antonio Baiamonti,2,Milano
+755,restaurant,Bab,Via San Marco,34,Milano
+756,restaurant,Bebel's,Via San Marco,38,Milano
+757,restaurant,Y-Not,Via Solferino,25,Milano
+758,restaurant,Drogheria San Marco,Via San Marco,29,Milano
+759,restaurant,Ristorante Pizzeria Da Cecco,Via Solferino,34,Milano
+760,restaurant,40 take away,Via San Marco,35,Milano
+761,restaurant,Rangoli,Via Solferino,36,Milano
+763,restaurant,Pino,Via Palermo,21,Milano
+764,restaurant,My Kimchi,Viale Montello,9,Milano
+765,restaurant,Miscusi,Via Giacomo Leopardi,13,Milano
+766,restaurant,Taberna San Tomaso,Via San Tomaso,5 N01,Milano
+767,restaurant,Trattoria Cinese,Via Bramante,20,Milano
+768,restaurant,Xin Fu-Ji,Viale Montello,9,Milano
+776,restaurant,Un mondo di sapori,Via Giacomo Zanella,59,Milano
+779,bar,Picchio,Via Melzo,11,Milano
+782,restaurant,Trattoria del Generale,Via Gustavo Fara,17,Milano
+783,restaurant,Hashimi sushi,Via Gustavo Fara,4,Milano
+784,restaurant,Osteria Qui da Noi,Via Gustavo Fara,10,Milano
+785,restaurant,Taiwan,Via Adda,10,Milano
+786,restaurant,Kingyo,Via Emilio Cornalia,16,Milano
+787,restaurant,Trattoria La Fattoria,Via Gustavo Fara,1,Milano
+788,restaurant,Leon d'Oro,Via Adda,3,Milano
+789,restaurant,Trattoria Il Paiolo,Via Gustavo Fara,7,Milano
+790,restaurant,El Hornero,Piazza Monte Titano,4,Milano
+791,restaurant,Vizi e Sfizi,Piazza Caiazzo,2,Milano
+792,restaurant,Altravia Bistrot,Piazza Caiazzo,1,Milano
+794,restaurant,Senzatempo Bistrot,Foro Buonaparte,52,Milano
+795,restaurant,Al Galileo,Via Galileo Galilei,14,Milano
+796,restaurant,Gambarotta,Via della Moscova,50,Milano
+797,bar,Movidas,Corso Giuseppe Garibaldi,111,Milano
+798,restaurant,Briscola,Corso Giuseppe Garibaldi,104,Milano
+799,restaurant,Bio.it,Via Federico Confalonieri,8,Milano
+800,bar,Cimmino 104,Corso Giuseppe Garibaldi,104,Milano
+801,restaurant,Perimetro,Corso Giuseppe Garibaldi,118,Milano
+802,restaurant,Da Sasà,Via Giovanni Battista Pergolesi,21,Milano
+803,restaurant,Frijeno Magnanno,Via Benedetto Marcello,93,Milano
+804,restaurant,Kashmir,Via Domenico Scarlatti,11,Milano
+805,restaurant,Mediterranea,Via Benedetto Marcello,93,Milano
+806,restaurant,New Gandhi,Via Benedetto Marcello,93,Milano
+807,restaurant,Noblesse Oblige,Via Franchino Gaffurio,1,Milano
+808,restaurant,Pizzeria Gaffurio,Via Franchino Gaffurio,8,Milano
+809,restaurant,Ristorante Chekiang,Via Giovanni Battista Pergolesi,19,Milano
+810,restaurant,Mr. Panozzo,Via Enrico Noë,6,Milano
+811,restaurant,Amalfitana,Via Giovanni Paisiello,22,Milano
+813,cinema,Nuovo Cinema Orchidea,Via Terraggio,3,Milano
+814,restaurant,LePetit,Via Vitruvio,47,Milano
+816,restaurant,Sagami,Piazza Duca d'Aosta,10,Milano
+818,restaurant,City Life,Via Vittor Pisani,26,Milano
+821,restaurant,Napule è,Via Alfredo Cappellini,23,Milano
+822,restaurant,Osteria Italiana,Via Napo Torriani,22,Milano
+823,restaurant,Osteria del Treno,Via San Gregorio,46,Milano
+824,restaurant,Tramé,Via Vittor Pisani,14,Milano
+825,restaurant,Xier,Via Roberto Lepetit,20,Milano
+826,restaurant,CumGranoSalis,Via Volturno,35,Milano
+828,restaurant,Caruso Fuori,Via Alessandro Manzoni,29,Milano
+829,restaurant,Paper Moon,Via Bagutta,1,Milano
+830,restaurant,Ristorante Bagutta,Via Bagutta,14,Milano
+831,bar,Red Cafè,Via Panfilo Castaldi,29,Milano
+834,restaurant,Sushi You,Via Nicola Antonio Porpora,163,Milano
+841,restaurant,Carlo e Camilla in Segheria,Via Giuseppe Meda,24,Milano
+842,restaurant,Trattoria Trinacria,Via Savona,57,Milano
+843,restaurant,Al Fresco,Via Savona,50,Milano
+844,restaurant,New Delhi,Via Alessandro Tadino,1,Milano
+845,bar,Impronta birraia,Via Amatore Sciesa,1,Milano
+847,restaurant,Da Sabatino,Via Pietro Marocco,17,Milano
+849,restaurant,L'Angolo della Pizza,Via Alserio,1,Milano
+850,restaurant,Margot Bistrot,Via Carlo Farini,40/A,Milano
+851,restaurant,Trattoria Tiberio,Via Carlo Farini,44,Milano
+852,bar,150UP,Via Medardo Rosso,16,Milano
+853,restaurant,Mamma Farina,Via Pola,11,Milano
+854,restaurant,Ginko,Via Giuseppe Ripamonti,1;3,Milano
+855,restaurant,Pizzeria Naturale,Via Gaetano De Castillia,24,Milano
+856,bar,Glamour,Via Santa Sofia,6,Milano
+857,restaurant,Jubin,Piazza Velasca,4,Milano
+858,restaurant,Love It,Corso di Porta Romana,16,Milano
+860,restaurant,Pane e Farina,Via Pantano,6,Milano
+861,restaurant,Sakura,Corso di Porta Romana,44,Milano
+862,restaurant,Ten To Ten,Corso di Porta Romana,54,Milano
+863,restaurant,Viva,Largo della Crocetta,2,Milano
+864,restaurant,Shalimar,Corso di Porta Romana,25,Milano
+866,restaurant,bar ristorante Fratelli Colombo,Via Tertulliano,58,Milano
+867,restaurant,Verde Luna,Viale Romagna,23,Milano
+868,restaurant,Fatto Bene Burger,Via Pietro Borsieri,14,Milano
+871,restaurant,Ristorante Terra e Mare,Via Cristoforo Gluck,13,Milano
+872,bar,Afterline,Via Giovanni Battista Sammartini,25,Milano
+873,restaurant,Al Cuoco di Bordo,Via Cristoforo Gluck,11,Milano
+874,restaurant,Antica Osteria di Via Gluck,Via Cristoforo Gluck,10,Milano
+875,bar,Club 23,Via Giovanni Battista Sammartini,23,Milano
+876,restaurant,Coco,Via Ponte Seveso,42,Milano
+877,restaurant,Mercato del Pesce,Via Giovanni Battista Sammartini,70,Milano
+878,restaurant,Mari e Sapori,Via Giovanni Battista Sammartini,21,Milano
+879,restaurant,Ristorante Pizzeria Al Vesuvio,Via Giovanni Schiaparelli,3,Milano
+880,restaurant,Ristorante Pizzeria La Caletta,Via Giovanni Battista Sammartini,69,Milano
+883,bar,Ginger Cocktail Lab,Via Ascanio Sforza,21,Milano
+884,restaurant,Usman,Via Panfilo Castaldi,27,Milano
+885,restaurant,I due leccesi,Via Bonvesin de la Riva,3,Milano
+897,restaurant,Asmara,Via Lazzaro Palazzi,5,Milano
+901,bar,Bar Cupido,Via Giambellino,79,Milano
+904,restaurant,Alice,Piazza Gae Aulenti,1,Milano
+905,restaurant,Forchetta d'Oro,Via Lepontina,11,Milano
+906,bar,Waiting Bar,Via Carlo Farini,52,Milano
+907,restaurant,Ristorante Lepontina,Via Lepontina,8,Milano
+908,restaurant,Trattoria Piccolo Fumino,Via dell'Aprica,2,Milano
+912,restaurant,Mantra Vegan Raw,Via Panfilo Castaldi,21,Milano
+914,restaurant,Ristorante Ai Giardini - Paprika & Cannella,Via Lodovico Settala,2,Milano
+915,restaurant,Casa Lodi,Via Cappellari,3,Milano
+916,restaurant,Il Priscio,Via Santa Tecla,5,Milano
+917,restaurant,Dogana,Via Dogana,3,Milano
+918,restaurant,Pizza Pazza,Piazza Santo Stefano,12,Milano
+919,restaurant,Spontini,Via Dogana,3,Milano
+920,restaurant,a'Mare,Via Santa Tecla,3,Milano
+921,restaurant,Momus,Via Arco,1,Milano
+929,restaurant,Ristorante via Marangoni,Via Leopoldo Marangoni,2,Milano
+930,restaurant,Biancolatte,Via Filippo Turati,30,Milano
+931,restaurant,Ca' Turati,Via Filippo Turati,40,Milano
+932,restaurant,Desinolento,Via Filippo Turati,6,Milano
+933,restaurant,Parco Sushi,Piazza Cavour,7,Milano
+934,restaurant,Panino Giusto,Via Filippo Turati,40,Milano
+935,restaurant,Sushi Etc,Piazza Cavour,7,Milano
+937,restaurant,Farina e Pomodoro,Via Filippo Turati,7,Milano
+938,restaurant,NUI City Jungle Cafè,Via Principe Amedeo,2/7,Milano
+939,restaurant,Pizza Ok,Via Lambro,15,Milano
+942,restaurant,Mudec Bistrot,Via Tortona,56,Milano
+943,restaurant,Trattoria Toscana,Corso di Porta Ticinese,58,Milano
+944,restaurant,Shizen,Piazza Francesco Durante,36,Milano
+945,restaurant,Osteria al 55,Via Messina,55,Milano
+946,bar,Bikers Bar,Via Cenisio,7,Milano
+948,restaurant,Toukaijojou,Via Cenisio,13,Milano
+949,restaurant,Wok of Milan,Via Cenisio,12,Milano
+950,restaurant,Pepe Verde,Via Cenisio,7,Milano
+951,restaurant,Ristorante Melaverde,Via Monviso,36,Milano
+952,restaurant,Primo Gusto,Via Cenisio,19,Milano
+953,restaurant,Thai Square,Via Cenisio,8,Milano
+956,restaurant,Kashmir,Via Lazzaro Spallanzani,6,Milano
+957,restaurant,Farina & Cucina,Via San Paolo,13,Milano
+958,restaurant,Antica Pizza Fritta di Zia Esterina,Via Agnello,19,Milano
+967,restaurant,Upcycle,Via Andrea Maria Ampère,59,Milano
+968,restaurant,Osteria Tajoli,Via Brembo,11,Milano
+971,restaurant,Lo Smeraldo,Via Ajaccio,1,Milano
+972,restaurant,Sibilla,Via Mercato,14,Milano
+975,restaurant,Il Verdi,Piazza Carlo Mirabello,5,Milano
+977,restaurant,Calafuria,Viale Marche,65,Milano
+979,restaurant,Sunrise,Via Giovanni Pierluigi da Palestrina,34,Milano
+980,bar,Giglio Bar,Via Soperga,22,Milano
+981,restaurant,Dinky,Viale Brianza,36,Milano
+982,restaurant,Rosso Mattone,Via Soperga,22,Milano
+983,restaurant,Trattoria Siciliana Da Salvatore,Viale Brianza,35,Milano
+985,restaurant,Ristorante Al Mercante,Piazza dei Mercanti,17,Milano
+990,restaurant,Bistrot Manzoni,Via Alessandro Manzoni,39,Milano
+991,restaurant,Nobu,Via Gastone Pisoni,1,Milano
+992,restaurant,La Tavernetta da Elio,Via Fatebenefratelli,30,Milano
+993,restaurant,Osteria del Gambero Rosso,Viale Pasubio,6,Milano
+994,restaurant,Morsi e Rimorsi,Viale Pasubio,3,Milano
+995,bar,Herry's Bar,Piazza Venticinque Aprile,7,Milano
+996,restaurant,Gam,Viale Pasubio,8,Milano
+999,bar,Ego,Alzaia Naviglio Pavese,2,Milano
+1000,restaurant,Luna Rossa,Alzaia Naviglio Pavese,2,Milano
+1006,restaurant,Myoshi,Via Ascanio Sforza,47,Milano
+1008,restaurant,Ramen House,Viale Monte Nero,62,Milano
+1009,restaurant,Mizuki,Viale Monte Nero,50,Milano
+1011,restaurant,La Bracioleria,Via Antonio Fogazzaro,9,Milano
+1012,restaurant,Pizzeria Naturale,Via Edmondo De Amicis,24,Milano
+1014,restaurant,La piccola Ischia,Via Giuseppe Broggi,15,Milano
+1020,restaurant,Tarantella,Viale Abruzzi,35,Milano
+1022,restaurant,La Tavernetta,Via Giovanni Rasori,4,Milano
+1027,restaurant,El Beverin,Via Brera,29,Milano
+1029,restaurant,Il Kaimano,Via Fiori Chiari,20,Milano
+1034,restaurant,Rebelot,Ripa di Porta Ticinese,55,Milano
+1035,restaurant,Alhambra,Via San Gregorio,17,Milano
+1038,restaurant,Joia,Via Panfilo Castaldi,18,Milano
+1039,restaurant,Da Regina,Via Silvio Pellico,1,Milano
+1042,restaurant,Trussardi alla Scala,Piazza della Scala,5,Milano
+1045,restaurant,Mimmo Four Seasons,Via Giuseppe Mercalli,22,Milano
+1050,restaurant,Tsuru,Via Giuseppe Lagrange,13,Milano
+1051,restaurant,Canal Giuliana,Via Emilio Gola,4,Milano
+1052,restaurant,Italian Bakery,Piazza Gae Aulenti,1,Milano
+1053,restaurant,Musubi,Piazza Gae Aulenti,1,Milano
+1060,restaurant,Damm-atra' Milano,Via Elia Lombardini,1,Milano
+1061,restaurant,La Bettola Di Piero,Via Orti,17,Milano
+1062,restaurant,Trattoria del Nuovo Macello,Via Cesare Lombroso,20,Milano
+1063,restaurant,Osteria dell'Acquabella,Via San Rocco,11,Milano
+1064,restaurant,Trattoria da Pino,Via Cerva,14,Milano
+1065,restaurant,Trattoria Masuelli,Viale Umbria,80,Milano
+1066,restaurant,Trattoria Madonnina,Via Gentilino,6,Milano
+1067,restaurant,Trattoria Albero Fiorito,Via Andrea Pellizzone,14,Milano
+1068,restaurant,Trattoria da Abele,Via Temperanza,5,Milano
+1069,restaurant,La Piola,Viale Abruzzi,23,Milano
+1070,restaurant,Testina Milano,Via Abbadesse,19,Milano
+1071,restaurant,Don Lisander,Via Alessandro Manzoni,12/a,Milano
+1072,restaurant,Smooshi,Via Vincenzo Monti,27,Milano
+1077,restaurant,Valentino Legend,Via Agnello,8,Milano
+1085,restaurant,Brek,Piazzetta Umberto Giordano,1,Milano
+1086,restaurant,Valentino Vintage,Corso Monforte,16,Milano
+1088,restaurant,Grand'Italia,Corso Giuseppe Garibaldi,9,Milano
+1089,restaurant,Le Cotolette,Corso Giuseppe Garibaldi,11,Milano
+1090,restaurant,L'angolo di casa,Via Tivoli,3,Milano
+1091,restaurant,The Fisherman,Corso Giuseppe Garibaldi,12,Milano
+1092,restaurant,Quore Italiano,Via Delio Tessa,2,Milano
+1093,restaurant,La Filetteria Italiana,Corso Giuseppe Garibaldi,17,Milano
+1094,restaurant,Rovello 18,Via Tivoli,2,Milano
+1095,restaurant,Magnaki Arena,Via Legnano,18,Milano
+1098,restaurant,Il Caminetto,Via Felice Casati,22,Milano
+1099,restaurant,Nhero,Via Felice Casati,44,Milano
+1100,restaurant,Parioli,Via Felice Casati,45,Milano
+1106,restaurant,Trattoria Pane al Pane Vino al Vino,Via Alessandro Tadino,48,Milano
+1110,restaurant,Ai Bastioni,Bastioni di Porta Volta,18/A,Milano
+1115,restaurant,Pizzeria Nazionale,Via Palermo,11,Milano
+1119,restaurant,Orti di Leonardo,Via Aristide De Togni,6/8,Milano
+1120,restaurant,Locatelli,Via Manfredo Camperio,15,Milano
+1125,restaurant,Al Dente,Via dei Bossi,7,Milano
+1126,restaurant,Piazzetta Bossi,Via dei Bossi,2,Milano
+1127,restaurant,Trulli Love,Via dei Bossi,2/A,Milano
+1128,restaurant,Acero Rosso,Piazza Virgilio,3,Milano
+1129,restaurant,Natural Break,Via Giovanni Boccaccio,15,Milano
+1130,restaurant,Ghe Sem,Via Vincenzo Monti,26,Milano
+1131,restaurant,Ristorante Borromeo 5,Piazza Borromeo,5,Milano
+1132,restaurant,La tana del ghiottone,Via Rosolino Pilo,6,Milano
+1133,restaurant,Vintage Bakery,Via Genova Thaon Di Revel,20,Milano
+1137,bar,Il Sidro,Via Federico Ozanam,15,Milano
+1146,restaurant,Dawali,Via Corrado II Il Salico,10,Milano
+1148,restaurant,Viva,Via Cesare Correnti,20,Milano
+1152,bar,KOKO,Viale Regina Margherita,20,Milano
+1160,restaurant,L'Anima del Gusto,Via dei Fontanili,2,Milano
+1161,bar,n'ombra de vin,Via San Marco,2,Milano
+1165,restaurant,La Taverna della Trisa,Via Francesco Ferrucci,1,Milano
+1166,restaurant,A Pizzella,Via Francesco Ferrucci,1,Milano
+1168,restaurant,Ristorante Il Pesciolino,Via Giovanni da Procida,27,Milano
+1169,restaurant,Ristorante Mes Amis,Via Giovanni da Procida,27,Milano
+1173,restaurant,Tra di Noi,Via Piero della Francesca,2,Milano
+1174,restaurant,Il Saronnino,Via Saronno,3,Milano
+1176,restaurant,B2 Burger & Beer,Via Monviso,13,Milano
+1177,restaurant,C'era una volta una piada,Viale Coni Zugna,37,Milano
+1178,bar,Niro Meet Bar,Giardino Aristide Calderini,3,Milano
+1179,restaurant,Ristorante Argentino San Telmo,Via Matteo Bandello,22,Milano
+1180,bar,SABA,Via Tortona,36,Milano
+1181,restaurant,L'Ostel,Via Cesare Battisti,23,Milano
+1182,restaurant,Ba-Ba Reeba,Via Filippo Corridoni,1,Milano
+1183,restaurant,Miyabi,Corso Monforte,26,Milano
+1184,bar,Caffecioccolata,Piazza Giovanni Antonio Bazzi,2,Milano
+1186,restaurant,Pizzeria Biagio,Via Vincenzo Monti,28,Milano
+1187,restaurant,Viveca,Via Vincenzo Monti,32,Milano
+1188,restaurant,Mamma Oliva,Via Vincenzo Monti,33,Milano
+1189,restaurant,Seoul,Corso Cristoforo Colombo,4,Milano
+1190,restaurant,Santeria,Via Ettore Paladini,8,Milano
+1192,restaurant,Premiato Forno Cantoni,Via Piero della Francesca,38,Milano
+1193,restaurant,Osteria Le Pietre Cavate,Via Lodovico Castelvetro,14,Milano
+1195,restaurant,Kyo,Via Cenisio,37,Milano
+1197,restaurant,El Tipico,Corso Lodi,105,Milano
+1204,restaurant,Trattoria la vecchia guardia,Via della Commenda,21,Milano
+1206,bar,Torrefazione Sant Teresita,Via Gamboloita,1,Milano
+1207,restaurant,Andry,Via Rovello,10,Milano
+1212,restaurant,Jade Garden,Via Palazzo Reale,5,Milano
+1214,restaurant,Ristorante Santa Virginia,Via San Marco,5,Milano
+1215,restaurant,Pacifico,Via della Moscova,29,Milano
+1216,restaurant,Latteria San Marco,Via San Marco,24,Milano
+1217,restaurant,El Tombon de San Marc,Via San Marco,20,Milano
+1218,restaurant,Satokina,Via Montebello,14,Milano
+1219,restaurant,Mot Bistrot,Via della Moscova,25,Milano
+1220,restaurant,Volemose Bene,Via della Moscova,25,Milano
+1221,restaurant,El Tabachée,Via della Moscova,29,Milano
+1222,restaurant,Yazawa,Via San Fermo,1,Milano
+1223,restaurant,Amami,Via Amerigo Vespucci,1,Milano
+1231,restaurant,Bistro,Corso Magenta,9,Milano
+1232,restaurant,Parco Sushi,Corso Magenta,14,Milano
+1233,restaurant,"Tutto bene, grazie",Corso Magenta,30,Milano
+1242,restaurant,Spoon,Viale Bligny,39,Milano
+1243,restaurant,Brera Milano,Viale Bligny,45,Milano
+1244,restaurant,Gino Sorbillo,Largo Corsia dei Servi,11,Milano
+1245,bar,Barcollando,Via Francesco Novati,6,Milano
+1249,restaurant,Mookuzai,Via Arona,18,Milano
+1252,restaurant,Cocciuto,Via Bergognone da Fossano,24,Milano
+1254,bar,Marulli Cafè,Via Montevideo,10,Milano
+1255,restaurant,Focacce Italiane,Via Tortona,19,Milano
+1258,restaurant,Bel Paese,Via Soperga,32,Milano
+1259,restaurant,Trattoria allo Scalino,Viale Brianza,36,Milano
+1260,restaurant,Cibò,Via Achille Maiocchi,26,Milano
+1264,restaurant,Ristorante della Nonna,Via Vigevano,8,Milano
+1265,restaurant,Kazan,Corso di Porta Ticinese,70,Milano
+1266,restaurant,La Crota - Trattoria con pizza,Via Gian Giacomo Mora,9,Milano
+1271,restaurant,Basara Milano,Corso Italia,6,Milano
+1272,restaurant,Sarla,Via Stampa,4,Milano
+1273,restaurant,Bistrot Santa Maria Valle,Via Santa Maria Valle,4,Milano
+1274,restaurant,Pizzeria Grill,Via Torino,50,Milano
+1275,restaurant,Rossini,Via dei Piatti,4,Milano
+1276,bar,Nottingham Forest,Viale Piave,1,Milano
+1277,restaurant,Pasta d'Autore,Via Cesare Correnti,7,Milano
+1279,restaurant,Bellavista,Via Broletto,18,Milano
+1280,restaurant,Signorvino,Via Dante,13 N07,Milano
+1281,restaurant,Beladi,Via Adele Martignoni,1,Milano
+1282,restaurant,Kaori,Viale Nazario Sauro,11,Milano
+1283,restaurant,Parbleu,Via Torquato Taramelli,59,Milano
+1284,restaurant,Cervìn,Via Zecca Vecchia,4,Milano
+1285,restaurant,Ristorante De Bini,Via Santa Marta,3,Milano
+1286,restaurant,La Fettunta,Via Santa Marta,19,Milano
+1287,restaurant,Ristorante Hostaria Borromei,Via Borromei,4,Milano
+1288,restaurant,Da Zero,Via Bernardino Luini,9,Milano
+1289,restaurant,Ristorante La Brisa,Via Brisa,15,Milano
+1290,restaurant,Miscusi,Via Pompeo Litta,6,Milano
+1291,restaurant,Ristorante Ivana,Viale Zara,61,Milano
+1292,restaurant,Kiku,Viale Corsica,48,Milano
+1294,restaurant,KOSHITSU,Via Lazzaro Palazzi,24,Milano
+1299,restaurant,Pier 52,Via Piero della Francesca,52,Milano
+1301,restaurant,Napoli è ...,Via Losanna,11,Milano
+1303,restaurant,Osteria del Borgo Antico,Via Piero della Francesca,35,Milano
+1304,restaurant,Ichimi,Via Piero della Francesca,40,Milano
+1309,restaurant,Cantico dei Sapori,Via Friuli,78,Milano
+1310,restaurant,Ristorante Pizzeria Bottarelli,Via Giovanni Omboni,4,Milano
+1312,restaurant,La Risacca 2,Viale Regina Giovanna,14,Milano
+1313,restaurant,Bruschetteria Grill & BBQ,Via Lazzaro Spallanzani,40,Milano
+1315,restaurant,Boeucc,Piazza Belgioioso,2,Milano
+1323,cinema,Cinema Palestrina,Via Giovanni Pierluigi da Palestrina,7,Milano
+1325,restaurant,Convivium,Via Ponte Vetero,21,Milano
+1331,bar,Cinc Food & Drinks,Via Marco Formentini,5,Milano
+1332,restaurant,I Caminetti del Sempione,Via Giulio Cesare Procaccini,60,Milano
+1333,restaurant,Biif,Via Giulio Cesare Procaccini,68,Milano
+1334,restaurant,Sciuscià,Via Giulio Cesare Procaccini,73,Milano
+1335,restaurant,Kitchen Society,Via Gerolamo Chizzolini,1,Milano
+1338,restaurant,Garage Pizza & Co.,Corso Sempione,42,Milano
+1344,restaurant,Cucca,Via Meravigli,16,Milano
+1345,restaurant,Laguna Blu,Via Savona,108,Milano
+1347,restaurant,Matilde Milano Restaurant,Via Lecco,4,Milano
+1349,restaurant,Wang Jiao,Via Paolo Lomazzo,16,Milano
+1352,restaurant,Lo's,Via Mercato,14,Milano
+1353,restaurant,United Tastes of Hamerica's,Via Manfredo Camperio,17,Milano
+1355,restaurant,Osteria Sancio Pancia,Via Rovereto,5,Milano
+1357,restaurant,La Felicità,Via Rovello,3 N01,Milano
+1358,restaurant,Da Puccini,Via San Giovanni sul Muro,5,Milano
+1360,bar,Jumbo Cafè,Via Giambellino,9,Milano
+1365,cinema,Cineteatro San Carlo,Via Morozzo della Rocca,12,Milano
+1367,restaurant,Ristorante Africa,Via Lazzaro Palazzi,9,Milano
+1371,restaurant,Pizzeria da Giuliano,Via Paolo Sarpi,60,Milano
+1375,restaurant,Trattoria da Bruna e Sandro,Via Trieste,17,Milano
+1376,restaurant,Il Mappamondo,Via Sardegna,26,Milano
+1377,restaurant,Posta,Via Carroccio,3,Milano
+1378,restaurant,La Cantina di Manuela,Via Giulio Cesare Procaccini,41,Milano
+1382,restaurant,Tandem Bistrot,Via Bassano Porrone,4,Milano
+1383,restaurant,Rosebymary,Via San Prospero,4,Milano
+1387,bar,Monkey Cocktail Bar,Via Napo Torriani,5,Milano
+1397,restaurant,Osteria Al 29,Corso Magenta,29,Milano
+1398,restaurant,La Tartina,Via San Carpoforo,4,Milano
+1400,restaurant,Aki Me Kedo,Via Nicola d'Apulia,4,Milano
+1401,restaurant,Chifa Peru,Via Nicola d'Apulia,14,Milano
+1402,restaurant,Blue Nami,Via Nicola d'Apulia,2,Milano
+1404,restaurant,Zimei,Via Giulio e Corrado Venini,86,Milano
+1405,restaurant,Rendez Vous,Via Popoli Uniti,18,Milano
+1406,restaurant,Osteria della Stazione,Via Popoli Uniti,26,Milano
+1407,bar,Panino Geb,Via Beato Angelico,25,Milano
+1410,restaurant,Slow Sud,Via delle Asole,4 N03,Milano
+1411,restaurant,Shamo,Viale Papiniano,16,Milano
+1412,restaurant,Ristorante Le Capannelle,Viale Papiniano,23,Milano
+1414,restaurant,Casa Ramen Super,Via Ugo Bassi,26,Milano
+1416,restaurant,Casa Gourmet,Via Mike Bongiorno,13,Milano
+1419,restaurant,Burn,Via Vigevano,34,Milano
+1421,restaurant,Da Teresa e Patrizia,Via Vigevano,14,Milano
+1422,restaurant,Joe Cipolla,Via Vigevano,33,Milano
+1425,restaurant,Pizzeria Starita,Via Giovanni Gherardini,1,Milano
+1447,restaurant,Borgonuovo 26,Via Borgonuovo,26,Milano
+1448,restaurant,Bioesserì,Via Fiori Oscuri,9,Milano
+1461,restaurant,Il Mosto Selvatico,Via Cesare da Sesto,13,Milano
+1462,restaurant,Pulia,Via Silvio Pellico,4,Milano
+1463,restaurant,Taverna Moriggi,Via Morigi,8,Milano
+1464,restaurant,Organic,Via Morigi,8,Milano
+1473,bar,REcicli Bikes & Café,Corso Luigi Manusardi,3,Milano
+1476,restaurant,Mi - Cucina di Confine,Viale Cassiodoro,5,Milano
+1484,restaurant,Nikkei,Via Giovanni Prati,5,Milano
+1485,restaurant,Feel,Viale Severino Boezio,10,Milano
+1487,restaurant,Shanti,Via Olona,19,Milano
+1488,restaurant,Doriani,Via Solferino,12,Milano
+1489,restaurant,Trieste Pizza,Corso Como,9,Milano
+1490,restaurant,Stendhal,Via Ancona,1,Milano
+1491,restaurant,Fruteiro,Via San Marco,3,Milano
+1496,restaurant,Giannino,Via Vittor Pisani,6,Milano
+1500,restaurant,Ristorante Pizzeria del Drago,Via Agnello,17,Milano
+1502,restaurant,Ju Xin Lou,Via Giulio e Corrado Venini,55,Milano
+1504,restaurant,Lo Scoglio,Viale Monza,51,Milano
+1510,restaurant,Oishii,Viale Bligny,29,Milano
+1516,restaurant,Maui,Via San Vittore al Teatro,3,Milano
+1517,restaurant,Ristorante Pizzeria Moonlight,Via Leone Tolstoi,48,Milano
+1518,restaurant,Fabregas,Via del Torchio,8,Milano
+1519,restaurant,Sensei,Via Cesare Correnti,16,Milano
+1522,restaurant,Cook Window,Via Amatore Sciesa,18,Milano
+1527,restaurant,Picanha's,Piazzale Lorenzo Lotto,14,Milano
+1532,restaurant,Mitsui,Via San Gregorio,11,Milano
+1570,bar,LeccoMilano,Via Lecco,5,Milano
+1572,bar,BackDoor43,Ripa di Porta Ticinese,43,Milano
+1574,restaurant,Wang Jiao Milan,Via Felice Casati,7;9,Milano
+1576,restaurant,La Maniera di Carlo,Via Giovanni Rasori,12,Milano
+1579,restaurant,Momento,Via Filippo Argelati,12,Milano
+1585,bar,La Forgia degli Eroi,Via Andrea Maria Ampère,15,Milano
+1586,restaurant,Trattoria Sole,Via Carlo Valvassori Peroni,41,Milano
+1588,restaurant,Rebetiko,Via Luigi Cagnola,6,Milano
+1589,restaurant,Tara,Via Domenico Cirillo,16,Milano
+1592,restaurant,Pisco,Via Agostino Bertani,16,Milano
+1615,restaurant,Insubria,Piazza Insubria,5,Milano
+1619,restaurant,Fusho,Via Plinio,5,Milano
+1620,restaurant,Rosticceria Palazzi,Via Plinio,9,Milano
+1624,restaurant,Tang Gourmet,Via Paolo Sarpi,17,Milano
+1629,restaurant,Rookies,Viale Gorizia,30,Milano
+1630,bar,Salumeria dello Sport,Piazza Napoli,30/2,Milano
+1633,restaurant,Amici della Pizza,Via Ugo Bassi,8,Milano
+1634,restaurant,40 Pizza e Cucina,Via Panfilo Castaldi,40,Milano
+1635,restaurant,Taverna Visconti,Via Marziale,11,Milano
+1642,restaurant,Isola dei Sapori,Via Augusto Anfossi,10,Milano
+1646,bar,The Botanical Club,Via Pastrengo,11,Milano
+1650,restaurant,Fusho,Via Paolo Sarpi,50,Milano
+1655,bar,Posto Unico,Via Pastrengo,16,Milano
+1658,restaurant,Trattoria da Tomaso,Via Gaetano De Castillia,20,Milano
+1659,bar,Cafè Gorille,Via Gaetano De Castillia,20,Milano
+1661,restaurant,Shion,Corso Magenta,65,Milano
+1662,restaurant,Zakuro,Via Vincenzo Monti,16,Milano
+1665,restaurant,Mao Hunan,Via Nicola Antonio Porpora,5,Milano
+1667,bar,Beershow,Via Pietro Borsieri,30,Milano
+1673,restaurant,Just India,Via Benedetto Marcello,34,Milano
+1687,restaurant,Hall of Fame,Piazza Piemonte,8,Milano
+1691,restaurant,Kasai,Viale Tibaldi,40,Milano
+1699,restaurant,Ceylon Choice,Via dei Transiti,26,Milano
+1700,restaurant,Al Gargano,Via dei Transiti,26,Milano
+1701,restaurant,Boscogrosso,Via Giacomo Watt,14,Milano
+1707,restaurant,RED Bistrot Libreria,Corso Giuseppe Garibaldi,3,Milano
+1719,restaurant,Subito Dai,Via Lecco,3,Milano
+1720,bar,Bar Torrefezione,Via Daniele Ricciarelli,8,Milano
+1721,restaurant,Homu,Via Carlo Dolci,8,Milano
+1722,restaurant,Ristorante  La Versilia,Via Tiziano,5,Milano
+1725,restaurant,In Veranda,Via Statuto,18,Milano
+1728,restaurant,Bomaki Sanzio,Via Raffaello Sanzio,24,Milano
+1729,restaurant,Yu Zhou,Via Carlo Ravizza,9,Milano
+1730,restaurant,Antica Pizzeria Leone,Via Carlo Ravizza,9,Milano
+1731,restaurant,Lievità,Via Carlo Ravizza,11,Milano
+1732,restaurant,Novecento,Via Carlo Ravizza,13,Milano
+1733,restaurant,Bottega Lucia,Via Carlo Ravizza,4,Milano
+1734,restaurant,Ristorante da Gaspare,Via Carlo Ravizza,19,Milano
+1742,bar,NoLoSo,Via Luigi Varanini,5,Milano
+1743,bar,PoP,Via Alessandro Tadino,5,Milano
+1745,restaurant,Sapore della Grecia,Piazza Emilia,9,Milano
+1746,restaurant,Ristorante Shorai,Via Enrico Dandolo,2,Milano
+1748,restaurant,Basement,Via Giorgio Giulini,6,Milano
+1751,restaurant,Ristorante Yuebinlou,Via Paolo Sarpi,42,Milano
+1753,restaurant,Biofficina,Via Luca Signorelli,13,Milano
+1754,restaurant,Fiume d'argento,Corso Genova,7,Milano
+1755,bar,Todos a Cuba,Via Edmondo De Amicis,4,Milano
+1766,restaurant,Wok in Box,Via Felice Casati,7,Milano
+1767,restaurant,Alice,Via Lazzaro Spallanzani,18,Milano
+1780,bar,Milano Cafè,Via Giulio Cesare Procaccini,37,Milano
+1787,restaurant,Le Presine Volanti,Via Bezzecca,1,Milano
+1789,restaurant,EN,Corso Ventidue Marzo,30,Milano
+1790,restaurant,Les Gitanes Bistrot,Via Vincenzo Forcella,2,Milano
+1791,restaurant,Ristorante Pizzeria Aurora,Via Curtatone,21,Milano
+1793,bar,Madamadorè Street Food Bar,Galleria Giuseppe Borella,3,Milano
+1794,restaurant,Ci,Corso Ventidue Marzo,40,Milano
+1799,restaurant,Savana,Via Luigi Canonica,45,Milano
+1800,restaurant,Trattoria Da Lucia,Via Luisa Battistotti Sassi,14,Milano
+1802,restaurant,Amunì,Via Andrea Solari,7,Milano
+1803,restaurant,Casa del Ramen,Via Andrea Solari,23,Milano
+1804,restaurant,Chidori,Via Andrea Solari,23,Milano
+1805,restaurant,Ciaccia coi ciccioli,Via Andrea Solari,23,Milano
+1806,restaurant,La Gravina,Via Giovanni Cadolini,19,Milano
+1807,bar,Dream Bar,Via Andrea Solari,3,Milano
+1808,bar,Filly,Via Andrea Solari,4,Milano
+1809,bar,Coolmorning,Viale Coni Zugna,39,Milano
+1810,bar,Key Bar,Via Montevideo,10,Milano
+1814,restaurant,Asian Flavor,Via Andrea Solari,7,Milano
+1815,restaurant,Solopizza Cafè,Via Andrea Solari,6,Milano
+1816,bar,Big Store de Milàn,Via Conca del Naviglio,10,Milano
+1823,restaurant,Assaje,Via Raffaello Sanzio,14,Milano
+1829,restaurant,Al Basilico,Viale Abruzzi,21,Milano
+1830,restaurant,Pizzeria Olona,Via Olona,17,Milano
+1831,restaurant,Al bacio,Via Vincenzo Monti,15,Milano
+1832,restaurant,Un’altra Pasta,Via Bergamini,5,Milano
+1838,restaurant,Bebel,Via San Vittore,3,Milano
+1839,restaurant,KiKi,Via Gustavo Fara,12,Milano
+1850,restaurant,L'essenza di Mina,Via Cervignano,1,Milano
+1852,restaurant,Senju,Viale Abruzzi,19,Milano
+1859,restaurant,le specialita,Via Pietro Calvi,29,Milano
+1862,restaurant,Ichiro,Via San Vittore,6,Milano
+1866,bar,Marco's,Via San Vittore,6,Milano
+1869,restaurant,Sevilla mia,Viale Coni Zugna,50,Milano
+1870,bar,Sweet Cafè,Viale Coni Zugna,43,Milano
+1871,restaurant,Nico,Via Terraggio,20,Milano
+1872,restaurant,Sush Art,Via San Marco,26,Milano
+1874,restaurant,Panini Di Mare Fishlab,Via Garigliano,8,Milano
+1875,restaurant,Rakki sushi 2,Via Vodice,5,Milano
+1876,restaurant,Capperi... Che Pizza!,Piazza Santa Maria del Suffragio,3,Milano
+1877,restaurant,Capuano's,Via Francesco Londonio,22,Milano
+1878,restaurant,Così fa Antonio Esposito,Via Solferino,27,Milano
+1879,restaurant,Daniele,Via Galeazzo Alessi,1,Milano
+1880,restaurant,Lievità Pizzeria gourmet,Via Pasquale Sottocorno,17,Milano
+1891,restaurant,Officine Analfabeta,Via Cardinale Mezzofanti,6,Milano
+1893,restaurant,Glauco,Via Achille Maiocchi,29,Milano
+1913,restaurant,Mi Dimsum,Via Carlo Farini,1,Milano
+1918,restaurant,Ramen a Mano,Via Paolo Lomazzo,20,Milano
+1920,restaurant,Route 66,Viale Romagna,23,Milano
+1921,restaurant,Terra Mia,Via Sebenico,24,Milano
+1922,restaurant,Sulle Nuvole,Via Garigliano,12,Milano
+1927,restaurant,Sushi II,Via Macedonio Melloni,18,Milano
+1928,restaurant,Dompé Milano,Via Fabio Filzi,8,Milano
+1935,restaurant,Poke House,Via Gaetano De Castillia,24,Milano
+1936,bar,Rita & Cocktails,Via Angelo Fumagalli,1,Milano
+1937,restaurant,Café Desaix,Via Felice Casati,15,Milano
+1938,restaurant,Ramen shop,Via Alessandro Tadino,10,Milano
+1956,restaurant,California Bakery,Viale Beatrice d'Este,49,Milano
+1958,restaurant,Bistro Aimo e Nadia,Via Matteo Bandello,15,Milano
+1968,restaurant,IT,Via Fiori Chiari,32,Milano
+1971,restaurant,I-Romano,Via Lomellina,34,Milano
+1972,restaurant,Galli Pizza & More,Corso Magenta,78,Milano
+2008,restaurant,Dal Baggini,Via Giovanni Raiberti,11,Milano
+2009,restaurant,Takumi Ramen Kitchen,Via Luigi Canonica,63,Milano
+2011,restaurant,District47,Via Marghera,47,Milano
+2013,restaurant,Spontini,Via Marghera,3,Milano
+2028,restaurant,L'Ov Milano,Via Andrea Solari,34,Milano
+2033,restaurant,Indo Ceylon,Via Resegone,1,Milano
+2035,restaurant,Pepe & Sale,Via Monte Rosa,20,Milano
+2036,bar,Metro Bar Amendola,Piazza Giovanni Amendola,4,Milano

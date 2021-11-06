@@ -1,0 +1,267 @@
+,amenity,name,addr:street,addr:housenumber,addr:city
+0,cinema,Reale,Piazza Sidney Sonnino,3,Roma
+1,cinema,Quattro Fontane,Via delle Quattro Fontane,23,Roma
+2,restaurant,Pizzeria ai Marmi,Viale di Trastevere,53,Roma
+3,restaurant,Ristorante Old Hang Zhou,Via di San Martino ai Monti,33C,Roma
+4,restaurant,Dar filettaro a Santa Barbara,Largo dei Librari,88,Roma
+5,restaurant,Ai Tre Scalini,Via Panisperna,251,Roma
+6,cinema,Royal,Via Emanuele Filiberto,175,Roma
+7,restaurant,Pizzeria Formula 1,Via degli Equi,13,Roma
+8,cinema,Europa,Corso d'Italia,107,Roma
+10,restaurant,Mok,Piazza Fiume,77,Roma
+11,restaurant,Hang Zhou,Via Principe Eugenio,82,Roma
+12,restaurant,Antica Trattoria Tritone,Via dei Maroniti,1,Roma
+15,restaurant,Dal Bolognese,Piazza del Popolo,1,Roma
+18,restaurant,Taverna del Seminario,Via del Seminario,105,Roma
+20,bar,Harry's Bar,Via Vittorio Veneto,150,Roma
+22,restaurant,Tazio Restaurant,Piazza della Repubblica,47,Roma
+25,restaurant,Doveralu,Via Nazionale,215,Roma
+26,restaurant,Osteria Margutta,Via Margutta,82,Roma
+27,restaurant,RistorArte Il Margutta,Via Margutta,118,Roma
+29,cinema,Cinema Europa,Corso d'Italia,107,Roma
+30,cinema,Fiamma,Via Leonida Bissolati,47,Roma
+36,restaurant,La Pace del Cervello,Via dei Santi Quattro,63,Roma
+39,restaurant,Al Cavallino Bianco,Via Emanuele Filiberto,27,Roma
+41,restaurant,Il Miraggio,Vicolo Sciarra,59,Roma
+45,restaurant,Wang Xian Lou,Via del Viminale,5/A,Roma
+46,restaurant,Roadhouse Grill,Via Marsala,27,Roma
+47,restaurant,La Pace,Via Madonna dei Monti,53-56,Roma
+48,restaurant,Lago Azzurro,Via San Vito,15-16,Roma
+50,restaurant,Old Bear,Via dei Gigli d'Oro,3,Roma
+58,cinema,Cineclub Detour,Via Urbana,107,Roma
+60,restaurant,Il Podista,Via Tiburtina,224-226,Roma
+64,restaurant,Da Giggetto,Via Portico d'Ottavia,21/A - 22,Roma
+65,bar,Pretorius Cafe',Via San Martino della Battaglia,27,Roma
+69,restaurant,Taverna Antonina,Via della Colonna Antonina,48,Roma
+75,restaurant,Renato e Luisa,Via dei Barbieri,25,Roma
+76,bar,Chocolat,Via del Teatro Valle,54A,Roma
+78,restaurant,Da Gino,Vicolo Rosini,4,Roma
+79,restaurant,Asian Delight,Via Montebello,66,Roma
+81,restaurant,La Taverna del Ghetto,Via del Portico d'Ottavia,8,Roma
+82,restaurant,Nonna Betta,Via del Portico d'Ottavia,16,Roma
+83,restaurant,Ristorante Piperno,Monte de' Cenci,9,Roma
+84,restaurant,Ba' Ghetto Milky,Via del Portico d'Ottavia,2,Roma
+85,restaurant,Ba'Ghetto,Via del Portico d'Ottavia,57,Roma
+86,restaurant,Da Enzo,Via dei Vascellari,29,Roma
+92,restaurant,Pizzeria L'Economica,Via Tiburtina,44/46,Roma
+93,restaurant,Hostaria da Gasparone,Via in Arcione,91,Roma
+96,restaurant,Naumachia,Via Celimontana,7,Roma
+99,restaurant,Rossi,Via Palestro,57,Roma
+101,restaurant,Enoteca Provincia Romana,Foro Traiano,82-84,Roma
+102,restaurant,I clementini,Via di San Giovanni in Laterano,106,Roma
+105,bar,Volpini,Viale Regina Margherita,310,Roma
+109,restaurant,alla Rampa,Piazza Mignanelli,18,Roma
+111,bar,San Clemente,Via di San Giovanni in Laterano,126,Roma
+112,restaurant,Pommidoro,Piazza dei Sanniti,46,Roma
+115,restaurant,Spirito Divino,Via dei Genovesi,13А,Roma
+116,restaurant,Target,Via Torino,33,Roma
+117,restaurant,Vecchia Roma,Via Ferruccio,12,Roma
+119,restaurant,L'angolo di Napoli,Via Agostino Depretis,77,Roma
+120,restaurant,La Cucina Nazionale,Via Nazionale,3,Roma
+122,restaurant,Ristorante Doney,Via Vittorio Veneto,141,Roma
+123,restaurant,La Cuccuma,Via Merulana,221,Roma
+125,restaurant,Maccheroni,Piazza delle Coppelle,44,Roma
+127,restaurant,Gregory's Live Jazz & Dinner Club,Via Gregoriana,54,Roma
+130,restaurant,Asmara,Via Cernaia,36,Roma
+131,restaurant,Salumeria Roscioli,Via dei Giubbonari,21,Roma
+132,restaurant,Il Sanlorenzo,Via dei Chiavari,4/5,Roma
+133,restaurant,Ad Hoc,Via di Ripetta,43,Roma
+134,restaurant,PizzaRe,Via di Ripetta,14,Roma
+135,restaurant,Ginger,Via Borgognona,43/44,Roma
+136,restaurant,Life,Via della Vite,29,Roma
+137,restaurant,Palatium Enoteca Regionale del Lazio,Via Frattina,94,Roma
+138,restaurant,Crispi 19,Via Francesco Crispi,19,Roma
+139,restaurant,Moma,Via di San Basilio,42,Roma
+140,restaurant,Osteria 44,Via Aureliana,42/44,Roma
+141,restaurant,Le Tamerici,Vicolo Scavolino,79,Roma
+142,restaurant,Baccano,Via delle Muratte,23,Roma
+143,restaurant,Osteria dell'Ingegno,Piazza di Pietra,45,Roma
+144,bar,L'Antica Birreria Peroni,Via di San Marcello,19,Roma
+146,restaurant,Trattoria Moderna,Vicolo de' Chiodaroli,16,Roma
+147,restaurant,Achilli Enoteca al Parlamento,Via dei Prefetti,15,Roma
+148,restaurant,All'oro,Via del Vantaggio,14,Roma
+149,restaurant,Armando al Pantheon,Salita de' Crescenzi,31,Roma
+150,restaurant,Chinappi,Via Augusto Valenziani,19,Roma
+151,restaurant,Gaetano Costa,Via Sicilia,45,Roma
+155,restaurant,Monte Arci,Via Castelfidardo,33,Roma
+158,restaurant,Il Pastificio,Via Tiburtina,196,Roma
+160,restaurant,Cotto,Via Torino,124,Roma
+162,restaurant,Hostaria da Pietro,Via di Gesù e Maria,18,Roma
+163,restaurant,Edy,Vicolo del Babuino,4,Roma
+164,bar,Black Market,Via Panisperna,101,Roma
+165,restaurant,La Pantera Rosa,Piazzale del Verano,84,Roma
+167,restaurant,La Famiglia Ristorante Trattoria,Via Gaeta,66,Roma
+168,restaurant,Hostaria Cannavota,Piazza di San Giovanni in Laterano,20,Roma
+169,restaurant,Santa Cristina al Quirinale,Via della Cordonata,21,Roma
+170,bar,Costarica,Via Belluno,17,Roma
+171,restaurant,Non solo pizza,Viale Ippocrate,106,Roma
+175,restaurant,Tomoko Tudini,Via Principe Amedeo,25;27;29,Roma
+176,restaurant,Yes Food,Via Catania,53,Roma
+178,bar,Oasi,Via Padova,73,Roma
+180,restaurant,Kuriya,Via Arenula,48;49,Roma
+181,restaurant,La Fontana di Venere,Vicolo dei Modelli,56,Roma
+182,restaurant,La Taverna Italiana,Via Giovanni Giolitti,385,Roma
+183,restaurant,Vecchia Locanda,Vicolo Sinibaldi,2,Roma
+184,restaurant,Li Rioni,Via dei Santi Quattro,24-24a,Roma
+185,restaurant,Da Sabatino - Le Cave di Sant'Ignazio,Piazza di Sant'Ignazio,169,Roma
+186,restaurant,Bottega Rocchi,Via del Caravita,9,Roma
+187,restaurant,Dakota,Via del Seminario,111,Roma
+188,restaurant,Al Presidente,Via in Arcione,95,Roma
+189,restaurant,Birreria,Via del Lavatore,41,Roma
+190,restaurant,Da Cecere,Via del Lavatore,34,Roma
+191,restaurant,L'Archetto 3,Via Ancona,33,Roma
+192,restaurant,Trattoria Coriolano,Via Ancona,14,Roma
+193,restaurant,Al Chianti,Via Ancona,14,Roma
+194,restaurant,Ambasciatori partenopei,Piazzale di Porta Pia,119,Roma
+196,restaurant,La Taverna dei Fori Imperiali,Via della Madonna dei Monti,9,Roma
+197,restaurant,Il Vero Alfredo,Piazza Augusto Imperatore,30,Roma
+199,restaurant,Trattoria il Gallo Nero,Via Principe Amedeo,7H,Roma
+202,restaurant,Piccolo Buco,Via del Lavatore,91,Roma
+203,bar,"0,75",Via dei Cerchi,65,Roma
+204,restaurant,Trattoria Pizzeria Porta Maggiore,Piazza di Porta Maggiore,14;15,Roma
+208,restaurant,Meid in Nepols,Via Varese,54,Roma
+209,restaurant,Ristorante S.Anna,Via di Sant'Anna,8/9,Roma
+210,bar,Snack bar peter bar,Via Principe Amedeo,7D,Roma
+217,restaurant,Allegro Pachino,Via dei Crociferi,12/13,Roma
+219,restaurant,La Forchetta d'Oro,Via di San Martino ai Monti,40,Roma
+221,restaurant,Ristorante-Pizzeria Gallo Matto,Via Cavour,107,Roma
+222,restaurant,Ristorante Ragno d'Oro,Via Leonina,86,Roma
+223,restaurant,Hokkaido,Via del Castro Pretorio,10,Roma
+224,restaurant,Il Pozzo dei Desideri,Vicolo dei Modelli,60,Roma
+227,restaurant,Pinsa e Buoi dei...,Viale dello Scalo San Lorenzo,15/17,Roma
+228,restaurant,Trattoria Pizzeria La Casetta,Via dei Marrucini,52,Roma
+229,restaurant,Bibo,Piazza dei Santi Apostoli,58,Roma
+230,restaurant,Ristorante Aquila Nera,Via Principe Amedeo,49;51;53,Roma
+231,bar,Pub Aquila Nera,Via Principe Amedeo,49;51;53,Roma
+232,restaurant,Mangrovia,Via Milazzo,6,Roma
+233,bar,Vini e Cucina Blasi,Via di Torre Argentina,12,Roma
+236,restaurant,Tempio di Mecenate,Largo Leopardi,14,Roma
+237,restaurant,Sapori e Delizie,Via Giovanni Lanza,102,Roma
+238,restaurant,La Base,Via Cavour,268,Roma
+242,restaurant,Andrea,Via Castelfidardo,30,Roma
+245,restaurant,Il Grano,Via degli Equi,39,Roma
+248,restaurant,Ristorente Pizzeria L'esquilino Bar,Via Cavour,85,Roma
+251,restaurant,Trattoria D'azeglio - Fratelli Crisciotti,Via Massimo D'Azeglio,5;7,Roma
+254,restaurant,I Vicini Bistrot,Via di Torre Argentina,70,Roma
+255,bar,Shari Vari,Via di Torre Argentina,78,Roma
+257,restaurant,ristorante giapponese sushime,Via Catania,22,Roma
+259,restaurant,Il molo,Via Castelfidardo,12,Roma
+260,restaurant,I Vascellari,Via dei Vascellari,21,Roma
+261,restaurant,Trattoria Da Teo,Piazza dei Ponziani,7/a,Roma
+262,restaurant,Trattoria Morgana,Via Mecenate,19-21,Roma
+266,restaurant,GAINN 가인,Via dei Mille,18,Roma
+268,restaurant,Ferrovecchio,Via dei Sabelli,32,Roma
+280,restaurant,Un'Ottima Annata,Via Sicilia,245,Roma
+282,restaurant,Antica Trattoria pizzeria da Gino alla Villetta,Vicolo del Buco,2,Roma
+286,restaurant,La Prosciutteria Roma Trevi - Cantina dei Papi,Via della Panetteria,34A,Roma
+287,restaurant,La Locanda Pugliese,Via Napoli,76,Roma
+290,restaurant,Antica Osteria Brunetti,Via Angelo Brunetti,10,Roma
+293,restaurant,Mamma Angela,Via Palestro,53,Roma
+295,restaurant,Hostaria Romana,Via del Boccaccio,1,Roma
+296,restaurant,Osteria Angelino dal 1899,Via Capo d'Africa,6,Roma
+297,restaurant,Trattoria Il Tettarello,Via dei Capocci,4,Roma
+307,restaurant,L'Insalata Ricca,Largo dei Chiavari,85,Roma
+317,restaurant,Pane e Salami,Via di Santa Maria in Via,19,Roma
+321,restaurant,L'Asino d'Oro,Via del Boschetto,73,Roma
+322,restaurant,Beppe e i suoi formaggi,Via di Santa Maria del Pianto,9A/11,Roma
+330,restaurant,Food in Progress,Via La Spezia,72,Roma
+339,restaurant,Hostaria da Vincenzo,Via Castelfidardo,4a,Roma
+342,restaurant,Babbo's,Via Volturno,13,Roma
+344,restaurant,Il Brigantino,Via di San Martino ai Monti,50,Roma
+345,restaurant,Colline Emiliane,Via degli Avignonesi,22,Roma
+348,restaurant,That's Amore,Via in Arcione,115,Roma
+364,restaurant,Le 2 Colonne,Via Liberiana,18,Roma
+372,restaurant,Osteria St.Ana,Via della Penna,68,Roma
+377,restaurant,Cecio,Via Principe Amedeo,104,Roma
+379,restaurant,Il mercato centrale,Via Giovanni Giolitti,36,Roma
+381,restaurant,La Scaletta,Via della Maddalena,46,Roma
+382,restaurant,Ristorante Pizzeria Tudini,Via Cavour,52/56,Roma
+387,restaurant,Il Viaggio,Via Isonzo,14,Roma
+388,restaurant,Pizza House,Via Cavour,40,Roma
+389,restaurant,Ristorante Mino,Via Milazzo,18,Roma
+390,restaurant,Porto Corallo,Via di Santa Croce in Gerusalemme,26a,Roma
+392,restaurant,Pizzeria Raffaello,Via Carlo Alberto,28,Roma
+393,restaurant,Ristorante La Vecchia Conca,Via Carlo Alberto,26,Roma
+394,restaurant,Sfizio Pizza,Via Giovanni Giolitti,77,Roma
+395,restaurant,Pizzeria Europa,Via Merulana,28A;28B,Roma
+406,restaurant,Pizza Rustica,Via Flaminia,24,Roma
+412,restaurant,Hostaria I Buoni Amici,Via Aleardo Aleardi,4,Roma
+413,restaurant,Mokadi,Via Merulana,132;133,Roma
+414,restaurant,Ristorante Merulana,Via Merulana,138,Roma
+421,restaurant,Trieste Pizza,Via Urbana,112,Roma
+430,restaurant,Grano Frutta e Farina,Via della Croce,49a,Roma
+432,restaurant,Osteria Rouge,Piazza dei Siculi,6,Roma
+434,restaurant,Ristorante Arirang,Via d'Azeglio,3F,Roma
+435,restaurant,Bar della Croce,Via della Croce,81,Roma
+439,restaurant,Ciao Checca,Piazza di Firenze,25;26,Roma
+441,restaurant,'Gusto al 28,Piazza Augusto Imperatore,28,Roma
+454,restaurant,Urbana 47,Via Urbana,47,Roma
+456,restaurant,Clemente Alla Maddalena,Piazza della Maddalena,10,Roma
+458,restaurant,Taverna Urbana,Via Urbana,137,Roma
+460,bar,Apotheke Cocktail Bar,Via Giovanni Amendola,3,Roma
+461,restaurant,Taberna Piscinula,Piazza in Piscinula,50,Roma
+462,restaurant,Ristorante Imperium,Via Giovanni Amendola,71,Roma
+463,restaurant,Ristorante L'Europeo,Via Principe Amedeo,8B,Roma
+464,restaurant,Il Secchio,Via Daniele Manin,30/40,Roma
+465,restaurant,Ristorante La Mensa di Bacco,Via Principe Amedeo,75A;75B,Roma
+469,restaurant,Popolo Caffè,Via Flaminia,9,Roma
+470,restaurant,Osteria Romana,Via Emanuele Filiberto,133,Roma
+472,restaurant,Harusaki,Via Cremona,42,Roma
+473,restaurant,Trattoria Tavernelle,Via Panisperna,48,Roma
+474,restaurant,Re Basilico,Via Cernaia,16,Roma
+484,restaurant,Il Tempio di Minerva,Viale Manzoni,64,Roma
+486,restaurant,Elettra,Via Principe Amedeo,74,Roma
+489,restaurant,Toros y Tapas,Via Nomentana,79,Roma
+490,restaurant,Le vigne del mare,Via Nomentana,81,Roma
+492,restaurant,Pan Bernardo,Piazza San Bernardo,113,Roma
+499,bar,Gino Bar,Via di San Basilio,52,Roma
+500,restaurant,Fonzie - The Burger's House,Via Santa Maria del Pianto,13,Roma
+513,restaurant,Retrobottega,Via della Stelletta,4,Roma
+514,restaurant,Binario 37,Via Principe Amedeo,37,Roma
+517,restaurant,Alla trattoriola di Luca,Via Tiburtina,8,Roma
+518,restaurant,Brancaleone,Via Sicilia,170,Roma
+522,restaurant,Joe Padella,Via Nomentana,203,Roma
+524,bar,espressamente,Via degli Uffici del Vicario,31,Roma
+525,bar,Mr. 100 Tiramisu,Via dei Sediari,11/12,Roma
+539,restaurant,Il Giardino Romano,Via del Portico d'Ottavia,18,Roma
+541,restaurant,Arancia blu,Via Cesare Beccaria,3,Roma
+550,restaurant,I Butteri,Piazza Regina Margherita,28,Roma
+561,restaurant,Domò Sushi,Via Novara,21,Roma
+563,restaurant,"La Tavola, il vino e la dispensa",Via Giovanni Giolitti,36,Roma
+581,restaurant,Buddy,Corso Vittorio Emanuele II,107,Roma
+591,restaurant,Osteria del Sostegno,Via delle Colonnelle,5,Roma
+607,restaurant,Tempio Di Bacco,Via Lombardia,36/38,Roma
+619,restaurant,Sakura Sushi,Piazzale di Porta Pia,122,Roma
+626,restaurant,La Matriciana,Via del Viminale,44,Roma
+627,bar,Il Palchetto,Via del Viminale,48,Roma
+628,restaurant,Trattoria da Valentino,Via Cavour,293,Roma
+629,restaurant,Bianco pepe,Via Cavour,291,Roma
+635,restaurant,Antica Bohéme,Via Napoli,4,Roma
+636,restaurant,La mucca biricchina,Via Urbana,12,Roma
+637,restaurant,Tema,Via Panisperna,96;98,Roma
+638,restaurant,Rosemary,Via Modena,16,Roma
+641,restaurant,Al Padovano,Via Bergamo,50,Roma
+649,restaurant,Ristorante Massawa,Via Montebello,28,Roma
+657,restaurant,Antonio al Pantheon,Via dei Pastini,12,Roma
+692,restaurant,Il Ponentino,Piazza del Drago,10,Roma
+724,restaurant,Osteria dell'Arco,Via Giacomo Pagliari,11,Roma
+740,restaurant,Efeso il barrocciaio,Via dei Salentini,12,Roma
+743,restaurant,Sicily,Via Marsala,68,Roma
+751,restaurant,Da Emilio,Via Alessandria,189,Roma
+757,restaurant,Trattoria Pizzeria Luzzi,Via di San Giovanni in Laterano,88,Roma
+760,restaurant,Asian Delight,Via Goito,44,Roma
+763,restaurant,Ristorante Al Pompiere,Via di Santa Maria de' Calderari,38,Roma
+766,restaurant,Zeus,Via Nazionale,251/a,Roma
+768,restaurant,Il Melarancio,Via del Vantaggio,43,Roma
+777,restaurant,Farinè la pizza,Via degli Aurunci,6,Roma
+780,restaurant,Bonario gastronomia,Via dei Volsci,121,Roma
+786,restaurant,Osteria Trattoria da Fortunata,Corso del Rinascimento,17,Roma
+792,restaurant,Bonario ristorante,Via dei Volsci,121,Roma
+795,restaurant,Tea & Noodles,Via Conte Verde,36/38,Roma
+796,restaurant,Pescetto,Via Angelo Poliziano,10,Roma
+797,restaurant,Da Nino,Via Merulana,74,Roma
+798,restaurant,Baia Chia,Via Machiavelli,7,Roma
+803,restaurant,Disco Volante,Via Alessandria,50,Roma
+805,restaurant,Marzapane,Via Flaminia,64,Roma
+806,restaurant,Apulia,via degli Umbri,10,Rome
+807,restaurant,Mozart,Via Toscana,24/26,Roma
