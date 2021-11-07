@@ -23,6 +23,6 @@ class DateGenerator:
         end_u = end.value // divide_by
 
         if out_format == 'datetime':
-            return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%m/%d/%Y, %H:%M:%S")
+            return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%Y-%m-%d %H:%M:%S")
         else:
             return pd.to_datetime(np.random.randint(start_u, end_u, n), unit=unit).strftime("%d/%m/%Y") #.tolist()[0]
