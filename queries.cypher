@@ -149,3 +149,15 @@ WHERE new_house.address = 'to'
 
 //TODO: write a query to study the vaccines efficacy (for example by taking all the vaccinated people and see how
 //many of them get infected by a meets with a person who discovered to be infected in the past X days - for example 10 -)
+
+
+//Query that returns the infection ratio among all the tested people during a certain period of time
+MATCH ()-[r:TESTS]->()
+WHERE date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
+date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021
+with count(r) as total_tests
+MATCH ()-[positives:TESTS]->()
+WHERE date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
+date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021 AND
+positives.res = "Positive"
+return (count(positives) * 1.0 / total_tests * 1.0) * 100.0
