@@ -243,7 +243,7 @@ class PopulateDB:
         for ssn in ssn_family:
             result = tx.run("MATCH (a:Person), (b:House) "
                             "WHERE a.ssn = $ssn AND id(b) = $id_house "
-                            "CREATE (a)-[r:LIVES]->(b)"
+                            "CREATE (a)-[r:LIVES{livesFrom: a.birthdate}]->(b)"
                             "RETURN r ", ssn=ssn, id_house=id_house)
         return result.single()[0]
 
@@ -272,12 +272,12 @@ if __name__ == "__main__":
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
         # populator.create_people()
-        populator.create_family(10)
-        populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
+        populator.create_family(3)
+        populator.create_meets_relations(5, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
-        populator.create_amenities(30)
-        populator.create_visits_relations(30, 20, (2020, 6, 19), (2021, 6, 19))
+        populator.create_amenities(15)
+        populator.create_visits_relations(2, 1, (2020, 6, 19), (2021, 6, 19))
         populator.close()
