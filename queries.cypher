@@ -80,9 +80,34 @@ WHERE infected.SSN = "FRRLCU94C07F205O"
 RETURN roommate
 UNION
 MATCH (infected: Person)-[v1:visits]->()<-[v2:visits]-(otherVisitor: Person)
-WHERE infected.SSN = "FRRLCU94C07F205O" AND v1.date = v2.date AND duration.between(date(v1.date), date()).days <= 10
+WHERE infected.SSN = "FRRLCU94C07F205O" AND v1.date = v2.date AND duration.inDays(date(v1.date), date()).days <= 10 AND AND duration.inDays(date(v1.date), date()).days >= 0
 RETURN otherVisitor
 UNION
 MATCH (infected: Person)-[m: meets]->(personMet: Person)
-WHERE infected.SSN = "FRRLCU94C07F205O" AND duration.between(date(m.date), date()).days <= 10
+WHERE infected.SSN = "FRRLCU94C07F205O" AND duration.inDays(date(m.date), date()).days <= 10 AND duration.inDays(date(m.date), date()).days >= 0
 RETURN personMet
+//TODO: I have to test it because I changed duration.between in duration.inDays (the first one as Andrea said doesn't work properly)
+
+//Query that returns the most visited places by infected people during the X days before getting positive at a covid test
+//(in this esample X is equal to ten)
+//This query could be useful to study which places could be more related to infections than others and in this way
+// discover the most unsafe places type
+MATCH (p:Person)-[t:TESTS]->()
+WHERE t.result = 'positive'
+WITH p AS people, t.date AS dat
+MATCH (people)-[v:VISITS]->(ps:PublicSpace)
+WHERE duration.inDays(date(v.date), dat).days <= 10 AND duration.inDays(date(v.date), dat).days >= 0
+RETURN ps.type, COUNT(ps.type)
+
+//Command: changing all the LIVES relation of the people who live in the same house (this command could be useful in case of moving family)
+MATCH (p:Person)-[l:LIVES]->(h:House)
+WHERE h.address = 'from'
+    WITH p as people, l AS lived
+MATCH (new_house:House)
+WHERE new_house.address = 'to'
+    CREATE (people)-[liv:LIVES]->(new_house)
+    DELETE lived
+
+
+//TODO: write a query to study the vaccines efficacy (for example by taking all the vaccinated people and see how
+//many of them get infected by a meets with a person who discovered to be infected in the past X days - for example 10 -)
