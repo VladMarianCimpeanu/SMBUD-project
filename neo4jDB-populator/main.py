@@ -19,7 +19,8 @@ class PopulateDB:
         self.names_city = []  # list with the keys of self.cities
         self.amenities = {}  # dictionary containing public spaces per each city
         # read 'datasets_to_read' that contains as keys the name of the available city
-        configuration_file = pd.read_csv("{}/random_italian_things/datasets/datasets_to_read.txt".format(os.path.dirname(os.path.abspath(__file__))))
+        configuration_file = pd.read_csv(
+            "{}/random_italian_things/datasets/datasets_to_read.txt".format(os.path.dirname(os.path.abspath(__file__))))
         for index, row in configuration_file.iterrows():
             self.cities[row['key']] = []
             self.amenities[row['key']] = []
@@ -41,24 +42,24 @@ class PopulateDB:
             # print(greeting1)
     """
 
-    def create_family(self, num_family):
+    def create_family(self, num_family_per_city):
         with self.driver.session() as session:
-            for i in range(num_family):
-                city = random.choice(self.names_city)
-                house = RandomItalianHouse(city)
-                family_surname_data = RandomItalianPerson().surname_data  # Picking random family surname
-                id_house = session.write_transaction(self._create_house, house.municipality, house.address)
-                ssn_family = []
-                for j in range(random.randint(1, 6)):
-                    person = RandomItalianPerson(surname=family_surname_data)
-                    ssn_family_member = session.write_transaction(self._create_person, person.name, person.surname,
-                                                                  person.data["codice_fiscale"], person.birthdate,
-                                                                  person.sex,
-                                                                  person.birthplace)
-                    ssn_family.append(ssn_family_member)
-                    self.cities[city].append(ssn_family_member)
+            for city in self.names_city:
+                for i in range(num_family_per_city):
+                    house = RandomItalianHouse(city)
+                    family_surname_data = RandomItalianPerson().surname_data  # Picking random family surname
+                    id_house = session.write_transaction(self._create_house, house.municipality, house.address)
+                    ssn_family = []
+                    for j in range(random.randint(1, 6)):
+                        person = RandomItalianPerson(surname=family_surname_data)
+                        ssn_family_member = session.write_transaction(self._create_person, person.name, person.surname,
+                                                                      person.data["codice_fiscale"], person.birthdate,
+                                                                      person.sex,
+                                                                      person.birthplace)
+                        ssn_family.append(ssn_family_member)
+                        self.cities[city].append(ssn_family_member)
 
-                session.write_transaction(self._create_lives, ssn_family, id_house)
+                    session.write_transaction(self._create_lives, ssn_family, id_house)
 
     def create_swabs(self):
         with self.driver.session() as session:
@@ -123,6 +124,35 @@ class PopulateDB:
                "date : $date"
                "}]->(ps)", name=amenity_name, street=amenity_street, city=amenity_city, ssn=ssn, date=date)
 
+    def create_meets_relations(self, num_meets: int, starting_date: tuple, ending_date: tuple):
+        with self.driver.session() as session:
+            for n in range(num_meets):
+                random_date = date_facilities.random_single_date(starting_date, ending_date)
+                if random.random() <= 0.9:  # 90% probability of meeting in the same city
+                    same_city = random.choice(self.names_city)
+                    two_random_people = random.sample(self.cities[same_city], 2)
+                    person1 = two_random_people[0]
+                    person2 = two_random_people[1]
+                else:
+                    two_random_cities = random.sample(self.names_city, 2)  # Picks two random different cities
+                    city_1 = two_random_cities[0]
+                    city_2 = two_random_cities[1]
+                    person1 = random.choice(self.cities[city_1])
+                    person2 = random.choice(self.cities[city_2])
+
+                session.write_transaction(self._create_meets, person1, person2, random_date)
+
+    @staticmethod
+    def _create_meets(tx, person1, person2, date):
+        tx.run("MATCH (person1: Person), (person2: Person) "
+               "WHERE person1.ssn = $person1 AND person2.ssn = $person2 "
+               "CREATE (person1)-[r1:MEETS {"
+               "date : $date"
+               "}]->(person2) "
+               "CREATE (person2)-[r2:MEETS {"
+               "date : $date"
+               "}]->(person1) ", person1=person1, person2=person2, date=date)
+
     def create_vaccines(self):
         with self.driver.session() as session:
             names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
@@ -130,10 +160,10 @@ class PopulateDB:
                 session.write_transaction(self._create_vaccine, name)
 
     @staticmethod
-    def _create_vaccinates_relationship(tx,person_id,vaccine_name,lotto,date):
+    def _create_vaccinates_relationship(tx, person_id, vaccine_name, lotto, date):
         result = tx.run("MATCH (a:Vaccine),(b:Person) WHERE a.name = $vaccine_name AND ID(b) = $person_id "
-                           "CREATE (b)-[v:VACCINATES{lotto : $lotto, date: $date}] -> (a)", person_id = person_id,
-                        vaccine_name = vaccine_name, lotto = lotto,date = date)
+                        "CREATE (b)-[v:VACCINATES{lotto : $lotto, date: $date}] -> (a)", person_id=person_id,
+                        vaccine_name=vaccine_name, lotto=lotto, date=date)
 
     @staticmethod
     def _get_people_id(tx):
@@ -157,24 +187,27 @@ class PopulateDB:
         with self.driver.session() as session:
             person_ids = session.read_transaction(self._get_people_id)  # get people ids
             vaccine_name_id = session.read_transaction(self._get_vaccines_id)  # get vaccines id and name
-            lottos = pd.read_csv('vaccine_lotto.csv', sep = ';')
+            lottos = pd.read_csv('vaccine_lotto.csv', sep=';')
             for id in person_ids:
                 prob = random.random()  # with some probability a person has one, two or three vaccinates relationships
                 if prob > 0.3:
                     v_name = random.choice(vaccine_name_id)[1]
                     lotto = random.choice(lottos[v_name])
                     random_date = dg.DateGenerator().random_datetimes_or_dates()
-                    session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,random_date.tolist()[0])
+                    session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                                              random_date.tolist()[0])
                     if prob > 0.6:
                         lotto = random.choice(lottos[v_name])
                         date2 = dg.DateGenerator().random_datetimes_or_dates()
                         #  can't vaccinate twice in the same day, other temporal constraints are out of scope
                         while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
-                        session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
+                        session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                                                  date2.tolist()[0])
                         if prob > 0.95:
                             lotto = random.choice(lottos[v_name])
                             while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
-                            session.write_transaction(self._create_vaccinates_relationship,id[0],v_name,lotto,date2.tolist()[0])
+                            session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                                                      date2.tolist()[0])
 
     @staticmethod
     def _create_vaccine(tx, name):
@@ -238,8 +271,9 @@ if __name__ == "__main__":
         neo4j_password = pass_reader.readline().split()[0]
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
-        #populator.create_people()
+        # populator.create_people()
         populator.create_family(10)
+        populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
