@@ -6,7 +6,7 @@ import pandas as pd
 from neo4j import GraphDatabase
 from random import choices
 from random_italian_things import RandomItalianPerson, RandomItalianHouse, random_amenity
-import date_generator as dg
+from random_italian_things.utils import date_generator as dg
 from random_italian_things.utils import date_facilities
 
 

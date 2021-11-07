@@ -14,7 +14,7 @@ def random_dates(max_freq: int, min_freq: int, start_date: tuple, end_date: tupl
     day_to_add = START
     while day_to_add < END:
         day_to_add += timedelta(days=1 * random.randint(max_freq, min_freq))
-        dates.append(day_to_add)
+        dates.append(day_to_add.strftime("%Y/%m/%d"))
     return dates
 
 
@@ -24,7 +24,7 @@ def random_single_date(start_date: tuple, end_date: tuple):
     day_to_add = start
     days_delta = (end - start).days
     day_to_add += timedelta(days=1 * random.randint(0, days_delta))
-    return day_to_add
+    return day_to_add.strftime("%Y/%m/%d")
 
 
 if __name__ == "__main__":
