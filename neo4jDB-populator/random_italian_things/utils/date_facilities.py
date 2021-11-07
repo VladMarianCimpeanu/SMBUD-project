@@ -3,7 +3,11 @@ import random
 from datetime import timedelta
 
 
-def random_dates(max_freq: int, min_freq: int, start_date: tuple, end_date: tuple):
+""""it returns a list of random dates between start_date (represented by a tuple (year, month, day)) and end_date
+    such that distance between each date can not be more than min_freq and less than max_freq."""
+
+
+def random_dates(max_freq: int, min_freq: int, start_date: tuple, end_date: tuple) -> list:
     dates = []
     START = datetime.date(start_date[0], start_date[1], start_date[2])
     END = datetime.date(end_date[0], end_date[1], end_date[2])
