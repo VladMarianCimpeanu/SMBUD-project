@@ -173,10 +173,10 @@ class PopulateDB:
         print("vaccines loaded.")
 
     @staticmethod
-    def _create_vaccinates_relationship(tx, person_id, vaccine_name, lotto, date):
+    def _create_vaccinates_relationship(tx, person_id, vaccine_name, lot, date):
         result = tx.run("MATCH (a:Vaccine),(b:Person) WHERE a.name = $vaccine_name AND ID(b) = $person_id "
-                        "CREATE (b)-[v:VACCINATES{lotto : $lotto, date: $date}] -> (a)", person_id=person_id,
-                        vaccine_name=vaccine_name, lotto=lotto, date=date)
+                        "CREATE (b)-[v:VACCINATES{lot : $lot, date: $date}] -> (a)", person_id=person_id,
+                        vaccine_name=vaccine_name, lot=lot, date=date)
 
     @staticmethod
     def _get_people_id(tx):
@@ -201,26 +201,26 @@ class PopulateDB:
         with self.driver.session() as session:
             person_ids = session.read_transaction(self._get_people_id)  # get people ids
             vaccine_name_id = session.read_transaction(self._get_vaccines_id)  # get vaccines id and name
-            lottos = pd.read_csv('vaccine_lotto.csv', sep=';')
+            lots = pd.read_csv('vaccine_lot.csv', sep=';')
             for id in person_ids:
                 prob = random.random()  # with some probability a person has one, two or three vaccinates relationships
                 if prob > 0.3:
                     v_name = random.choice(vaccine_name_id)[1]
-                    lotto = random.choice(lottos[v_name])
+                    lot = random.choice(lots[v_name])
                     random_date = dg.DateGenerator().random_datetimes_or_dates()
-                    session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                    session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lot,
                                               random_date.tolist()[0])
                     if prob > 0.6:
-                        lotto = random.choice(lottos[v_name])
+                        lot = random.choice(lots[v_name])
                         date2 = dg.DateGenerator().random_datetimes_or_dates()
                         #  can't vaccinate twice in the same day, other temporal constraints are out of scope
                         while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
-                        session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                        session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lot,
                                                   date2.tolist()[0])
                         if prob > 0.95:
-                            lotto = random.choice(lottos[v_name])
+                            lot = random.choice(lots[v_name])
                             while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
-                            session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
+                            session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lot,
                                                       date2.tolist()[0])
         print("people vaccinated.")
 
