@@ -151,16 +151,12 @@ WHERE new_house.address = 'to'
 //many of them get infected by a meets with a person who discovered to be infected in the past X days - for example 10 -)
 
 
-//Query that returns the infection ratio among all the tested people during a certain period of time
-MATCH ()-[r:TESTS]->()
-WHERE date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
-date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021
-WITH count(r) AS total_tests
-MATCH ()-[positives:TESTS]->()
-WHERE date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
-date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021 AND
-positives.res = "Positive"
-WITH (count(positives) * 1.0 / total_tests * 1.0) * 100.0 AS ratio
-RETURN round(ratio * 100) / 100.0
-
-
+//Query that returns the infection ratio among all the tested people for each month
+MATCH ()-[t:TESTS]->()
+WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month,
+     date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests
+MATCH ()-[t:TESTS]->()
+WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = month AND
+      date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = year AND
+      t.res = 'Positive'
+RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year
