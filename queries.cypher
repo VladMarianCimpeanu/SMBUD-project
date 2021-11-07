@@ -155,9 +155,12 @@ WHERE new_house.address = 'to'
 MATCH ()-[r:TESTS]->()
 WHERE date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
 date(apoc.date.format(apoc.date.parse(r.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021
-with count(r) as total_tests
+WITH count(r) AS total_tests
 MATCH ()-[positives:TESTS]->()
 WHERE date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = 4 AND
 date(apoc.date.format(apoc.date.parse(positives.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = 2021 AND
 positives.res = "Positive"
-return (count(positives) * 1.0 / total_tests * 1.0) * 100.0
+WITH (count(positives) * 1.0 / total_tests * 1.0) * 100.0 AS ratio
+RETURN round(ratio * 100) / 100.0
+
+

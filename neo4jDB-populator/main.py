@@ -43,6 +43,7 @@ class PopulateDB:
     """
 
     def create_family(self, num_family_per_city):
+        print("loading families ...")
         with self.driver.session() as session:
             for city in self.names_city:
                 for i in range(num_family_per_city):
@@ -60,12 +61,14 @@ class PopulateDB:
                         self.cities[city].append(ssn_family_member)
 
                     session.write_transaction(self._create_lives, ssn_family, id_house)
+        print("families loaded.")
 
     def create_swabs(self):
         with self.driver.session() as session:
             session.write_transaction(self._create_swab)
 
     def create_tests(self):
+        print("loading covid swabs...")
         range_tests = [0, 1, 2, 3, 4, 5, 6, 7]
         prob_range_tests = [0.3, 0.26, 0.17, 0.12, 0.7, 0.5, 0.02, 0.01]
         results = ['Positive', 'Negative']
@@ -77,12 +80,15 @@ class PopulateDB:
                     timestamp = dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0]
                     res = choices(results, prob_results)[0]
                     session.write_transaction(self._create_test, id_person[0], timestamp, res)
+        print("loaded covid swabs.")
 
     def clear_db(self):
+        print("clearing db...")
         with self.driver.session() as session:
             session.write_transaction(self._clear_db)
 
     def create_amenities(self, num_public_spaces: int):
+        print("loading public spaces...")
         with self.driver.session() as session:
             for amenity in range(num_public_spaces):
                 city = random.choice(self.names_city)
@@ -90,6 +96,7 @@ class PopulateDB:
                 self.amenities[city].append(amenity)
                 session.write_transaction(
                     self._create_amenity, amenity.amenity, amenity.city, amenity.name, amenity.street)
+        print("public spaces loaded.")
 
     @staticmethod
     def _create_amenity(tx, amenity_type: str, city: str, name: str, street: str):
@@ -101,6 +108,7 @@ class PopulateDB:
                "})", type=amenity_type, name=name, city=city, street=street)
 
     def create_visits_relations(self, min_freq: int, max_freq: int, starting_date: tuple, ending_date: tuple):
+        print("loading visits...")
         with self.driver.session() as session:
             for city_name in self.names_city:
                 for person in self.cities[city_name]:
@@ -115,6 +123,7 @@ class PopulateDB:
                             person,
                             d
                         )
+        print("visits loaded.")
 
     @staticmethod
     def _create_visits(tx, amenity_name, amenity_street, amenity_city, ssn, date):
@@ -125,6 +134,7 @@ class PopulateDB:
                "}]->(ps)", name=amenity_name, street=amenity_street, city=amenity_city, ssn=ssn, date=date)
 
     def create_meets_relations(self, num_meets: int, starting_date: tuple, ending_date: tuple):
+        print("loading meetings...")
         with self.driver.session() as session:
             for n in range(num_meets):
                 random_date = date_facilities.random_single_date(starting_date, ending_date)
@@ -141,6 +151,7 @@ class PopulateDB:
                     person2 = random.choice(self.cities[city_2])
 
                 session.write_transaction(self._create_meets, person1, person2, random_date)
+        print("meeting loaded.")
 
     @staticmethod
     def _create_meets(tx, person1, person2, date):
@@ -154,10 +165,12 @@ class PopulateDB:
                "}]->(person1) ", person1=person1, person2=person2, date=date)
 
     def create_vaccines(self):
+        print("loading vaccines...")
         with self.driver.session() as session:
             names = ['Moderna', 'Pfizer', 'AstraZeneca', 'Jensen']
             for name in names:
                 session.write_transaction(self._create_vaccine, name)
+        print("vaccines loaded.")
 
     @staticmethod
     def _create_vaccinates_relationship(tx, person_id, vaccine_name, lotto, date):
@@ -184,6 +197,7 @@ class PopulateDB:
     # create vaccinates relationship
 
     def _create_vaccinates(self):
+        print("vaccinating people ...")
         with self.driver.session() as session:
             person_ids = session.read_transaction(self._get_people_id)  # get people ids
             vaccine_name_id = session.read_transaction(self._get_vaccines_id)  # get vaccines id and name
@@ -208,6 +222,7 @@ class PopulateDB:
                             while date2 == random_date: date2 = dg.DateGenerator().random_datetimes_or_dates()
                             session.write_transaction(self._create_vaccinates_relationship, id[0], v_name, lotto,
                                                       date2.tolist()[0])
+        print("people vaccinated.")
 
     @staticmethod
     def _create_vaccine(tx, name):
@@ -272,12 +287,13 @@ if __name__ == "__main__":
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
         # populator.create_people()
-        populator.create_family(3)
-        populator.create_meets_relations(5, (2020, 6, 19), (2021, 6, 19))
+        populator.create_family(10)
+        populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
         populator.create_amenities(15)
-        populator.create_visits_relations(2, 1, (2020, 6, 19), (2021, 6, 19))
+        populator.create_visits_relations(50, 40, (2020, 6, 19), (2021, 6, 19))
+        print("all the data have been loaded successfully.")
         populator.close()
