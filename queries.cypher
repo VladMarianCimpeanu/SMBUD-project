@@ -73,7 +73,7 @@ WHERE duration.between(date(vaccinated.birthdate), date()).years >= 30 AND
 RETURN (count(vaccinated) * 1.0 / sizeSample * 1.0) * 100.0
 
 //query: find all the people living with a given person
-//WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//TODO
 MATCH (person: Person)-[:LIVES]->()<-[:LIVES]-(roommate: Person)
 WHERE person.ssn = "RSSMRA90C07F205U"
 RETURN roommate
@@ -130,15 +130,33 @@ WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'm
       t.res = 'Positive'
 RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year
 
-//TODO: write a query to study the vaccines efficacy (for example by taking all the vaccinated people and see how
-//many of them get infected by a meets with a person who discovered to be infected in the past X days - for example 10 -)
-//TODO : ADD VACCINE EFFICACY!
+//TODO: write a query to study the vaccines efficacy over relationship meets between vaccinated and infected. relationships lives and visits omitted for brevity 
 MATCH (infected)-[t1:TESTS{res:'Positive'}]->()
 MATCH (infected)-[m:MEETS]->(vaccinated)
+MATCH vacc = ()-[:VACCINATES]->()
 MATCH (vaccinated)-[v:VACCINATES]->(vaccine)
 MATCH (vaccinated)-[t2:TESTS{res:'Positive'}]->()
-WITH vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t1_date, date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t2_date,date(m.date) AS m_date, date(v.date) AS v_date
-WHERE date(m_date) > date(v_date) //meets after vaccine with infected person
-    AND abs(duration.inDays(t1_date, m_date).days) <= 7
-    AND abs(duration.inDays(m_date, t2_date).days) <= 7
-RETURN vaccinated, t1_date, infected, m_date, t2_date
+WITH vacc,vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t1_date, date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t2_date,date(m.date) AS m_date, date(v.date) AS v_date
+WHERE date(m_date) > date(v_date) //meets with infected person after vaccine
+    AND v_date < t1_date //vaccinated before infected has been tested positive
+    AND v_date < t2_date //and before being tested positive
+    AND abs(duration.inDays(t1_date, m_date).days) <= 7 //vaccinated tested positive within +/- 7 days meets  
+    AND abs(duration.inDays(m_date, t2_date).days) <= 7 //infected tested positive within +/- 7 days meets
+    AND abs(duration.inDays(t1_date, t2_date).days) <= 7 //infected tested positive within reasonable temporal window
+RETURN (COUNT(DISTINCT vaccinated)*1.0)/(COUNT(vacc)*1.0))*100 AS VaccinatesInfectedPercentage
+
+
+//TODO : vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
+//FIRST PART : MATCH VACCINATED PEOPLE
+MATCH (p1)-[v1:VACCINATES]->(vacc1) WHERE vacc1.name = 'AstraZeneca'
+//MATCH (p2)-[v2:VACCINATES]->(vacc2) WHERE vacc2.name = 'Moderna'
+//MATCH (p3)-[v3:VACCINATES]->(vacc3) WHERE vacc3.name = 'Pfizer'
+//MATCH (p4)-[v4:VACCINATES]->(vacc4) WHERE vacc4.name = 'Jensen'
+//SECOND PART : MATCH, AMONG VACCINATED PEOPLE, INFECTED ONES (AFTER VACCINE)
+MATCH (i1)-[t1:TESTS]->() WHERE t1.res = 'Positive' AND i1 = p1 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
+//MATCH (i2)-[t2:TESTS]->() WHERE t2.res = 'Positive' AND i2 = p2 AND date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v2.date)
+//MATCH (i3)-[t3:TESTS]->() WHERE t3.res = 'Positive' AND i3 = p3 AND date(apoc.date.format(apoc.date.parse(t3.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
+//MATCH (i4)-[t4:TESTS]->() WHERE t4.res = 'Positive' AND i4 = p4 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
+RETURN COUNT(DISTINCT v1), COUNT(DISTINCT i1)
+
+    
