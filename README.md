@@ -13,6 +13,6 @@ The assumptions taken into account are the following:
 - All the data coming from public spaces are always considered true and complete.
 - People always provide all the necessary information to the staff when they visit a certain public space.
 
-Below the ER diagram is shown. ![ER diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/er.png)
-Below the graph diagram is shown. ![graph diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/Graph_diagram.png)
+Below the ER diagram is shown. ![ER diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/deliverables/er.png)
+Below the graph diagram is shown. ![graph diagram](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/deliverables/Graph_diagram.png)
 ### Conclusions
