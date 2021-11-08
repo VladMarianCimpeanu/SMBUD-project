@@ -132,13 +132,13 @@ RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS rati
 
 //TODO: write a query to study the vaccines efficacy (for example by taking all the vaccinated people and see how
 //many of them get infected by a meets with a person who discovered to be infected in the past X days - for example 10 -)
-//WORKS, TODO : CHANGE meet date before positivity of second person with meet date between positivity - 7 and positivity + 7
 //TODO : ADD VACCINE EFFICACY!
-MATCH (vaccinated)-[v:VACCINATES]->(vaccine)
 MATCH (infected)-[t1:TESTS{res:'Positive'}]->()
 MATCH (infected)-[m:MEETS]->(vaccinated)
-WHERE date(m.date) > date(v.date) //meets after vaccine with infected person
-    AND date(m.date) > date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) //meets after person tested positive, to be changed in meets between positive test date +-7
-MATCH (vaccinated)-[t2:TESTS{res: 'Positive'}]->()
-WHERE date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(m.date)
-RETURN count(DISTINCT vaccinated)
+MATCH (vaccinated)-[v:VACCINATES]->(vaccine)
+MATCH (vaccinated)-[t2:TESTS{res:'Positive'}]->()
+WITH vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t1_date, date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t2_date,date(m.date) AS m_date, date(v.date) AS v_date
+WHERE date(m_date) > date(v_date) //meets after vaccine with infected person
+    AND abs(duration.inDays(t1_date, m_date).days) <= 7
+    AND abs(duration.inDays(m_date, t2_date).days) <= 7
+RETURN vaccinated, t1_date, infected, m_date, t2_date
