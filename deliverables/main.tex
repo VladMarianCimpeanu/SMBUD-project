@@ -1,0 +1,214 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{minted}
+
+
+\title{SMBUD 2021 - Project work 1}
+\author{\\Aman Gabba\\Andrea Cerasani\\Giovanni Demasi\\Pasquale Dazzeo\\Vlad Marian Cimpeanu}
+\date{ \begin{figure}[b] \centering \includegraphics[scale=0.2]{Logo Polimi.png} \end{figure}
+ }
+
+\usepackage{ifxetex}
+\usepackage{ifluatex}
+\newif\ifxetexorluatex % a new conditional starts as false
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi>0
+   \xetexorluatextrue
+\fi
+
+\ifxetexorluatex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[lighttt]{lmodern}
+\fi
+
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{upquote}
+
+\definecolor{keyword}{HTML}{2771a3}
+\definecolor{pattern}{HTML}{b53c2f}
+\definecolor{string}{HTML}{be681c}
+\definecolor{relation}{HTML}{7e4894}
+\definecolor{variable}{HTML}{107762}
+\definecolor{comment}{HTML}{8d9094}
+
+\lstset{
+	numbers=none,
+	stepnumber=1,
+	numbersep=5pt,
+	basicstyle=\small\ttfamily,
+	keywordstyle=\color{keyword}\bfseries\ttfamily,
+	commentstyle=\color{comment}\ttfamily,
+	stringstyle=\color{string}\ttfamily,
+	identifierstyle=,
+	showstringspaces=false,
+	aboveskip=3pt,
+	belowskip=3pt,
+	columns=flexible,
+	keepspaces=true,
+	breaklines=true,	
+	captionpos=b,
+	tabsize=2,
+	frame=none,
+}
+
+\lstset{upquote=true}
+
+\lstdefinelanguage{cypher}
+{
+	morekeywords={
+		MATCH, OPTIONAL, WHERE, NOT, AND, OR, XOR, RETURN, DISTINCT, ORDER, BY, ASC, ASCENDING, DESC, DESCENDING, UNWIND, AS, UNION, WITH, ALL, CREATE, DELETE, DETACH, REMOVE, SET, MERGE, SET, SKIP, LIMIT, IN, CASE, WHEN, THEN, ELSE, END,
+		INDEX, DROP, UNIQUE, CONSTRAINT, EXPLAIN, PROFILE, START, COUNT
+	}
+}
+
+
+\newcommand{\mycdots}{\cdot\!\cdot\!\cdot}
+\lstset{language=cypher,
+	literate=*
+	{...}{$\mycdots$}{1}
+	{theta}{$\theta$}{1}
+}
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Problem Specification}
+The aim of this project was to design a 'query graph data structure' in Neo4j for supporting a contact tracing application for COVID-19. The database must register all the necessary information about the users including vaccines and Covid swabs in order to have a pandemic trend overview for a given country. The application using this database will be able to exploit all the data coming from tracking applications and from all the public facilities.
+\subsection{Hypothesis}
+The assumptions taken into account are the following:
+
+\begin{itemize}
+
+\item People belonging to the same family live in the same house if not explicitly specified. Using the concept of "house" instead of "family", it is offered the possibility to differentiate domicile from residence.
+\item All the personal data are verified by an authoritative figure, for instance the government.
+\item The domicile declaration is assumed to be truthful.
+\item All the data coming from public spaces are always considered true and complete.
+\item People always provide all the necessary information to the staff when they visit a certain public space.
+\item Every MEETS relationship is automatically added to the database by a tracing app when two mobile phones stay in the same range for more than 15 minutes. We assume that to every device corresponds only one person and viceversa.
+\item Relationships use the Data type instead of Timestamp (with the exception of Test relations to avoid false positives) to register the relations because of safety and simplicity reasons. The former reason allows people using the Database to trace contacts during all the day and not only during a range of time (for more control). The latter reason is required due to avoid mistakes by the staff of public facilities during the time registration (an error in time registration could lead to a wrong tracing).
+
+\end{itemize}
+\newpage
+\section{ER diagram}
+The designed ER diagram contains the following entities: Person, Public Space, Vaccine, House and Covid Test. The other classes have been introduced due to ER diagram correctness reasons, but they haven't been taken into account during the design of the Graph Database because the last one allows a more flexible design. 
+
+As said before the concept of 'Family' has been replaced with the concept of 'House' since it is more realistic and more useful for contact tracing.
+\\
+\\The Person entity has SSN ('Codice Fiscale' in Italy) as primary key and all the relevant data. Every Vaccine has its name and lot. Houses are described by a unique ID, address and town. 
+Covid tests are identified by the timestamp and they also have the result as attribute. Every Public Space has name, city and strees as primary key and also a type attribute to identify its category.
+Visits and Meeting entities, as said before, have been introduced due to correctness aspect but they are represented only as relationship in the graph diagram. Lives and Vaccines relationship are identified by date. 
+
+\begin{figure}[h]
+\centering 
+\includegraphics[scale=0.3]{er.png} 
+\end{figure}
+\newpage
+
+\section{Graph diagram}
+The designed Graph diagram is shown below. Person, House, Vaccine, Public Space and Covid Swab are represented as nodes and they all have the same attributes shown in the ER above. The relationship of the database are Meets, Lives, Tests, Vaccinates and Visits, they all have date as attribute (excepted tests that has timestamp). Vaccinate also has the lot of the vaccine and Tests also has the result of the test.
+
+\begin{figure} [h]
+\centering 
+\includegraphics[scale=0.15]{Graph_diagram.png} 
+\end{figure}
+\newpage
+
+\section{Dataset description}
+We built our dataset by making a script in Python, using some useful packages like: random-italian-people that automatically generates people with random attributes; neo4j for the communication between Python and the Database since it allows to make queries directly from Python. 
+\\
+We have also used this piece of code to generate amenities data. This query has been used in overpassturbo selecting Roma, Napoli and Milano.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+[out:csv("amenity","name", "addr:street", "addr:housenumber", "addr:city"; true; ",")]; 
+// gather results 
+( 
+  //query part for: “amenity=post_box” 
+  node"amenity"="restaurant"; 
+  node"amenity"="bar"; 
+  node"amenity"="museo"; 
+  node"amenity"="cinema"; 
+); 
+// print results 
+out body; 
+>; 
+out skel qt;
+\end{lstlisting}
+
+\section{Queries and Commands}
+\subsection{Queries}
+The following query can be used to show the percentage of vaccinated people in an age range.
+X and Y must be two integers with X <= Y.\\
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+MATCH (sample: Person)
+WHERE duration.between(date(sample.birthdate), date()).years >= X 
+      AND
+      duration.between(date(sample.birthdate), date()).years <= Y
+WITH sample AS sizeSample
+MATCH (vaccinated:Person)-[:VACCINATES]->(vaccine: Vaccine)
+WHERE duration.between(date(vaccinated.birthdate), date()).years >= X 
+      AND
+      duration.between(date(vaccinated.birthdate), date()).years <= Y
+RETURN 
+CASE
+WHEN COUNT(DISTINCT vaccinated) = 0 THEN 0.0
+WHEN COUNT(DISTINCT sizeSample) = 0 THEN 0.0
+ELSE (COUNT(DISTINCT vaccinated) * 1.0 / COUNT(DISTINCT sizeSample) * 1.0) * 100.0 
+END AS Percentage
+\end{lstlisting}
+
+\subsection{Commands}
+The following command can be used to add a vaccination. XXX is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), YYY is the name of the vaccine ('AstraZeneca', 'Jensen', 'Pfizer', 'Moderna'), ZZZ is the lot of the vaccine (it must must be in format AZ##, P##,J##,M##). WWW is the date of the vaccination and must be in the following format YYYY-MM-DD.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+MATCH (person_to_vaccinate: Person),
+      (vax: Vaccine)
+WHERE person_to_vaccinate.ssn = 'XXX' 
+      AND 
+      vax.name = 'YYY'
+CREATE (person_to_vaccinate)-[:VACCINATES {lot: 'ZZZ', 
+        date: 'WWW'}]->(vax)
+        
+\end{lstlisting}\\
+\\
+\\The following command can be used to add a Covid Test. XXX is the fiscal code of the person tested (16 digits alphanumeric code), YYY is the result of the test ('Positive' or 'Negative'). WWW is the timestamp of the test and must be in the following format 'YYYY-MM-DD hh:mm:ss'.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+MATCH (person_tested: Person),
+      (test: Swab)
+WHERE person_tested.ssn = 'XXX' 
+      AND 
+      test.name = 'Covid Swab'
+CREATE (person_tested)-[:TESTS {res: 'YYY', 
+        timestamp: 'WWW'}]->(test)
+
+\end{lstlisting}
+
+
+
+\section{References and Sources}
+We have used some CSV files taken from...
+
+\section{Conclusion}
+
+Our model doesn't take into consideration the deaths, as the main focus of the project was the tracking of Covid infections. However in a more complete model that considers this aspect, a death node could be used to represent it through a dead relationship that connect the dead person to the death node with a date attribute. This choice could be useful to analyze the death/infection ratio related to the Covid pandemic.
+
+
+\end{document}
