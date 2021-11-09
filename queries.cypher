@@ -73,10 +73,12 @@ WHERE duration.between(date(vaccinated.birthdate), date()).years >= 30 AND
 RETURN (count(vaccinated) * 1.0 / sizeSample * 1.0) * 100.0
 
 //query: find all the people living with a given person
-// Seems to work but please re-check it!
+//WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 MATCH (p1)-[l1:LIVES]->()
 MATCH (p2)-[l2:LIVES]->()
 WHERE p1.ssn = 'CMPGRG77T03E532G'
+  AND l1.livesFrom < '2021-06-19'
+  AND l2.livesFrom < '2021-06-19'
 WITH max(l1.livesFrom) AS max1, max(l2.livesFrom) AS max2, p1 AS p1, p2 AS p2
 MATCH (p1)-[l3:LIVES]->(h)<-[l4:LIVES]-(p2)
 WHERE l3.livesFrom = max1
@@ -125,7 +127,7 @@ RETURN ps.type, count(ps.type)
                                                                                                                                                  
                                                                     
 //Query that returns the infection ratio among all the tested people for each month
-//NOT TESTED
+//TESTED: WORKS but does not return 0 for months without positives
 MATCH ()-[t:TESTS]->()
 WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month,
      date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests
