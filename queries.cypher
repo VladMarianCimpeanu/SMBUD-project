@@ -73,10 +73,15 @@ WHERE duration.between(date(vaccinated.birthdate), date()).years >= 30 AND
 RETURN (count(vaccinated) * 1.0 / sizeSample * 1.0) * 100.0
 
 //query: find all the people living with a given person
-//TODO
-MATCH (person: Person)-[:LIVES]->()<-[:LIVES]-(roommate: Person)
-WHERE person.ssn = "RSSMRA90C07F205U"
-RETURN roommate
+// Seems to work but please re-check it!
+MATCH (p1)-[l1:LIVES]->()
+MATCH (p2)-[l2:LIVES]->()
+WHERE p1.ssn = 'CMPGRG77T03E532G'
+WITH max(l1.livesFrom) AS max1, max(l2.livesFrom) AS max2, p1 AS p1, p2 AS p2
+MATCH (p1)-[l3:LIVES]->(h)<-[l4:LIVES]-(p2)
+WHERE l3.livesFrom = max1
+    AND l4.livesFrom = max2
+RETURN p2, l4, h
 
 // query: find the last date someone discovered to be positive
 //WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
