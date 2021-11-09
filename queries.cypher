@@ -164,4 +164,11 @@ MATCH (i1)-[t1:TESTS]->() WHERE t1.res = 'Positive' AND i1 = p1 AND date(apoc.da
 //MATCH (i4)-[t4:TESTS]->() WHERE t4.res = 'Positive' AND i4 = p4 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
 RETURN COUNT(DISTINCT v1), COUNT(DISTINCT i1)
 
-    
+//BOZZA QUERY: Vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
+//@Pasquale
+MATCH (p1:Person)-[:VACCINATES]->(Vaccine {name: 'AstraZeneca'})
+WITH count(DISTINCT p1) AS num_vaccinati_astra
+MATCH ()<-[t1:TESTS]-(p1:Person)-[v1:VACCINATES]->(Vaccine {name: 'AstraZeneca'})
+WHERE t1.res = 'Positive'
+    AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
+RETURN num_vaccinati_astra, count(DISTINCT p1) AS num_vaccinati_astra_infetti
