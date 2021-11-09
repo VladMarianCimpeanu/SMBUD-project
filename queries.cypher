@@ -140,38 +140,24 @@ RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS rati
 //TODO: write a query to study the vaccines efficacy over relationship meets between vaccinated and infected. relationships lives and visits omitted for brevity 
 MATCH (infected)-[t1:TESTS{res:'Positive'}]->()
 MATCH (infected)-[m:MEETS]->(vaccinated)
-MATCH vacc = ()-[:VACCINATES]->()
+MATCH (p)-[:VACCINATES]->()
 MATCH (vaccinated)-[v:VACCINATES]->(vaccine)
 MATCH (vaccinated)-[t2:TESTS{res:'Positive'}]->()
-WITH vacc,vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t1_date, date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t2_date,date(m.date) AS m_date, date(v.date) AS v_date
+WITH vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t1_date, date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS t2_date,date(m.date) AS m_date, date(v.date) AS v_date, toFloat(COUNT(DISTINCT p)) AS total_vaccinated, toFloat(COUNT(DISTINCT vaccinated)) AS infected_vaccinated
 WHERE date(m_date) > date(v_date) //meets with infected person after vaccine
     AND v_date < t1_date //vaccinated before infected has been tested positive
     AND v_date < t2_date //and before being tested positive
-    AND abs(duration.inDays(t1_date, m_date).days) <= 7 //vaccinated tested positive within +/- 7 days meets  
-    AND abs(duration.inDays(m_date, t2_date).days) <= 7 //infected tested positive within +/- 7 days meets
+    AND abs(duration.inDays(t1_date, m_date).days) <= 77 //vaccinated tested positive within +/- 7 days meets  
+    AND abs(duration.inDays(m_date, t2_date).days) <= 77 //infected tested positive within +/- 7 days meets
     AND abs(duration.inDays(t1_date, t2_date).days) <= 7 //infected tested positive within reasonable temporal window
-RETURN (COUNT(DISTINCT vaccinated)*1.0)/(COUNT(vacc)*1.0))*100 AS VaccinatesInfectedPercentage
-
-
-//TODO : vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
-//FIRST PART : MATCH VACCINATED PEOPLE
-MATCH (p1)-[v1:VACCINATES]->(vacc1) WHERE vacc1.name = 'AstraZeneca'
-//MATCH (p2)-[v2:VACCINATES]->(vacc2) WHERE vacc2.name = 'Moderna'
-//MATCH (p3)-[v3:VACCINATES]->(vacc3) WHERE vacc3.name = 'Pfizer'
-//MATCH (p4)-[v4:VACCINATES]->(vacc4) WHERE vacc4.name = 'Jensen'
-//SECOND PART : MATCH, AMONG VACCINATED PEOPLE, INFECTED ONES (AFTER VACCINE)
-MATCH (i1)-[t1:TESTS]->() WHERE t1.res = 'Positive' AND i1 = p1 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
-//MATCH (i2)-[t2:TESTS]->() WHERE t2.res = 'Positive' AND i2 = p2 AND date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v2.date)
-//MATCH (i3)-[t3:TESTS]->() WHERE t3.res = 'Positive' AND i3 = p3 AND date(apoc.date.format(apoc.date.parse(t3.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
-//MATCH (i4)-[t4:TESTS]->() WHERE t4.res = 'Positive' AND i4 = p4 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
-RETURN COUNT(DISTINCT v1), COUNT(DISTINCT i1)
+RETURN (infected_vaccinated/total_vaccinated)*100 AS InfectedVaccinatedRatio
 
 //QUERY: Vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
 MATCH (p1:Person)-[:VACCINATES]->(v1:Vaccine {name: 'AstraZeneca'})
 MATCH (p2:Person)-[:VACCINATES]->(v2:Vaccine {name: 'Moderna'})
 MATCH (p3:Person)-[:VACCINATES]->(v3:Vaccine {name: 'Pfizer'})
 MATCH (p4:Person)-[:VACCINATES]->(v4:Vaccine {name: 'Jensen'})
-WITH count(DISTINCT p1) AS num_vaccinati_astrazeneca,count(DISTINCT p2) AS num_vaccinati_moderna,count(DISTINCT p3) AS num_vaccinati_pfizer,count(DISTINCT p4) AS num_vaccinati_jensen
+WITH count(DISTINCT p1) AS vaccinated_astrazeneca,count(DISTINCT p2) AS vaccinated_moderna,count(DISTINCT p3) AS vaccinated_pfizer,count(DISTINCT p4) AS vaccinated_jensen
 MATCH ()<-[t1:TESTS]-(p1:Person)-[v1:VACCINATES]->(vacc1:Vaccine {name: 'AstraZeneca'})
 WHERE t1.res = 'Positive'
     AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
@@ -184,6 +170,6 @@ WHERE t3.res = 'Positive'
 MATCH ()<-[t4:TESTS]-(p4:Person)-[v4:VACCINATES]->(vacc4:Vaccine {name: 'Jensen'})
 WHERE t4.res = 'Positive'
     AND date(apoc.date.format(apoc.date.parse(t4.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v4.date)
-WITH num_vaccinati_astrazeneca,num_vaccinati_moderna,num_vaccinati_pfizer,num_vaccinati_jensen,count(DISTINCT p1) AS num_vaccinati_astra_infetti,count(DISTINCT p2) AS num_vaccinati_moderna_infetti,count(DISTINCT p3) AS num_vaccinati_pfizer_infetti,count(DISTINCT p4) AS num_vaccinati_jensen_infetti
-RETURN (1- (toFloat(num_vaccinati_astra_infetti)/toFloat(num_vaccinati_astrazeneca)))*100 AS AstraZenecaEfficacy,
-(1- (toFloat(num_vaccinati_moderna_infetti)/toFloat(num_vaccinati_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(num_vaccinati_pfizer_infetti)/toFloat(num_vaccinati_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(num_vaccinati_jensen_infetti)/toFloat(num_vaccinati_jensen)))*100 AS JensenEfficacy
+WITH vaccinated_astrazeneca,vaccinated_moderna,vaccinated_pfizer,vaccinated_jensen,count(DISTINCT p1) AS vaccinated_infected_astra,count(DISTINCT p2) AS vaccinated_infected_moderna,count(DISTINCT p3) AS vaccinated_infected_pfizer,count(DISTINCT p4) AS vaccinated_infected_jensen
+RETURN (1- (toFloat(vaccinated_infected_astra)/toFloat(vaccinated_astrazeneca)))*100 AS AstraZenecaEfficacy,
+(1- (toFloat(vaccinated_infected_moderna)/toFloat(vaccinated_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(vaccinated_infected_pfizer)/toFloat(vaccinated_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(vaccinated_infected_jensen)/toFloat(vaccinated_jensen)))*100 AS JensenEfficacy
