@@ -164,11 +164,24 @@ MATCH (i1)-[t1:TESTS]->() WHERE t1.res = 'Positive' AND i1 = p1 AND date(apoc.da
 //MATCH (i4)-[t4:TESTS]->() WHERE t4.res = 'Positive' AND i4 = p4 AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
 RETURN COUNT(DISTINCT v1), COUNT(DISTINCT i1)
 
-//BOZZA QUERY: Vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
-//@Pasquale
-MATCH (p1:Person)-[:VACCINATES]->(Vaccine {name: 'AstraZeneca'})
-WITH count(DISTINCT p1) AS num_vaccinati_astra
-MATCH ()<-[t1:TESTS]-(p1:Person)-[v1:VACCINATES]->(Vaccine {name: 'AstraZeneca'})
+//QUERY: Vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
+MATCH (p1:Person)-[:VACCINATES]->(v1:Vaccine {name: 'AstraZeneca'})
+MATCH (p2:Person)-[:VACCINATES]->(v2:Vaccine {name: 'Moderna'})
+MATCH (p3:Person)-[:VACCINATES]->(v3:Vaccine {name: 'Pfizer'})
+MATCH (p4:Person)-[:VACCINATES]->(v4:Vaccine {name: 'Jensen'})
+WITH count(DISTINCT p1) AS num_vaccinati_astrazeneca,count(DISTINCT p2) AS num_vaccinati_moderna,count(DISTINCT p3) AS num_vaccinati_pfizer,count(DISTINCT p4) AS num_vaccinati_jensen
+MATCH ()<-[t1:TESTS]-(p1:Person)-[v1:VACCINATES]->(vacc1:Vaccine {name: 'AstraZeneca'})
 WHERE t1.res = 'Positive'
     AND date(apoc.date.format(apoc.date.parse(t1.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v1.date)
-RETURN num_vaccinati_astra, count(DISTINCT p1) AS num_vaccinati_astra_infetti
+MATCH ()<-[t2:TESTS]-(p2:Person)-[v2:VACCINATES]->(vacc2:Vaccine {name: 'Moderna'})
+WHERE t2.res = 'Positive'
+    AND date(apoc.date.format(apoc.date.parse(t2.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v2.date)                                       
+MATCH ()<-[t3:TESTS]-(p3:Person)-[v3:VACCINATES]->(vacc3:Vaccine {name: 'Pfizer'})
+WHERE t3.res = 'Positive'
+    AND date(apoc.date.format(apoc.date.parse(t3.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v3.date)
+MATCH ()<-[t4:TESTS]-(p4:Person)-[v4:VACCINATES]->(vacc4:Vaccine {name: 'Jensen'})
+WHERE t4.res = 'Positive'
+    AND date(apoc.date.format(apoc.date.parse(t4.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) > date(v4.date)
+WITH num_vaccinati_astrazeneca,num_vaccinati_moderna,num_vaccinati_pfizer,num_vaccinati_jensen,count(DISTINCT p1) AS num_vaccinati_astra_infetti,count(DISTINCT p2) AS num_vaccinati_moderna_infetti,count(DISTINCT p3) AS num_vaccinati_pfizer_infetti,count(DISTINCT p4) AS num_vaccinati_jensen_infetti
+RETURN (1- (toFloat(num_vaccinati_astra_infetti)/toFloat(num_vaccinati_astrazeneca)))*100 AS AstraZenecaEfficacy,
+(1- (toFloat(num_vaccinati_moderna_infetti)/toFloat(num_vaccinati_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(num_vaccinati_pfizer_infetti)/toFloat(num_vaccinati_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(num_vaccinati_jensen_infetti)/toFloat(num_vaccinati_jensen)))*100 AS JensenEfficacy
