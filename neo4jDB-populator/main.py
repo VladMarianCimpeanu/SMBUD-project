@@ -287,7 +287,7 @@ if __name__ == "__main__":
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
         # populator.create_people()
-        populator.create_family(10)
+        populator.create_family(5)
         populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
