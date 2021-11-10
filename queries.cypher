@@ -19,8 +19,11 @@ CREATE (a)-[m1:MEETS {date: '2020-10-01'}]->(b),
 // command: create a new domicile
 //EDITED BY Pasquale : added LIVES relationship attribute livesFrom                                      
 MATCH (a: Person)
+//-[l:LIVES] - > (h)
 WHERE a.ssn = 'FRRLCU94C07F205O'
 CREATE (a)-[:LIVES{livesFrom:'date_of_moving_house'}]->(new_house: House)
+//DELETE l
+//CREATE (a)-[:LIVES{livesFrom: l.livesFrom, movingDate : 'date_of_moving_house'}]->(h)
 RETURN new_house
 
 // command: adding roommates
@@ -137,7 +140,7 @@ WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'm
       t.res = 'Positive'
 RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year
 
-//TODO: write a query to study the vaccines efficacy over relationship meets between vaccinated and infected. relationships lives and visits omitted for brevity 
+//QUERY to study the vaccines efficacy over relationship meets between vaccinated and infected. relationships lives and visits omitted for brevity 
 MATCH (infected)-[t1:TESTS{res:'Positive'}]->()
 MATCH (infected)-[m:MEETS]->(vaccinated)
 MATCH (p)-[:VACCINATES]->()
@@ -147,10 +150,10 @@ WITH vaccinated, infected, date(apoc.date.format(apoc.date.parse(t1.timestamp, '
 WHERE date(m_date) > date(v_date) //meets with infected person after vaccine
     AND v_date < t1_date //vaccinated before infected has been tested positive
     AND v_date < t2_date //and before being tested positive
-    AND abs(duration.inDays(t1_date, m_date).days) <= 77 //vaccinated tested positive within +/- 7 days meets  
-    AND abs(duration.inDays(m_date, t2_date).days) <= 77 //infected tested positive within +/- 7 days meets
+    AND abs(duration.inDays(t1_date, m_date).days) <= 7 //vaccinated tested positive within +/- 7 days meets  
+    AND abs(duration.inDays(m_date, t2_date).days) <= 7 //infected tested positive within +/- 7 days meets
     AND abs(duration.inDays(t1_date, t2_date).days) <= 7 //infected tested positive within reasonable temporal window
-RETURN (infected_vaccinated/total_vaccinated)*100 AS InfectedVaccinatedRatio
+RETURN (infected_vaccinated/total_vaccinated)*100 AS InfectedVaccinatedRatioInMeets
 
 //QUERY: Vaccine efficacy computed as sum(vaccinated_positive)/sum(vaccinated)
 MATCH (p1:Person)-[:VACCINATES]->(v1:Vaccine {name: 'AstraZeneca'})
