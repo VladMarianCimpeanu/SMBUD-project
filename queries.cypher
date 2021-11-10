@@ -8,7 +8,6 @@ CREATE (p:Person{
 })
 
 // command: create relation MEETS
-//TODO: we are assigning a date to the timestamp attribute. We shall change the type attribute or the assignment.
 //EDITED BY Pasquale : changed MEETS attribute from timestamp to date
 MATCH (a: Person),
       (b: Person)
@@ -52,7 +51,7 @@ WHERE restaurant.code = 'rest1' AND guest.ssn = 'FRRLCU94C07F205O'
 CREATE (guest)-[:VISITS {date: '2021-06-01'}]->(restaurant)
 
                       
-//Command: changing all the LIVES relation of the people who live in the same house (this command could be useful in case of moving family)
+//Command: changing all the LIVES relations of the people who live in the same house (this command could be useful in case of moving family)
 MATCH (p:Person)-[l:LIVES]->(h:House)
 WHERE h.address = 'address_of_old_house'
     WITH p AS people, l AS lived
@@ -101,7 +100,8 @@ RETURN head(collect(test.timestamp)) //TODO: I must try it, the goal should be o
 // day taken in consideration is the day in which the query is run. When the goal is to get people
 // in contact with the given person for the last ten days before he discovered to be positive, it is assumed
 // first the last covid swab date is queried and then, the returned date is used as parameter instead of
-// the function date().
+// the date '2021-06-19'. In this case the starting date is '2021-06-19' due the fact data are loaded between 2020-06-19 and 2021-06-19
+// in the demo db.
 //TODO : CHANGE QUERY DESCRIPTION! Starting date is not queries date but date in the interval 2020-06-19 and 2021-06-19
 //WORKS FINE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 MATCH (infected: Person)-[:LIVES]->()<-[:LIVES]-(person: Person)
@@ -134,7 +134,7 @@ RETURN ps.type, count(ps.type)
 MATCH ()-[t:TESTS]->()
 WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month,
      date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests
-MATCH ()-[t:TESTS]->()
+OPTIONAL MATCH ()-[t:TESTS]->()
 WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = month AND
       date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = year AND
       t.res = 'Positive'
