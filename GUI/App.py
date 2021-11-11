@@ -1,4 +1,11 @@
 from tkinter import *
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import pandas as pd
+import sys
+import neo4j
+sys.path.insert(0, '../neo4jDB-populator')
+from main import PopulateDB as pop
 
 MAIN_WIDTH = 1000
 MAIN_HEIGHT = 550
@@ -8,10 +15,10 @@ root.title("Covid tracker")
 root.geometry("{}x{}".format(MAIN_WIDTH, MAIN_HEIGHT))
 root.resizable(False, False)
 
-top_frame = Frame(root, bg='cyan', width=1000, height=50, pady=3)
-main_frame = Frame(root, bg='yellow', width=600, height=500, padx=3, pady=3)
-cmd_frame = Frame(root, bg='red', width=400, height=250, pady=3)
-query_frame = Frame(root, bg='pink', width=400, height=250, pady=3)
+top_frame = Frame(root, width=1000, height=50)
+main_frame = Frame(root, bg='yellow', width=600, height=500)
+cmd_frame = Frame(root, bg='red', width=400, height=250)
+query_frame = Frame(root, bg='pink', width=400, height=250)
 
 # layout all of the main containers
 
@@ -22,7 +29,7 @@ query_frame.grid(row=2, column=0, sticky="ew")
 
 # layout query frame
 
-l_box_frm_query = Frame(query_frame, bg="black", width=150, height=200, padx=5, pady=5)
+l_box_frm_query = Frame(query_frame, bg = "black", width=150, height=200, padx=5, pady=5)
 button_frm_query = Frame(query_frame, bg="green", width=150, height=50, padx=5, pady=5)
 parameters_frm_query = Frame(query_frame, bg="blue", width=250, height=250, padx=5, pady=5)
 
@@ -31,13 +38,74 @@ button_frm_query.grid(row=1, column=0)
 parameters_frm_query.grid(column=1, row=0, rowspan=2)
 
 # layout commands frame
-l_box_frm_cmd = Frame(cmd_frame, bg="black", width=150, height=200, padx=5, pady=5)
-button_frm_cmd = Frame(cmd_frame, bg="green", width=150, height=50, padx=5, pady=5)
-parameters_frm_cmd = Frame(cmd_frame, bg="blue", width=250, height=250, padx=5, pady=5)
-
+l_box_frm_cmd = Frame(cmd_frame, bg="black", width=150, height=200)
+button_frm_cmd = Frame(cmd_frame, bg="green", width=150, height=50)
+parameters_frm_cmd = Frame(cmd_frame, bg="blue", width=250, height=250)
 l_box_frm_cmd.grid(row=0, column=0)
 button_frm_cmd.grid(row=1, column=0)
 parameters_frm_cmd.grid(column=1, row=0, rowspan=2)
+
+# label on top_frame
+label_title = Label(top_frame, text = "Welcome to the TrackingAPP. Please select a list of options below :")#,font = ('Default', 12))
+label_title.grid()
+
+# objects for l_box_frm_cmd
+label_cmd = Label(l_box_frm_cmd, text = "List of available commands:")
+label_cmd.grid(row=0,column=0)
+
+listbox_cmd = Listbox(l_box_frm_cmd, selectmode=SINGLE)
+listbox_cmd.insert(1, "Cmd 1")
+listbox_cmd.insert(2, "Cmd 2")
+listbox_cmd.insert(3, ".... 3")
+listbox_cmd.insert(4, "Query 4")
+listbox_cmd.insert(5, "Query 5")
+listbox_cmd.grid(row=1,column=0)
+
+
+def select_item_cmd():
+    for i in listbox1.curselection():
+        print(listbox1.get(i))
+
+
+btn_cmd = Button(button_frm_cmd, text='Execute', command=select_item_cmd)
+btn_cmd.grid()
+
+# objects for l_box_frm_query
+label_query = Label(l_box_frm_query, text = "List of available queries:")
+label_query.grid(row=0, column=0)
+
+listbox_query = Listbox(l_box_frm_query, selectmode=SINGLE)
+listbox_query.insert(1, "Trend covid")
+listbox_query.insert(2, "Query 2")
+listbox_query.insert(3, "Query 3")
+listbox_query.insert(4, "Query 4")
+listbox_query.insert(5, "Query 5")
+listbox_query.grid(row=1, column=0)
+
+
+def select_item_query():
+    with open("../neo4jDB-populator/password.txt", "r") as pass_reader:
+                neo4j_password = pass_reader.readline().split()[0]
+                populator = pop("bolt://localhost:7687", "neo4j", neo4j_password)
+    for item in listbox_query.curselection():
+        if item == 0:
+            result = populator._query_one(populator)
+            data_from_query = {"month": [str(index[1]) + "/" + str(index[2]) for index in result],
+                               "infection ratio": [index[0] for index in result]}
+            data_to_plot = pd.DataFrame(data_from_query, columns=["month", "infection ratio"])
+            figure = plt.Figure(figsize=(6, 5), dpi=100)
+            ax1 = figure.add_subplot(111)
+            line = FigureCanvasTkAgg(figure, main_frame)
+            line.get_tk_widget().grid(sticky="nsew")
+            data_to_plot = data_to_plot[['month', 'infection ratio']].groupby('month').sum()
+            data_to_plot.plot(kind='line', legend=True, ax=ax1)
+            ax1.set_title('month vs infection ratio')
+    populator.close()
+
+
+btn1 = Button(button_frm_query, text='Execute', command=select_item_query)
+btn1.grid()
+
 
 root.mainloop()
 

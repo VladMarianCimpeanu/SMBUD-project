@@ -291,8 +291,7 @@ class PopulateDB:
                   "t.res = 'Positive' "
             "RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year "
             "ORDER BY year DESC, month DESC")
-            for results in result.values():
-                print(results)
+            return result.values()
 
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
