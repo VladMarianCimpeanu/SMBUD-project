@@ -280,6 +280,19 @@ class PopulateDB:
         result_summary = result.consume()
         print("Deleted " + str(result_summary.counters.nodes_deleted) + " nodes")
 
+    @staticmethod
+    def _query_one(self):
+        with self.driver.session() as session:
+            result = session.run("MATCH ()-[t:TESTS]->() "
+            "WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month, "                                             "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests "
+            "OPTIONAL MATCH ()-[t:TESTS]->() "
+            "WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = month AND "
+                  "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = year AND "
+                  "t.res = 'Positive' "
+            "RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year "
+            "ORDER BY year DESC, month DESC")
+            for results in result.values():
+                print(results)
 
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
@@ -296,4 +309,5 @@ if __name__ == "__main__":
         populator.create_amenities(15)
         populator.create_visits_relations(50, 40, (2020, 6, 19), (2021, 6, 19))
         print("all the data have been loaded successfully.")
+        #populator._query_one(populator)
         populator.close()
