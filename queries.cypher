@@ -177,3 +177,12 @@ WHERE t4.res = 'Positive'
 WITH vaccinated_astrazeneca,vaccinated_moderna,vaccinated_pfizer,vaccinated_jensen,count(DISTINCT p1) AS vaccinated_infected_astra,count(DISTINCT p2) AS vaccinated_infected_moderna,count(DISTINCT p3) AS vaccinated_infected_pfizer,count(DISTINCT p4) AS vaccinated_infected_jensen
 RETURN (1- (toFloat(vaccinated_infected_astra)/toFloat(vaccinated_astrazeneca)))*100 AS AstraZenecaEfficacy,
 (1- (toFloat(vaccinated_infected_moderna)/toFloat(vaccinated_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(vaccinated_infected_pfizer)/toFloat(vaccinated_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(vaccinated_infected_jensen)/toFloat(vaccinated_jensen)))*100 AS JensenEfficacy
+
+
+//finds false negatives; for false positive switch pre with post
+match (p: Person)-[pre: TESTS]->()<-[post:TESTS]-(p)
+where duration.between(datetime({ epochMillis: apoc.date.parse(pre.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')}), datetime({ epochMillis: apoc.date.parse(post.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')})).hours < 24
+and duration.between(datetime({ epochMillis: apoc.date.parse(pre.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')}), datetime({ epochMillis: apoc.date.parse(post.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')})).hours > 0
+and pre.res="Negative"
+and post.res="Positive"
+return p, pre, post
