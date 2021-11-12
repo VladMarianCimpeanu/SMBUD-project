@@ -136,7 +136,7 @@ RETURN
 CASE
 WHEN COUNT(DISTINCT p) = 0 THEN 0.0
 ELSE (COUNT(DISTINCT p)*1.0 / COUNT(DISTINCT total_people)*1.0)*100.0
-END AS percentage, space_name
+END AS percentage, space_name ORDER BY percentage DESC
                                                                                                                                                  
                                                                     
 //Query that returns the infection ratio among all the tested people for each month
