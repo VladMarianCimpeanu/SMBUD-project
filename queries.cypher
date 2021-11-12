@@ -52,13 +52,18 @@ CREATE (guest)-[:VISITS {date: '2021-06-01'}]->(restaurant)
 
                       
 //Command: changing all the LIVES relations of the people who live in the same house (this command could be useful in case of moving family)
-MATCH (p:Person)-[l:LIVES]->(h:House)
-WHERE h.address = 'address_of_old_house'
-    WITH p AS people, l AS lived
-MATCH (new_house:House)
-WHERE new_house.address = 'address_of_new_house'
-    CREATE (people)-[:LIVES{livesFrom: 'date_of_moving_house'}]->(new_house)
-    DELETE lived
+MATCH (p2)-[l2:LIVES]->()
+WHERE p1.ssn = 'BRNGRL47T23C723Z'
+  AND l1.livesFrom < '2021-06-19'
+  AND l2.livesFrom < '2021-06-19'
+WITH max(l1.livesFrom) AS max1, max(l2.livesFrom) AS max2, p1 AS p1, p2 AS p2
+MATCH (p1)-[l3:LIVES]->(h)<-[l4:LIVES]-(p2)
+WHERE l3.livesFrom = max1
+    AND l4.livesFrom = max2
+WITH p1, p2
+MATCH (h:House) WHERE ID(h) = 154
+CREATE (p1)-[:LIVES{livesFrom: toString(date())}]->(h)
+CREATE (p2)-[:LIVES{livesFrom: toString(date())}]->(h)
 
 
                                                 
