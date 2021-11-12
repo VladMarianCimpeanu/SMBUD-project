@@ -66,13 +66,20 @@ WHERE new_house.address = 'address_of_new_house'
 //query: percentage people vaccinated per age range
 //WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 MATCH (sample: Person)
-WHERE duration.between(date(sample.birthdate), date()).years >= 30 AND
-      duration.between(date(sample.birthdate), date()).years <= 50
-WITH count(sample) AS sizeSample
-MATCH (vaccinated: Person)-[:VACCINATES]->(vaccine: Vaccine)
-WHERE duration.between(date(vaccinated.birthdate), date()).years >= 30 AND
-      duration.between(date(vaccinated.birthdate), date()).years <= 50
-RETURN (count(vaccinated) * 1.0 / sizeSample * 1.0) * 100.0
+WHERE duration.between(date(sample.birthdate), date()).years >= X
+      AND
+      duration.between(date(sample.birthdate), date()).years <= Y
+WITH sample AS sizeSample
+MATCH (vaccinated:Person)-[:VACCINATES]->(vaccine: Vaccine)
+WHERE duration.between(date(vaccinated.birthdate), date()).years >= X
+      AND
+      duration.between(date(vaccinated.birthdate), date()).years <= Y
+RETURN
+CASE
+WHEN COUNT(DISTINCT vaccinated) = 0 THEN 0.0
+WHEN COUNT(DISTINCT sizeSample) = 0 THEN 0.0
+ELSE (COUNT(DISTINCT vaccinated) * 1.0 / COUNT(DISTINCT sizeSample) * 1.0) * 100.0
+END AS Percentage
 
 //query: find all the people living with a given person
 //WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -116,17 +123,20 @@ MATCH (infected: Person)-[m:MEETS]->(roommate: Person)
 WHERE infected.ssn = "FLPRTI37L58A799Z" AND duration.inDays(date(m.date), date('2021-06-19')).days <= 15 AND duration.inDays(date(m.date), date('2021-06-19')).days >= 0
 RETURN person
 
-//Query that returns the most visited places by infected people during the X days before getting positive at a covid test
-//(in this example X is equal to ten)
+//Query that returns the percentage of infected people over all visits for every place by month and city
 //This query could be useful to study which places could be more related to infections than others and in this way
-// discover the most unsafe places type
+// discover the most unsafe places in a desired month and city
 //WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                                                                                                                           
-MATCH (p:Person)-[t:TESTS]->()
-WHERE t.res = 'Positive'
-WITH p AS people, date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')) AS dat
-MATCH (people)-[v:VISITS]->(ps:PublicSpace)
-WHERE duration.inDays(date(v.date), dat).days <= 10 AND duration.inDays(date(v.date), dat).days >= 0
-RETURN ps.type, count(ps.type)
+MATCH (p1:Person)-[v:VISITS]->(ps:PublicSpace)
+WHERE date(v.date).month = 10 AND date(v.date).year = 2021 AND ps.city = 'Milano'
+WITH ps.name AS space_name, v AS total_visits, p1 AS total_people
+OPTIONAL MATCH (p:Person)-[t:TESTS]->()
+WHERE p.ssn IN total_people.ssn AND t.res = 'Positive' AND duration.inDays(date(total_visits.date), date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd'))).days >= 0 AND duration.inDays(date(total_visits.date), date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd'))).days <= 7
+RETURN
+CASE
+WHEN COUNT(DISTINCT p) = 0 THEN 0.0
+ELSE (COUNT(DISTINCT p)*1.0 / COUNT(DISTINCT total_people)*1.0)*100.0
+END AS percentage, space_name
                                                                                                                                                  
                                                                     
 //Query that returns the infection ratio among all the tested people for each month
