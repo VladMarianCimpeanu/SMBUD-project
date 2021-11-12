@@ -281,10 +281,28 @@ class PopulateDB:
         print("Deleted " + str(result_summary.counters.nodes_deleted) + " nodes")
 
     @staticmethod
-    def _query_one(self):
+    def build_query_from(file_name):
+        with open(file_name, "r") as file_query:
+            query = ""
+            for line in file_query:
+                query += line
+                query += " "
+            return query
+
+    @staticmethod
+    def query_vaccines_efficacy(query_obj):
+        with query_obj.driver.session() as session:
+            query = PopulateDB.build_query_from("{}/queries/efficacy_vaccines.cypher"
+                                                .format(os.path.dirname(os.path.abspath(__file__))))
+            result = session.run(query)
+            return result.data()[0]
+
+    @staticmethod
+    def query_trend_covid(self):
         with self.driver.session() as session:
             result = session.run("MATCH ()-[t:TESTS]->() "
-            "WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month, "                                             "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests "
+            "WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month, "
+            "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests "
             "OPTIONAL MATCH ()-[t:TESTS]->() "
             "WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = month AND "
                   "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = year AND "
@@ -308,5 +326,4 @@ if __name__ == "__main__":
         populator.create_amenities(15)
         populator.create_visits_relations(50, 40, (2020, 6, 19), (2021, 6, 19))
         print("all the data have been loaded successfully.")
-        #populator._query_one(populator)
         populator.close()

@@ -63,8 +63,8 @@ listbox_cmd.grid(row=1,column=0)
 
 
 def select_item_cmd():
-    for i in listbox1.curselection():
-        print(listbox1.get(i))
+    for i in listbox_cmd.curselection():
+        print(listbox_cmd.get(i))
 
 
 btn_cmd = Button(button_frm_cmd, text='Execute', command=select_item_cmd)
@@ -76,7 +76,7 @@ label_query.grid(row=0, column=0)
 
 listbox_query = Listbox(l_box_frm_query, selectmode=SINGLE)
 listbox_query.insert(1, "Trend covid")
-listbox_query.insert(2, "Query 2")
+listbox_query.insert(2, "Vaccine efficacy")
 listbox_query.insert(3, "Query 3")
 listbox_query.insert(4, "Query 4")
 listbox_query.insert(5, "Query 5")
@@ -85,27 +85,51 @@ listbox_query.grid(row=1, column=0)
 
 def select_item_query():
     with open("../neo4jDB-populator/password.txt", "r") as pass_reader:
-                neo4j_password = pass_reader.readline().split()[0]
-                populator = pop("bolt://localhost:7687", "neo4j", neo4j_password)
+        neo4j_password = pass_reader.readline().split()[0]
+        populator = pop("bolt://localhost:7687", "neo4j", neo4j_password)
     for item in listbox_query.curselection():
         if item == 0:
-            result = populator._query_one(populator)
-            data_from_query = {"month": [str(index[1]) + "/" + str(index[2]) for index in result],
-                               "infection ratio": [index[0] for index in result]}
-            data_to_plot = pd.DataFrame(data_from_query, columns=["month", "infection ratio"])
-            figure = plt.Figure(figsize=(6, 5), dpi=100)
-            ax1 = figure.add_subplot(111)
-            line = FigureCanvasTkAgg(figure, main_frame)
-            line.get_tk_widget().grid(sticky="nsew")
-            data_to_plot = data_to_plot[['month', 'infection ratio']].groupby('month').sum()
-            data_to_plot.plot(kind='line', legend=True, ax=ax1)
-            ax1.set_title('month vs infection ratio')
+            execute_trend_covid(populator)
+        elif item == 1:
+            execute_vaccine_efficacy(populator)
     populator.close()
 
 
-btn1 = Button(button_frm_query, text='Execute', command=select_item_query)
-btn1.grid()
+def execute_vaccine_efficacy(db_object):
+    result = db_object.query_vaccines_efficacy(db_object)
+    result_converted = {}
+    result_converted["vaccines"] = []
+    result_converted["efficacy"] = []
+    for vaccine in result:
+        result_converted["vaccines"].append(vaccine.split("Efficacy")[0])
+        result_converted["efficacy"].append(result[vaccine])
+    data_to_plot = pd.DataFrame(result_converted, columns=["vaccines", "efficacy"])
+    figure = plt.Figure(figsize=(6, 5), dpi=100)
+    ax1 = figure.add_subplot(111)
+    line = FigureCanvasTkAgg(figure, main_frame)
+    line.get_tk_widget().grid(sticky="nsew")
+    data_to_plot = data_to_plot[['vaccines', 'efficacy']].groupby('vaccines').sum()
+    data_to_plot.plot(kind='bar', legend=True, ax=ax1)
+    ax1.set_title('efficacy of vaccines')
 
 
+def execute_trend_covid(db_object):
+    result = db_object.query_trend_covid(db_object)
+    data_from_query = {"month": [str(index[1]) + "/" + str(index[2]) for index in result],
+                       "infection ratio": [index[0] for index in result]}
+    data_to_plot = pd.DataFrame(data_from_query, columns=["month", "infection ratio"])
+    figure = plt.Figure(figsize=(6, 5), dpi=100)
+    ax1 = figure.add_subplot(111)
+    line = FigureCanvasTkAgg(figure, main_frame)
+    line.get_tk_widget().grid(sticky="nsew")
+    data_to_plot = data_to_plot[['month', 'infection ratio']].groupby('month').sum()
+    data_to_plot.plot(kind='line', legend=True, ax=ax1)
+    ax1.set_title('month vs infection ratio')
+
+
+btn_query = Button(button_frm_query, text='Execute', command=select_item_query)
+btn_query.grid()
+
+plt.rcParams.update({'font.size': 8})
 root.mainloop()
 
