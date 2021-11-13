@@ -340,10 +340,27 @@ In order to get significant results from queries, the number of "VISITS" relatio
 
 
 \section{Application description}
-provide some screenshots and describe how your application works and which functionalities it implements
+Goal of the application {\fontfamily{qcr}\selectfont"GUI/App.py"} is to give some information about the pandemic.
+The user can use the application in order to know about:
+\begin{itemize}
+    \item Trend Covid: the application will display the ratio of positive people among all the tests carried out per each month.
+    \item Vaccine efficacy: the application will display how many people vaccinated with a specific vaccine has been negative over all
+    the people vaccinated with the same vaccine.
+    \item Dangerous places: selected a specific city, the user can see which are the most dangerous public spaces in that city. The danger level of
+    a given public space is calculated as the percentage of people that tested positive after 15 or less days, and then is normalized considering
+    all the other public places: in this way the most dangerous public space will have a danger level of 1,
+    whereas the less unsafe place will have a danger level equal to 0.
+    \item Vaccinates per age: the application will display the percentage of people vaccinated per each age range.
+    The age range considered are [20,29], [30,39], [40, 49], ..., [90, 100].
+\end{itemize}
 
 \section{User guide}
-describe step by step how could we run your application, remember to provide all the different tools and libraries to run it 
+The application is meant to work on pc or macOS. As the application has been entirely developed in Python, it is not
+operative system dependent.
+In order to correctly run the application it is mandatory to store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"},
+in this way the application will be able to connect with the database.
+\\The user must check to have installed correctly in the virtual environment the following packages: {\fontfamily{qcr}\selectfont tkinter,
+matplotlib, pandas, neo4j, numpy and python-codicefiscale}.
 
 \newpage
 
