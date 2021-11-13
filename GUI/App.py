@@ -3,7 +3,6 @@ from tkinter import *
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
-from functools import partial
 import sys
 import neo4j
 sys.path.insert(0, '../neo4jDB-populator')
