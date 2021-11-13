@@ -52,6 +52,8 @@ CREATE (guest)-[:VISITS {date: '2021-06-01'}]->(restaurant)
 
                       
 //Command: changing all the LIVES relations of the people who live in the same house (this command could be useful in case of moving family)
+DOESN'T WORK !!
+MATCH (p1)-[l1:LIVES]->()
 MATCH (p2)-[l2:LIVES]->()
 WHERE p1.ssn = 'BRNGRL47T23C723Z'
   AND l1.livesFrom < '2021-06-19'
