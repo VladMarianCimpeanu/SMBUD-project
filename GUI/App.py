@@ -1,3 +1,4 @@
+from datetime import date
 from tkinter import *
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -97,19 +98,19 @@ def execute_dangerous_places(db_object,city):
     result = db_object.query_dangerous_places(db_object, city)
     infected_places = {}
     infected_places["name_space"] = []
-    infected_places["infection_ratio"] = []
+    infected_places["danger level"] = []
     for element in result:
         infected_places["name_space"].append(element[1])
-        infected_places["infection_ratio"].append(element[0])
-    infected_places["infection_ratio"] = perc_normalization(infected_places["infection_ratio"])
-    data_to_plot = pd.DataFrame(infected_places, columns=["name_space", "infection_ratio"])
+        infected_places["danger level"].append(element[0])
+    infected_places["danger level"] = perc_normalization(infected_places["danger level"])
+    data_to_plot = pd.DataFrame(infected_places, columns=["name_space", "danger level"])
     figure = plt.Figure(figsize=(6, 6), dpi=100, constrained_layout=True)
     ax1 = figure.add_subplot(111)
     canvas = FigureCanvasTkAgg(figure, main_frame)
     canvas.get_tk_widget().grid(sticky="nsew")
-    data_to_plot = data_to_plot[['name_space', 'infection_ratio']].groupby('name_space').sum()
+    data_to_plot = data_to_plot[['name_space', 'danger level']].groupby('name_space').sum()
     data_to_plot.plot(kind='bar', legend=True, ax=ax1)
-    ax1.set_title('efficacy of vaccines')
+    ax1.set_title('dangerous places')
 
 
 def execute_vaccine_efficacy(db_object):
@@ -138,14 +139,15 @@ def execute_trend_covid(db_object):
     if canvas:
         canvas.get_tk_widget().destroy()
     result = db_object.query_trend_covid(db_object)
-    data_from_query = {"month": [str(index[1]) + "/" + str(index[2]) for index in result],
+    data_from_query = {"month": [date(day=1, month=index[1], year=index[2]) for index in result],
                        "infection ratio": [index[0] for index in result]}
     data_to_plot = pd.DataFrame(data_from_query, columns=["month", "infection ratio"])
     figure = plt.Figure(figsize=(6, 5), dpi=100)
     ax1 = figure.add_subplot(111)
     canvas = FigureCanvasTkAgg(figure, main_frame)
     canvas.get_tk_widget().grid(sticky="nsew")
-    data_to_plot = data_to_plot[['month', 'infection ratio']].groupby('month').sum()
+    data_to_plot = data_to_plot[['month', 'infection ratio']].groupby("month").sum()
+    print(data_to_plot.head())
     data_to_plot.plot(kind='line', legend=True, ax=ax1)
     ax1.set_title('month vs infection ratio')
 
