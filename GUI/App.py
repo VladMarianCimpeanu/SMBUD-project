@@ -85,7 +85,7 @@ def select_place(populator):
 
 
 def perc_normalization(percentages):
-    max_perc = max(percentages)
+    max_perc = max(percentages) if max(percentages) != 0 else 1
     new_percentages = [item / max_perc for item in percentages]
     return new_percentages
 
