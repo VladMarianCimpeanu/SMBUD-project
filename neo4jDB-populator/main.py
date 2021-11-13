@@ -302,6 +302,16 @@ class PopulateDB:
                                                 .format(os.path.dirname(os.path.abspath(__file__))))
             result = session.run(query)
             return result.data()[0]
+    
+    #QUERY NEEDED FOR USER INTERFACE
+    @staticmethod
+    def query_dangerous_places(query_obj,city):
+        with query_obj.driver.session() as session:
+            query = PopulateDB.build_query_from("{}/queries/dangerous_places.cypher"
+                                                .format(os.path.dirname(os.path.abspath(__file__))))
+            result = session.run(query, city = city)
+            return result.data()
+        
 
     #QUERY NEEDED FOR USER INTERFACE
     @staticmethod
@@ -346,14 +356,14 @@ if __name__ == "__main__":
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
         # populator.create_people()
-        populator.create_family(5)
+        populator.create_family(15)
         populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
-        populator.create_amenities(15)
-        populator.create_visits_relations(50, 40, (2020, 6, 19), (2021, 6, 19))
-        populator.moving_people(3)
+        populator.create_amenities(20)
+        populator.create_visits_relations(70, 40, (2020, 6, 19), (2021, 6, 19))
+        #populator.moving_people(3)
         print("all the data have been loaded successfully.")
         populator.close()

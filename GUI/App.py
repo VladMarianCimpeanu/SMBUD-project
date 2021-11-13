@@ -77,7 +77,7 @@ label_query.grid(row=0, column=0)
 listbox_query = Listbox(l_box_frm_query, selectmode=SINGLE)
 listbox_query.insert(1, "Trend covid")
 listbox_query.insert(2, "Vaccine efficacy")
-listbox_query.insert(3, "Query 3")
+listbox_query.insert(3, "Dangerous places")
 listbox_query.insert(4, "Query 4")
 listbox_query.insert(5, "Query 5")
 listbox_query.grid(row=1, column=0)
@@ -92,7 +92,29 @@ def select_item_query():
             execute_trend_covid(populator)
         elif item == 1:
             execute_vaccine_efficacy(populator)
+        elif item == 2:
+            select_place(populator)
     populator.close()
+    
+def select_place(populator):
+    options = ['Roma','Milano','Napoli']
+    variable = StringVar(parameters_frm_query)
+    variable.set(options[2])
+    w = OptionMenu(parameters_frm_query, variable, *options)
+    w.grid(row = 0, column = 0)
+    def selection():
+        city = None
+        city = variable.get()
+        execute_dangerous_places(populator,city)
+    button = Button(parameters_frm_query, text="OK", command=selection)
+    button.grid(row = 1, column = 0)
+
+def execute_dangerous_places(db_object,city):
+    global canvas
+    if canvas:
+        canvas.get_tk_widget().destroy()
+    result = db_object.query_dangerous_places(db_object, city)
+    
 
 
 def execute_vaccine_efficacy(db_object):
