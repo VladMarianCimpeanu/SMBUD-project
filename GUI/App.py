@@ -49,6 +49,7 @@ listbox_query = Listbox(l_box_frm_query, selectmode=SINGLE)
 listbox_query.insert(1, "Trend covid")
 listbox_query.insert(2, "Vaccine efficacy")
 listbox_query.insert(3, "Dangerous places")
+listbox_query.insert(4, "Vaccinates per age")
 
 listbox_query.grid(row=1, column=0)
 
@@ -66,7 +67,26 @@ def select_item_query():
             execute_vaccine_efficacy(populator)
         elif item == 2:
             select_place(populator)
+        elif item == 3:
+            execute_vaccinates_per_age(populator)
     populator.close()
+
+
+def execute_vaccinates_per_age(db_object):
+    global canvas
+    if canvas:
+        canvas.get_tk_widget().destroy()
+    result = db_object.query_vaccinates_per_age(db_object)
+    data_from_query = {"ages": [element for element in result],
+                       "vaccination ratios": [result[element] for element in result]}
+    data_to_plot = pd.DataFrame(data_from_query, columns=["ages", "vaccination ratios"])
+    figure = plt.Figure(figsize=(6, 5), dpi=100)
+    ax1 = figure.add_subplot(111)
+    canvas = FigureCanvasTkAgg(figure, main_frame)
+    canvas.get_tk_widget().grid(sticky="nsew")
+    data_to_plot = data_to_plot[['ages', 'vaccination ratios']].groupby("ages").sum()
+    data_to_plot.plot(kind='bar', legend=True, ax=ax1)
+    ax1.set_title('percentage of people vaccinated per age range')
 
 
 def select_place(populator):
@@ -79,7 +99,7 @@ def select_place(populator):
 
     def selection():
         city = variable.get()
-        execute_dangerous_places(populator,city)
+        execute_dangerous_places(populator, city)
     button = Button(parameters_frm_query, text="OK", command=selection)
     button.grid(row = 1, column = 0)
     additional_widgets.append(button)
@@ -91,7 +111,7 @@ def perc_normalization(percentages):
     return new_percentages
 
 
-def execute_dangerous_places(db_object,city):
+def execute_dangerous_places(db_object, city):
     global canvas
     if canvas:
         canvas.get_tk_widget().destroy()
@@ -150,6 +170,7 @@ def execute_trend_covid(db_object):
     print(data_to_plot.head())
     data_to_plot.plot(kind='line', legend=True, ax=ax1)
     ax1.set_title('month vs infection ratio')
+
 
 canvas = None
 btn_query = Button(button_frm_query, text='Execute', command=select_item_query)

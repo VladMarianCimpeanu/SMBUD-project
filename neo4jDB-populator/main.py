@@ -294,7 +294,7 @@ class PopulateDB:
                 query += " "
             return query
 
-    #QUERY NEEDED FOR USER INTERFACE
+    # QUERY NEEDED FOR USER INTERFACE
     @staticmethod
     def query_vaccines_efficacy(query_obj):
         with query_obj.driver.session() as session:
@@ -302,8 +302,8 @@ class PopulateDB:
                                                 .format(os.path.dirname(os.path.abspath(__file__))))
             result = session.run(query)
             return result.data()[0]
-    
-    #QUERY NEEDED FOR USER INTERFACE
+
+    # QUERY NEEDED FOR USER INTERFACE
     @staticmethod
     def query_dangerous_places(query_obj,city):
         with query_obj.driver.session() as session:
@@ -311,9 +311,21 @@ class PopulateDB:
                                                 .format(os.path.dirname(os.path.abspath(__file__))))
             result = session.run(query, city = city)
             return result.values()
-        
 
-    #QUERY NEEDED FOR USER INTERFACE
+    # QUERY NEEDED FOR USER INTERFACE
+    @staticmethod
+    def query_vaccinates_per_age(query_obj):
+        with query_obj.driver.session() as session:
+            query = PopulateDB.build_query_from("{}/queries/vaccinates_per_age.cypher"
+                                                .format(os.path.dirname(os.path.abspath(__file__))))
+            age_span = 10
+            percentages = {}
+            for age in range(20, 100, age_span):
+                result = session.run(query, min_age=age, max_age=age + age_span)
+                percentages[age] = result.values()[0][0]
+            return percentages
+
+    # QUERY NEEDED FOR USER INTERFACE
     @staticmethod
     def query_trend_covid(self):
         with self.driver.session() as session:
