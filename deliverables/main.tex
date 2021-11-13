@@ -61,7 +61,7 @@
 {
 	morekeywords={
 		MATCH, OPTIONAL, WHERE, NOT, AND, OR, XOR, RETURN, DISTINCT, ORDER, BY, ASC, ASCENDING, DESC, DESCENDING, UNWIND, AS, UNION, WITH, ALL, CREATE, DELETE, DETACH, REMOVE, SET, MERGE, SET, SKIP, LIMIT, IN, CASE, WHEN, THEN, ELSE, END,
-		INDEX, DROP, UNIQUE, CONSTRAINT, EXPLAIN, PROFILE, START, COUNT
+		INDEX, DROP, UNIQUE, CONSTRAINT, EXPLAIN, PROFILE, START, COUNT, IS, NULL
 	}
 }
 
@@ -130,10 +130,11 @@ The designed Graph diagram is shown below. Person, House, Vaccine, Public Space 
 \newpage
 
 \section{Dataset description}
-The Dataset has been built by making a script in Python, using some useful packages like: random-italian-people that automatically generates people with random attributes; the official binary Neo4j driver for Python for the communication with the Database since it allows to make queries directly from Python. 
+The Dataset has been built by making a script in Python, using some useful packages like: random-italian-person that automatically generates people with random attributes (this package has been modified due to our necessity); the official binary Neo4j driver for Python for the communication with the Database since it allows to make queries directly from Python. 
+
 \\
 \hfill\break
-We have also used this piece of code to generate amenities data. This query has been used in overpass turbo (a web-based tool for extracting OpenStreetMap data) selecting Roma, Napoli and Milano.
+We have also used this piece of code to generate amenities data. This query has been used in overpass turbo (a web-based tool for extracting OpenStreetMap data) selecting the map area of Rome, Naples and Milan.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -143,7 +144,6 @@ We have also used this piece of code to generate amenities data. This query has 
   //query part for: “amenity=post_box” 
   node"amenity"="restaurant"; 
   node"amenity"="bar"; 
-  node"amenity"="museo"; 
   node"amenity"="cinema"; 
 ); 
 // print results 
@@ -154,19 +154,22 @@ out skel qt;
 \newpage
 \section{Queries and Commands}
 \subsection{Queries}
+\subsubsection{Vaccination percentage for a given age range}
 The following query can be used to show the percentage of vaccinated people in an age range.
-X and Y must be two positive integers with X <= Y.\\
+X and Y must be two positive integers with \$age\_min $\le$ \$age\_max.\\
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 MATCH (sample: Person)
-WHERE duration.between(date(sample.birthdate), date()).years >= X 
+WHERE duration.between(date(sample.birthdate), date()).years >= $age_min
       AND
-      duration.between(date(sample.birthdate), date()).years <= Y
+      duration.between(date(sample.birthdate), date()).years <= $age_max
 WITH sample AS sizeSample
 MATCH (vaccinated:Person)-[:VACCINATES]->(vaccine: Vaccine)
-WHERE duration.between(date(vaccinated.birthdate), date()).years >= X 
+WHERE duration.between(date(vaccinated.birthdate), date()).years >=   
+      $age_min
       AND
-      duration.between(date(vaccinated.birthdate), date()).years <= Y
+      duration.between(date(vaccinated.birthdate), date()).years <=   
+      $age_max
 RETURN 
 CASE
 WHEN COUNT(DISTINCT vaccinated) = 0 THEN 0.0
@@ -175,7 +178,7 @@ ELSE (COUNT(DISTINCT vaccinated) * 1.0 / COUNT(DISTINCT sizeSample) * 1.0) * 100
 END AS Percentage
 
 \end{lstlisting}
-\hfill \break
+\subsubsection{Infection ratio per month}
 Query that returns the infection ratio among all the tested people for each month.
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -189,25 +192,38 @@ WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'm
 RETURN round((COUNT(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year
 ORDER BY year DESC, month DESC
 \end{lstlisting}
-\hfill \break
-\hfill \break
-\hfill \break
-\hfill \break
-\hfill \break
-\hfill \break
-\hfill \break
-The following query finds false negatives (for false positive it is necessary to switch pre with post in the last two lines before the Return statement).
+\subsubsection{False positives}
+
+The following query finds false positives (for false negatives it is necessary to switch pre with post in the last two lines before the Return statement).
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 MATCH (p: Person)-[pre: TESTS]->()<-[post:TESTS]-(p)
 WHERE duration.between(datetime({ epochMillis: apoc.date.parse(pre.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')}), datetime({ epochMillis: apoc.date.parse(post.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')})).hours < 24
 AND duration.between(datetime({ epochMillis: apoc.date.parse(pre.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')}), datetime({ epochMillis: apoc.date.parse(post.timestamp, 'ms', 'yyyy-MM-dd HH:mm:ss')})).hours > 0
-AND pre.res="Negative"
-AND post.res="Positive"
+AND post.res="Negative"
+AND pre.res="Positive"
 RETURN p, pre, post
 \end{lstlisting}
 
-\hfill \break
+\subsubsection{Most unsafe public spaces for a given city}
+This query returns the infection ratio of every place of a desired city, in a selected year and month, as sum of people who became positive after being in a place over the total amount of visits of that place in the same period.
+\$month and \$year are, respectively, the desider month and year and \$city is the city taken into consideration.
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+MATCH (p1:Person)-[v:VISITS]->(ps:PublicSpace)
+WHERE date(v.date).month = $month AND date(v.date).year = $year
+      AND ps.city = $city
+WITH ps.name AS space_name, v AS total_visits, p1 AS total_people
+OPTIONAL MATCH (p:Person)-[t:TESTS]->()
+WHERE p.ssn IN total_people.ssn AND t.res = 'Positive' AND duration.inDays(date(total_visits.date), date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd'))).days >= 0 AND duration.inDays(date(total_visits.date), date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd'))).days <= 15
+RETURN
+CASE
+WHEN COUNT(DISTINCT p) = 0 THEN 0.0
+ELSE (COUNT(DISTINCT p)*1.0 / COUNT(DISTINCT total_people)*1.0)*100.0
+END AS percentage, space_name ORDER BY percentage DESC
+\end{lstlisting}
+
+\subsubsection{Vaccine efficacy}
 This query can be used to analyze the Vaccine efficacy computed as the ratio of the vaccinated who became positive over the total number of vaccinated people.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
@@ -234,44 +250,100 @@ RETURN (1- (toFloat(vaccinated_infected_astra)/toFloat(vaccinated_astrazeneca)))
     (1- (toFloat(vaccinated_infected_moderna)/toFloat(vaccinated_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(vaccinated_infected_pfizer)/toFloat(vaccinated_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(vaccinated_infected_jensen)/toFloat(vaccinated_jensen)))*100 AS JensenEfficacy
 \end{lstlisting}
 
+\subsubsection{People to quarantine}
+This query returns all the people a given person has been in contact with in the last 15 days. In detail it returns all the people met by a given person in the last 15 days (incubation period) from a given date with the tracking app, his/her family and all the people that have been in the same place during the same day as him/her.
+The following query can be used to find all the people who need to be put in quarantine due to a positive test of the given person.
+\$fiscal\_code is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), \$end\_date is the last day of the incubation period (\$incubation).
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+MATCH (infected:Person)-[l1:LIVES]->(h)<-[l2:LIVES]-(person:Person)
+WHERE infected.ssn = $fiscal_code
+  AND date(l1.livesFrom) <= $end_date AND (date(l1.movingDate) >= $end_date - $incubation OR l1.movingDate is  NULL)
+  AND date(l2.livesFrom) <= $end_date AND (date(l2.movingDate) >= $end_date - $incubation OR l2.movingDate is NULL)
+  AND (date(l2.movingDate) >= date(l1.livesFrom) OR date(l2.livesFrom) <= date(l1.movingDate))
+RETURN person
+UNION
+MATCH (infected: Person)-[v1:VISITS]->()<-[v2:VISITS]-(person: Person)
+WHERE infected.ssn = SSN AND v1.date = v2.date AND duration.inDays(date(v1.date), date(XXX)).days <= 15 AND duration.inDays(date(v1.date), date(XXX)).days >= 0
+RETURN person
+UNION
+MATCH (infected: Person)-[m:MEETS]->(person: Person)
+WHERE infected.ssn = SSN AND duration.inDays(date(m.date), date(XXX)).days <= 15 AND duration.inDays(date(m.date), date(XXX)).days >= 0
+RETURN person
+\end{lstlisting}
 
 \subsection{Commands}
-The following command can be used to add a vaccination. XXX is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), YYY is the name of the vaccine ('AstraZeneca', 'Jensen', 'Pfizer', 'Moderna'), ZZZ is the lot of the vaccine (it must must be in format AZ\#\#, P\#\#,J\#\#,M\#\#). WWW is the date of the vaccination and must be in the following format YYYY-MM-DD.
+\subsubsection{New vaccination}
+The following command can be used to add a vaccination. \$ssn is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), \$vax\_name is the name of the vaccine ('AstraZeneca', 'Jensen', 'Pfizer', 'Moderna'), \$lot is the lot of the vaccine (it must must be in format AZ\#\#, P\#\#,J\#\#,M\#\#). \$vax\_date is the date of the vaccination and must be in the following format YYYY-MM-DD.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 MATCH (person_to_vaccinate: Person),
       (vax: Vaccine)
-WHERE person_to_vaccinate.ssn = 'XXX' 
+WHERE person_to_vaccinate.ssn = $ssn
       AND 
-      vax.name = 'YYY'
-CREATE (person_to_vaccinate)-[:VACCINATES {lot: 'ZZZ', 
-        date: 'WWW'}]->(vax)
+      vax.name = $vax_name
+CREATE (person_to_vaccinate)-[:VACCINATES {lot: $lot, 
+        date: $vax_date}]->(vax)
         
 \end{lstlisting}
-\hfill \break
-The following command can be used to add a Covid Test. XXX is the fiscal code of the person tested (16 digits alphanumeric code), YYY is the result of the test ('Positive' or 'Negative'). WWW is the timestamp of the test and must be in the following format 'YYYY-MM-DD hh:mm:ss'.
+\subsubsection{New Covid Test}
+The following command can be used to add a Covid Test. \$ssn is the fiscal code of the person tested (16 digits alphanumeric code), \$result is the result of the test ('Positive' or 'Negative'). \$timestamp is the timestamp of the test and must be in the following format 'YYYY-MM-DD hh:mm:ss'.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 MATCH (person_tested: Person),
       (test: Swab)
-WHERE person_tested.ssn = 'XXX' 
+WHERE person_tested.ssn = $ssn 
       AND 
       test.name = 'Covid Swab'
-CREATE (person_tested)-[:TESTS {res: 'YYY', timestamp: 'WWW'}]->(test)
+CREATE (person_tested)-[:TESTS {res: $result, timestamp: $timestamp}]->(test)
+
+\end{lstlisting}
+\subsubsection{Moving a family}
+The following query changes all the LIVES relations of the people who live in the same house by adding them a movingDate attribute and makes new relations with the new house (this command could be useful in case of moving family).
+\$ssn is one of the people who lives in the old house. \$id is the id of the new house (Integer number) and \$moving\_date is the date of the moving and it must be in the following format YYYY-MM-DD.
+
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+MATCH (p1:Person)-[l1:LIVES]->(h:House)
+WHERE p1.ssn = $ssn AND l1.movingDate IS NULL
+WITH h AS old_house
+MATCH (p2:Person)-[l2:LIVES]->(old_house)
+WHERE l2.movingDate IS NULL
+WITH p2 as people_moving, l2
+MATCH (h:House) WHERE ID(h) = $id
+CREATE (people_moving)-[:LIVES{livesFrom: $moving_date}]->(h)
+SET l2.movingDate = $moving_date
 
 \end{lstlisting}
 
 \newpage
 
-\section{References and Sources}
-Some CSV files have been used for the creation of amenities attributes, like a list of addresses of different cities.
+\section{Application description}
+provide some screenshots and describe how your application works and which functionalities it implements
+
+\section{User guide}
+describe step by step how could we run your application, remember to provide all the different tools and libraries to run it 
+
+\newpage
 
 \section{Conclusion}
 
 Some interesting conclusions can be drawn from the development of this project: Graph databases are, if well designed, easy to use and really scalable. \\
 The creation of credible databases using Python could be really convenient to simulate a real situation and understand in advance which behaviours could be useful to manage the situation in exam.\\
 Graph databases are more flexible than the classical relational databases since they allow to create same situations in an easier and more realistic way.
+
+\section{References and Sources}
+\begin{itemize}
+    \item Random-italian-person package: https://pypi.org/project/random-italian-person
+    \item Neo4j package: https://neo4j.com/docs/python-manual/current
+    \item Tkinter package: https://docs.python.org/3/library/tkinter.html
+    \item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
+\end{itemize}
+
+
 
 \end{document}
