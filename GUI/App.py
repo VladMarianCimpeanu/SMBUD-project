@@ -96,6 +96,9 @@ def select_item_query():
 
 
 def execute_vaccine_efficacy(db_object):
+    global canvas
+    if canvas:
+        canvas.get_tk_widget().destroy()
     result = db_object.query_vaccines_efficacy(db_object)
     result_converted = {}
     result_converted["vaccines"] = []
@@ -106,27 +109,30 @@ def execute_vaccine_efficacy(db_object):
     data_to_plot = pd.DataFrame(result_converted, columns=["vaccines", "efficacy"])
     figure = plt.Figure(figsize=(6, 5), dpi=100)
     ax1 = figure.add_subplot(111)
-    line = FigureCanvasTkAgg(figure, main_frame)
-    line.get_tk_widget().grid(sticky="nsew")
+    canvas = FigureCanvasTkAgg(figure, main_frame)
+    canvas.get_tk_widget().grid(sticky="nsew")
     data_to_plot = data_to_plot[['vaccines', 'efficacy']].groupby('vaccines').sum()
     data_to_plot.plot(kind='bar', legend=True, ax=ax1)
     ax1.set_title('efficacy of vaccines')
 
 
 def execute_trend_covid(db_object):
+    global canvas
+    if canvas:
+        canvas.get_tk_widget().destroy()
     result = db_object.query_trend_covid(db_object)
     data_from_query = {"month": [str(index[1]) + "/" + str(index[2]) for index in result],
                        "infection ratio": [index[0] for index in result]}
     data_to_plot = pd.DataFrame(data_from_query, columns=["month", "infection ratio"])
     figure = plt.Figure(figsize=(6, 5), dpi=100)
     ax1 = figure.add_subplot(111)
-    line = FigureCanvasTkAgg(figure, main_frame)
-    line.get_tk_widget().grid(sticky="nsew")
+    canvas = FigureCanvasTkAgg(figure, main_frame)
+    canvas.get_tk_widget().grid(sticky="nsew")
     data_to_plot = data_to_plot[['month', 'infection ratio']].groupby('month').sum()
     data_to_plot.plot(kind='line', legend=True, ax=ax1)
     ax1.set_title('month vs infection ratio')
 
-
+canvas = None
 btn_query = Button(button_frm_query, text='Execute', command=select_item_query)
 btn_query.grid()
 

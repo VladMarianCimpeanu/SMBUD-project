@@ -185,6 +185,11 @@ class PopulateDB:
         for id in result:
             people_ids.append(id.values())
         return people_ids
+    
+    @staticmethod
+    def get_random_house(tx):
+        result = tx.run("MATCH (h:House) RETURN ID(h) LIMIT 1")
+        return result.single()[0]
 
     @staticmethod
     def _get_vaccines_id(tx):
@@ -289,6 +294,7 @@ class PopulateDB:
                 query += " "
             return query
 
+    #QUERY NEEDED FOR USER INTERFACE
     @staticmethod
     def query_vaccines_efficacy(query_obj):
         with query_obj.driver.session() as session:
@@ -297,6 +303,7 @@ class PopulateDB:
             result = session.run(query)
             return result.data()[0]
 
+    #QUERY NEEDED FOR USER INTERFACE
     @staticmethod
     def query_trend_covid(self):
         with self.driver.session() as session:
@@ -310,6 +317,28 @@ class PopulateDB:
             "RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year "
             "ORDER BY year DESC, month DESC")
             return result.values()
+    
+    @staticmethod
+    def moving_people(n):
+        with populator.driver.session() as session:
+            people_ids = session.read_transaction(populator._get_people_id)
+            random_people = []
+            for i in range(n):
+                random_people.append(random.choice(people_ids)) #choose one random id up to n ids
+            random_people = np.unique(random_people).tolist() #removes duplicates
+            print("moving {} people..".format(len(random_people)))
+            for id_person in random_people:
+                random_date = dg.DateGenerator().random_datetimes_or_dates().tolist()[0]
+                random_house = session.read_transaction(populator.get_random_house)
+                command = session.run("MATCH (p)-[l:LIVES]->(h1) "
+                                          "MATCH (h2:House) "
+                                         "WHERE ID(p) = $id AND l.livesFrom < $random_date AND ID(h1) <> $random_house AND ID(h2) = $random_house "
+                                         "CREATE (p)-[l1:LIVES{livesFrom: l.livesFrom, movingDate : $random_date}]->(h1) "
+                                         "CREATE (p)-[l2:LIVES{livesFrom: $random_date}]->(h2) "
+                                         "DELETE l "
+                                      "RETURN ID(l1), ID(l2)", id = id_person, random_date = random_date, random_house = random_house)
+            
+
 
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
@@ -325,5 +354,6 @@ if __name__ == "__main__":
         populator.create_tests()
         populator.create_amenities(15)
         populator.create_visits_relations(50, 40, (2020, 6, 19), (2021, 6, 19))
+        populator.moving_people(3)
         print("all the data have been loaded successfully.")
         populator.close()
