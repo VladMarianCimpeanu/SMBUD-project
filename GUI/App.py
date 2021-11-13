@@ -3,6 +3,7 @@ from tkinter import *
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
+from functools import partial
 import sys
 import neo4j
 sys.path.insert(0, '../neo4jDB-populator')
@@ -145,7 +146,7 @@ def execute_vaccine_efficacy(db_object):
         result_converted["vaccines"].append(vaccine.split("Efficacy")[0])
         result_converted["efficacy"].append(result[vaccine])
     data_to_plot = pd.DataFrame(result_converted, columns=["vaccines", "efficacy"])
-    figure = plt.Figure(figsize=(6, 5), dpi=100)
+    figure = plt.Figure(figsize=(6, 5), dpi=100, constrained_layout=True)
     ax1 = figure.add_subplot(111)
     canvas = FigureCanvasTkAgg(figure, main_frame)
     canvas.get_tk_widget().grid(sticky="nsew")

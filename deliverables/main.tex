@@ -322,6 +322,23 @@ SET l2.movingDate = $moving_date
 
 \newpage
 
+\section{Generator database}
+The {\fontfamily{qcr}\selectfont"neo4jDB-populator/main.py"} file is responsible of generating a random database.
+In order to correctly run the generator, it is mandatory to store the Neo4j password in {\fontfamily{qcr}\selectfont"Neo4jDB-populator/password.txt"}, in this way the generator will be able to connect with the database.
+\\This script exploits the following packages: pandas, numpy, neo4j and python-codicefiscale.
+
+\subsection{Cities generation}
+This generator will create data for the following cities: Rome, Milan and Naples. For each city it will create nodes representing public spaces available in that specific town.
+
+\subsection{People generation}
+In order to consistently generate people, it was decided to assign a number of houses per city, by default the number of houses per city is set to 15. Every time an house is built, the generator will also create a family of 'Person' to link to that house.
+Each family randomly consists of 1 to 6 members.
+
+\subsection{Relationships generation}
+For improving the quality information extracted from the data, people living in a certain city must "VISITS" only public spaces of the same city, and for the same reason, people can "MEETS" people of the same city with 90\% of probability.
+In order to get significant results from queries, the number of "VISITS" relations was set to 1 visit per person every 3-5 days. This setting may impact on the generation data-set time, indeed it could take up to 1-2 minutes to generate all the data.
+
+
 \section{Application description}
 provide some screenshots and describe how your application works and which functionalities it implements
 
