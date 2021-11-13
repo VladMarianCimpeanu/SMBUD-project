@@ -52,20 +52,15 @@ CREATE (guest)-[:VISITS {date: '2021-06-01'}]->(restaurant)
 
                       
 //Command: changing all the LIVES relations of the people who live in the same house (this command could be useful in case of moving family)
-DOESN'T WORK !!
-MATCH (p1)-[l1:LIVES]->()
-MATCH (p2)-[l2:LIVES]->()
-WHERE p1.ssn = 'BRNGRL47T23C723Z'
-  AND l1.livesFrom < '2021-06-19'
-  AND l2.livesFrom < '2021-06-19'
-WITH max(l1.livesFrom) AS max1, max(l2.livesFrom) AS max2, p1 AS p1, p2 AS p2
-MATCH (p1)-[l3:LIVES]->(h)<-[l4:LIVES]-(p2)
-WHERE l3.livesFrom = max1
-    AND l4.livesFrom = max2
-WITH p1, p2
-MATCH (h:House) WHERE ID(h) = 154
-CREATE (p1)-[:LIVES{livesFrom: toString(date())}]->(h)
-CREATE (p2)-[:LIVES{livesFrom: toString(date())}]->(h)
+MATCH (p1:Person)-[l1:LIVES]->(h:House)
+WHERE p1.ssn = $ssn AND l1.movingDate IS NULL
+WITH h as old_house
+MATCH (p2:Person)-[l2:LIVES]->(old_house)
+WHERE l2.movingDate IS NULL
+WITH p2 as people_moving, l2
+MATCH (h:House) WHERE ID(h) = 1169
+CREATE (people_moving)-[:LIVES{livesFrom: toString(date())}]->(h)
+SET l2.movingDate = toString(date())
 
 
                                                 
@@ -90,11 +85,13 @@ END AS Percentage
 
 //query: find all the people living with a given person
 //WORKS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+MATCH (p1)-[l1:LIVES]->(h)<-[l2:LIVES]-(p2)
+WHERE p1.ssn = $ssn
+  AND l1.livesFrom < $end_date
+  AND l2.livesFrom < $end_date
+WITH p1 as p1, p2 as p2
 MATCH (p1)-[l1:LIVES]->()
 MATCH (p2)-[l2:LIVES]->()
-WHERE p1.ssn = 'CMPGRG77T03E532G'
-  AND l1.livesFrom < '2021-06-19'
-  AND l2.livesFrom < '2021-06-19'
 WITH max(l1.livesFrom) AS max1, max(l2.livesFrom) AS max2, p1 AS p1, p2 AS p2
 MATCH (p1)-[l3:LIVES]->(h)<-[l4:LIVES]-(p2)
 WHERE l3.livesFrom = max1
@@ -118,17 +115,20 @@ RETURN head(collect(test.timestamp)) //TODO: I must try it, the goal should be o
 // in the demo db.
 //TODO : CHANGE QUERY DESCRIPTION! Starting date is not queries date but date in the interval 2020-06-19 and 2021-06-19
 //WORKS FINE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-MATCH (infected: Person)-[:LIVES]->()<-[:LIVES]-(person: Person)
-WHERE infected.ssn = "FLPRTI37L58A799Z"
+MATCH (infected:Person)-[l1:LIVES]->(h)<-[l2:LIVES]-(person:Person)
+WHERE infected.ssn = $ssn
+  AND date(l1.livesFrom) <= $end_date AND (date(l1.movingDate) >= $end_date - $incubation OR l1.movingDate is  NULL)
+  AND date(l2.livesFrom) <= $end_date AND (date(l2.movingDate) >= $end_date - $incubation OR l2.movingDate is NULL)
+  AND (date(l2.movingDate) >= date(l1.livesFrom) OR date(l2.livesFrom) <= date(l1.movingDate))
 RETURN person
 UNION
 MATCH (infected: Person)-[v1:VISITS]->()<-[v2:VISITS]-(roommate: Person)
-WHERE infected.ssn = "FLPRTI37L58A799Z" AND v1.date = v2.date AND duration.inDays(date(v1.date), date('2021-06-19')).days <= 15 AND duration.inDays(date(v1.date), date('2021-06-19')).days >= 0
-RETURN person
+WHERE infected.ssn = $ssn AND v1.date = v2.date AND duration.inDays(date(v1.date), date($end_date)).days <= 15 AND duration.inDays(date(v1.date), date($end_date)).days >= 0
+RETURN roommate as person
 UNION
 MATCH (infected: Person)-[m:MEETS]->(roommate: Person)
-WHERE infected.ssn = "FLPRTI37L58A799Z" AND duration.inDays(date(m.date), date('2021-06-19')).days <= 15 AND duration.inDays(date(m.date), date('2021-06-19')).days >= 0
-RETURN person
+WHERE infected.ssn = $ssn AND duration.inDays(date(m.date), date($end_date)).days <= 15 AND duration.inDays(date(m.date), date($end_date)).days >= 0
+RETURN roommate as person
 
 //Query that returns the percentage of infected people over all visits for every place by month and city
 //This query could be useful to study which places could be more related to infections than others and in this way
