@@ -167,7 +167,6 @@ def execute_trend_covid(db_object):
     canvas = FigureCanvasTkAgg(figure, main_frame)
     canvas.get_tk_widget().grid(sticky="nsew")
     data_to_plot = data_to_plot[['month', 'infection ratio']].groupby("month").sum()
-    print(data_to_plot.head())
     data_to_plot.plot(kind='line', legend=True, ax=ax1)
     ax1.set_title('month vs infection ratio')
 

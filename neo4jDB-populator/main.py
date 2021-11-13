@@ -329,15 +329,9 @@ class PopulateDB:
     @staticmethod
     def query_trend_covid(self):
         with self.driver.session() as session:
-            result = session.run("MATCH ()-[t:TESTS]->() "
-            "WITH date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month AS month, "
-            "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year AS year, count(t) as all_tests "
-            "OPTIONAL MATCH ()-[t:TESTS]->() "
-            "WHERE date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).month = month AND "
-                  "date(apoc.date.format(apoc.date.parse(t.timestamp, 'ms', 'yyyy-MM-dd'), 'ms', 'yyyy-MM-dd')).year = year AND "
-                  "t.res = 'Positive' "
-            "RETURN round((count(t) * 1.0 / all_tests * 1.0) * 100.0 * 100.0) / 100.0 AS ratio, month, year "
-            "ORDER BY year DESC, month DESC")
+            query = PopulateDB.build_query_from("{}/queries/trend_covid.cypher"
+                                                .format(os.path.dirname(os.path.abspath(__file__))))
+            result = session.run(query)
             return result.values()
     
     @staticmethod
@@ -346,8 +340,8 @@ class PopulateDB:
             people_ids = session.read_transaction(populator._get_people_id)
             random_people = []
             for i in range(n):
-                random_people.append(random.choice(people_ids)) #choose one random id up to n ids
-            random_people = np.unique(random_people).tolist() #removes duplicates
+                random_people.append(random.choice(people_ids)) # choose one random id up to n ids
+            random_people = np.unique(random_people).tolist() # removes duplicates
             print("moving {} people..".format(len(random_people)))
             for id_person in random_people:
                 random_date = dg.DateGenerator().random_datetimes_or_dates().tolist()[0]
@@ -358,9 +352,8 @@ class PopulateDB:
                                          "CREATE (p)-[l1:LIVES{livesFrom: l.livesFrom, movingDate : $random_date}]->(h1) "
                                          "CREATE (p)-[l2:LIVES{livesFrom: $random_date}]->(h2) "
                                          "DELETE l "
-                                      "RETURN ID(l1), ID(l2)", id = id_person, random_date = random_date, random_house = random_house)
+                                      "RETURN ID(l1), ID(l2)", id=id_person, random_date=random_date, random_house=random_house)
             
-
 
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
