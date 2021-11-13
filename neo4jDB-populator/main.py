@@ -310,7 +310,7 @@ class PopulateDB:
             query = PopulateDB.build_query_from("{}/queries/dangerous_places.cypher"
                                                 .format(os.path.dirname(os.path.abspath(__file__))))
             result = session.run(query, city = city)
-            return result.data()
+            return result.values()
         
 
     #QUERY NEEDED FOR USER INTERFACE
@@ -363,7 +363,7 @@ if __name__ == "__main__":
         populator.create_swabs()
         populator.create_tests()
         populator.create_amenities(20)
-        populator.create_visits_relations(70, 40, (2020, 6, 19), (2021, 6, 19))
-        #populator.moving_people(3)
+        populator.create_visits_relations(5, 2, (2020, 6, 19), (2021, 6, 19))
+        populator.moving_people(3)
         print("all the data have been loaded successfully.")
         populator.close()
