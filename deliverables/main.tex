@@ -147,10 +147,9 @@ from O(n\textsuperscript{2}) to O(n).
 \\The decision of making vaccines as nodes, comes from the idea of speeding up queries involving vaccines
 exploiting pattern matching of the database.
 
-\begin{figure}
-\centering
+\begin{center}
 \includegraphics[scale=0.15]{Graph_diagram.png}
-\end{figure}
+\end{center}
 
 
 \newpage
@@ -248,7 +247,7 @@ WHEN COUNT(DISTINCT p) = 0 THEN 0.0
 ELSE (COUNT(DISTINCT p)*1.0 / COUNT(DISTINCT total_people)*1.0)*100.0
 END AS percentage, space_name ORDER BY percentage DESC
 \end{lstlisting}
-
+\newpage
 \subsubsection{Vaccine efficacy}
 This query can be used to analyze the Vaccine efficacy computed as the ratio of the vaccinated who became positive over the total number of vaccinated people.
 
@@ -275,7 +274,7 @@ WITH vaccinated_astrazeneca,vaccinated_moderna,vaccinated_pfizer,vaccinated_jens
 RETURN (1- (toFloat(vaccinated_infected_astra)/toFloat(vaccinated_astrazeneca)))*100 AS AstraZenecaEfficacy,
     (1- (toFloat(vaccinated_infected_moderna)/toFloat(vaccinated_moderna)))*100 AS ModernaEfficacy,(1- (toFloat(vaccinated_infected_pfizer)/toFloat(vaccinated_pfizer)))*100 AS PfizerEfficacy,(1- (toFloat(vaccinated_infected_jensen)/toFloat(vaccinated_jensen)))*100 AS JensenEfficacy
 \end{lstlisting}
-
+\newpage
 \subsubsection{People to quarantine}
 This query returns all the people a given person has been in contact with in the last 15 days. In detail it returns all the people met by a given person in the last 15 days (incubation period) from a given date with the tracking app, his/her family and all the people that have been in the same place during the same day as him/her.
 The following query can be used to find all the people who need to be put in quarantine due to a positive test of the given person.
@@ -298,7 +297,7 @@ MATCH (infected: Person)-[m:MEETS]->(person: Person)
 WHERE infected.ssn = SSN AND duration.inDays(date(m.date), date(XXX)).days <= 15 AND duration.inDays(date(m.date), date(XXX)).days >= 0
 RETURN person
 \end{lstlisting}
-
+\newpage
 \subsection{Commands}
 \subsubsection{New vaccination}
 The following command can be used to add a vaccination. \$ssn is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), \$vax\_name is the name of the vaccine ('AstraZeneca', 'Jensen', 'Pfizer', 'Moderna'), \$lot is the lot of the vaccine (
@@ -313,19 +312,6 @@ WHERE person_to_vaccinate.ssn = $ssn
       vax.name = $vax_name
 CREATE (person_to_vaccinate)-[:VACCINATES {lot: $lot,
         date: $vax_date}]->(vax)
-
-\end{lstlisting}
-\subsubsection{New Covid Test}
-The following command can be used to add a Covid Test. \$ssn is the fiscal code of the person tested (16 digits alphanumeric code), \$result is the result of the test ('Positive' or 'Negative'). \$timestamp is the timestamp of the test and must be in the following format 'YYYY-MM-DD hh:mm:ss'.
-
-\begin{lstlisting}[language=cypher, label=lst:cypher-example]
-
-MATCH (person_tested: Person),
-      (test: Swab)
-WHERE person_tested.ssn = $ssn
-      AND
-      test.name = 'Covid Swab'
-CREATE (person_tested)-[:TESTS {res: $result, timestamp: $timestamp}]->(test)
 
 \end{lstlisting}
 \subsubsection{Moving a family}
@@ -346,7 +332,21 @@ CREATE (people_moving)-[:LIVES{livesFrom: $moving_date}]->(h)
 SET l2.movingDate = $moving_date
 
 \end{lstlisting}
+\newpage
+\subsubsection{New Covid Test}
+The following command can be used to add a Covid Test. \$ssn is the fiscal code of the person tested (16 digits alphanumeric code), \$result is the result of the test ('Positive' or 'Negative'). \$timestamp is the timestamp of the test and must be in the following format 'YYYY-MM-DD hh:mm:ss'.
 
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+MATCH (person_tested: Person),
+      (test: Swab)
+WHERE person_tested.ssn = $ssn
+      AND
+      test.name = 'Covid Swab'
+CREATE (person_tested)-[:TESTS {res: $result, timestamp: $timestamp}]->
+       (test)
+
+\end{lstlisting}
 \newpage
 \section{Generator database}
 The {\fontfamily{qcr}\selectfont"neo4jDB-populator/main.py"} file is responsible of generating a random database.
@@ -384,16 +384,18 @@ The user can use the application in order to know about:
 \begin{figure}[h!]
   \centering
   \begin{subfigure}
-    \includegraphics[scale=0.25]{danger_levels.png}
+    \includegraphics[scale=0.23]{danger_levels.png}
     \caption{Application displaying danger levels in Milan.}
   \end{subfigure}
   \hfill \break
   \begin{subfigure}
-    \includegraphics[scale=0.25]{trend.png}
+    \includegraphics[scale=0.23]{trend.png}
     \caption{Application displaying how Covid infection is spreading.}
   \end{subfigure}
   \label{fig:screen_from_App}
 \end{figure}
+
+\newpage
 
 \section{User guide}
 The application is meant to work on pc or macOS. As the application has been entirely developed in Python, it is not
@@ -401,8 +403,6 @@ operative system dependent.
 \\In order to correctly run the application it is mandatory to store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
 \\The user must check to have installed correctly in the virtual environment the following pacakges: {\fontfamily{qcr}\selectfont tkinter,
 matplotlib, pandas, neo4j, numpy and python-codicefiscale}.
-
-\newpage
 
 \section{Conclusion}
 
