@@ -341,22 +341,22 @@ class PopulateDB:
                                          "CREATE (p)-[l2:LIVES{livesFrom: $random_date}]->(h2) "
                                          "DELETE l ", id=id_person, random_date=random_date, random_house=random_house)
     
-    @staticmethod
+    '''@staticmethod
     def easter_egg():
         import pygame
         pygame.mixer.init()
         music = pygame.mixer.Sound("loading_visits.mp3")
         pygame.mixer.Sound.play(music)
         time.sleep(30)
-        pygame.mixer.Sound.stop(music)
+        pygame.mixer.Sound.stop(music)'''
             
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
         neo4j_password = pass_reader.readline().split()[0]
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
-        if sys.argv[1] == 'astronomia':
-            populator.easter_egg()
+        #if sys.argv[1] == 'astronomia':
+        #    populator.easter_egg()
         #parameter for create_family : n must be greater than 0, number of families in the db per city
         populator.create_family(25)
         #parameters for meets_relations :
