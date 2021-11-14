@@ -284,10 +284,10 @@ The following query can be used to find all the people who need to be put in qua
 
 MATCH (infected:Person)-[l1:LIVES]->(h)<-[l2:LIVES]-(person:Person)
 WHERE infected.ssn = $ssn
-  AND date(l1.livesFrom) <= $end_date AND (date(l1.movingDate) >=   
-  $end_date - $incubation OR l1.movingDate is  NULL)
-  AND date(l2.livesFrom) <= $end_date AND (date(l2.movingDate) >=   
-  $end_date - $incubation OR l2.movingDate is NULL)
+  AND date(l1.livesFrom) <= date($end_date) AND (date(l1.movingDate) >=   
+  date($end_date) - $incubation OR l1.movingDate is  NULL)
+  AND date(l2.livesFrom) <= date($end_date) AND (date(l2.movingDate) >=   
+  date($end_date) - $incubation OR l2.movingDate is NULL)
   AND (date(l2.movingDate) >= date(l1.livesFrom) OR date(l2.livesFrom) <= 
   date(l1.movingDate))
 RETURN person
