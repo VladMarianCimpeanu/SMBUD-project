@@ -4,7 +4,11 @@
 
 
 \title{SMBUD 2021 - Project work 1}
-\author{\\Aman Gabba\\Andrea Cerasani\\Giovanni Demasi\\Pasquale Dazzeo\\Vlad Marian Cimpeanu}
+\author{\\Aman Gabba - 10793117
+\\Andrea Cerasani - 10680486
+\\Giovanni Demasi - 10656704
+\\Pasquale Dazzeo - 10562130
+\\Vlad Marian Cimpeanu - 10606922}
 \date{ \begin{figure}[b] \centering \includegraphics[scale=0.2]{Logo Polimi.png} \end{figure}
  }
 
@@ -49,7 +53,7 @@
 	belowskip=3pt,
 	columns=flexible,
 	keepspaces=true,
-	breaklines=true,	
+	breaklines=true,
 	captionpos=b,
 	tabsize=2,
 	frame=none,
@@ -121,12 +125,34 @@ Visits and Meeting entities, as said before, have been introduced due to correct
 \newpage
 
 \section{Graph diagram}
-The designed Graph diagram is shown below. Person, House, Vaccine, Public Space and Covid Swab are represented as nodes and they all have the same attributes shown in the ER above. The relationship of the database are Meets, Lives, Tests, Vaccinates and Visits, they all have date as attribute (excepted tests that has timestamp). Vaccinate also has the lot of the vaccine and Tests also has the result of the test.
+The designed Graph diagram is shown below. Person, House, Vaccine, Public Space and Covid Swab are represented as nodes and they all have the same attributes shown in the ER above.
+\\The relationships of the database are MEETS, LIVES, TESTS, VACCINATES and VISITS, they all have date as attribute (excepted tests that has timestamp). VACCINATES also has the lot of the vaccine and TESTS also has the result of the test.
+\\More specifically LIVES has as parameters livesFrom, that identifies the date from which a specific person started to live in a
+specific house and movingDate, that identifies the date from which a specific person decided to move from a specific house.
 
-\begin{figure} [h]
+This design decision may seem memory expensive, but it is meant to face some problems: first of all, it was assumed that the database
+can handle only people who live in the same country of the government (in this case Italy), so if someone moves abroad, this database should not consider anymore that given person.
+\\For instance, if a member of a given family moves abroad, the database
+will be not able to link this person to a new house, so it will be not possible to know the given person has moved away and in
+case of positive test of one of his/her last roommates, he/she will be tracked even though he/she is not living anymore in the last house.
+\\Another more naive reason is that it is much easier to find roommates of a given person at a given time, when writing queries.
+
+The implementation of LIVES relationship was preferred over a LIVES\_WITH relationship, in order to
+reduce the redundancy of data, indeed for each person added to a certain house through a LIVES relationship,
+it will take only one arc, whereas adding a person to a certain family through LIVES\_WITH relationships, it will take a number of arcs equal to the amount of members of the family.
+
+\\With this design choice the time and space complexity of adding people to a certain family has been reduced
+from O(n\textsuperscript{2}) to O(n).
+
+\\The decision of making vaccines as nodes, comes from the idea of speeding up queries involving vaccines
+exploiting pattern matching of the database.
+
+\begin{figure}
 \centering
 \includegraphics[scale=0.15]{Graph_diagram.png}
 \end{figure}
+
+
 \newpage
 
 \section{Dataset description}
@@ -335,7 +361,7 @@ In order to consistently generate people, it was decided to assign a number of h
 Each family randomly consists of 1 to 6 members.
 
 \subsection{Relationships generation}
-For improving the quality information extracted from the data, people living in a certain city must "VISITS" only public spaces of the same city, and for the same reason, people can "MEETS" people of the same city with 90\% of probability.
+\\For improving the quality information extracted from the data, people living in a certain city must "VISITS" only public spaces of the same city, and for the same reason, people can "MEETS" people of the same city with 90\% of probability.
 In order to get significant results from queries, the number of "VISITS" relations was set to 1 visit per person every 3-5 days. This setting may impact on the generation data-set time, indeed it could take up to 1-2 minutes to generate all the data.
 
 
@@ -361,6 +387,7 @@ The user can use the application in order to know about:
     \includegraphics[scale=0.25]{danger_levels.png}
     \caption{Application displaying danger levels in Milan.}
   \end{subfigure}
+  \hfill \break
   \begin{subfigure}
     \includegraphics[scale=0.25]{trend.png}
     \caption{Application displaying how Covid infection is spreading.}
@@ -372,7 +399,7 @@ The user can use the application in order to know about:
 The application is meant to work on pc or macOS. As the application has been entirely developed in Python, it is not
 operative system dependent.
 \\In order to correctly run the application it is mandatory to store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
-\\The user must check to have installed correctly in the virtual environment the following packages: {\fontfamily{qcr}\selectfont tkinter,
+\\The user must check to have installed correctly in the virtual environment the following pacakges: {\fontfamily{qcr}\selectfont tkinter,
 matplotlib, pandas, neo4j, numpy and python-codicefiscale}.
 
 \newpage
