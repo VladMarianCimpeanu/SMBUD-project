@@ -104,7 +104,7 @@ The assumptions taken into account are the following:
 \item All the data coming from public spaces are always considered true and complete.
 \item People always provide all the necessary information to the staff when they visit a certain public space.
 \item Every MEETS relationship is automatically added to the database by a tracing app when two mobile phones stay in the same range for more than 15 minutes. We assume that to every device corresponds only one person and vice versa.
-\item Relationships use the Data type instead of Timestamp (with the exception of Test relationship because could happen that a person due to a positive resulting rapid test do in the same day another test which results negative - the use of Timestamp is important to recognise false positive) to register the relations because of safety and simplicity reasons. The former reason allows people using the Database to trace contacts during all the day and not only during a range of time (for more control). The latter reason is required due to avoid mistakes by the staff of public facilities during the time registration (an error in time registration could lead to a wrong tracing).
+\item Relationships use the Data type instead of Timestamp (with the exception of Test relationship because could happen that a person due to a positive resulting rapid test does in the same day another test which results negative - the use of Timestamp is important to recognise false positive) to register the relations because of safety and simplicity reasons. The former reason allows people using the Database to trace contacts during all the day and not only during a range of time (for more control). The latter reason is required due to avoid mistakes by the staff of public facilities during the time registration (an error in time registration could lead to a wrong tracing).
 \item The designed model doesn't take into consideration the deaths, as the main focus of the project was the tracking of Covid infections. However in a more complete model that considers this aspect, a death node could be used to represent it through a dead relationship that connect the dead person to the death node with a date attribute. This choice could be useful to analyze the death/infection ratio related to the Covid pandemic.
 
 \end{itemize}
@@ -278,23 +278,26 @@ RETURN (1- (toFloat(vaccinated_infected_astra)/toFloat(vaccinated_astrazeneca)))
 \subsubsection{People to quarantine}
 This query returns all the people a given person has been in contact with in the last 15 days. In detail it returns all the people met by a given person in the last 15 days (incubation period) from a given date with the tracking app, his/her family and all the people that have been in the same place during the same day as him/her.
 The following query can be used to find all the people who need to be put in quarantine due to a positive test of the given person.
-\$fiscal\_code is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), \$end\_date is the last day of the incubation period (\$incubation).
+\$ssn is the fiscal code of the person receiving the vaccine (16 digits alphanumeric code), \$end\_date is the last day of the incubation period (\$incubation).
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 MATCH (infected:Person)-[l1:LIVES]->(h)<-[l2:LIVES]-(person:Person)
-WHERE infected.ssn = $fiscal_code
-  AND date(l1.livesFrom) <= $end_date AND (date(l1.movingDate) >= $end_date - $incubation OR l1.movingDate is  NULL)
-  AND date(l2.livesFrom) <= $end_date AND (date(l2.movingDate) >= $end_date - $incubation OR l2.movingDate is NULL)
-  AND (date(l2.movingDate) >= date(l1.livesFrom) OR date(l2.livesFrom) <= date(l1.movingDate))
+WHERE infected.ssn = $ssn
+  AND date(l1.livesFrom) <= $end_date AND (date(l1.movingDate) >=   
+  $end_date - $incubation OR l1.movingDate is  NULL)
+  AND date(l2.livesFrom) <= $end_date AND (date(l2.movingDate) >=   
+  $end_date - $incubation OR l2.movingDate is NULL)
+  AND (date(l2.movingDate) >= date(l1.livesFrom) OR date(l2.livesFrom) <= 
+  date(l1.movingDate))
 RETURN person
 UNION
 MATCH (infected: Person)-[v1:VISITS]->()<-[v2:VISITS]-(person: Person)
-WHERE infected.ssn = SSN AND v1.date = v2.date AND duration.inDays(date(v1.date), date(XXX)).days <= 15 AND duration.inDays(date(v1.date), date(XXX)).days >= 0
+WHERE infected.ssn = $ssn AND v1.date = v2.date AND duration.inDays(date(v1.date), date($end_date)).days <= 15 AND duration.inDays(date(v1.date), date($end_date)).days >= 0
 RETURN person
 UNION
 MATCH (infected: Person)-[m:MEETS]->(person: Person)
-WHERE infected.ssn = SSN AND duration.inDays(date(m.date), date(XXX)).days <= 15 AND duration.inDays(date(m.date), date(XXX)).days >= 0
+WHERE infected.ssn = $ssn AND duration.inDays(date(m.date), date($end_date)).days <= 15 AND duration.inDays(date(m.date), date($end_date)).days >= 0
 RETURN person
 \end{lstlisting}
 \newpage
