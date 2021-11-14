@@ -29,19 +29,6 @@ class PopulateDB:
     def close(self):
         self.driver.close()
 
-    """
-    def create_people(self):
-        with self.driver.session() as session:
-            for i in range(100):
-                person = RandomItalianPerson()
-                ssn_created = session.write_transaction(self._create_person, person.name, person.surname,
-                                                        person.data["codice_fiscale"], person.birthdate, person.sex,
-                                                        person.birthplace)
-                self.people.append(ssn_created)
-                print(ssn_created + " created")
-            # print(greeting1)
-    """
-
     def create_family(self, num_family_per_city):
         print("loading families ...")
         with self.driver.session() as session:
@@ -90,13 +77,13 @@ class PopulateDB:
     def create_amenities(self, num_public_spaces: int):
         print("loading public spaces...")
         with self.driver.session() as session:
-            for amenity in range(num_public_spaces):
-                city = random.choice(self.names_city)
-                amenity = random_amenity.Amenity(city)
-                self.amenities[city].append(amenity)
-                session.write_transaction(
-                    self._create_amenity, amenity.amenity, amenity.city, amenity.name, amenity.street)
-        print("public spaces loaded.")
+            for city in self.names_city:
+                for amenity in range(num_public_spaces):
+                    amenity = random_amenity.Amenity(city)
+                    self.amenities[city].append(amenity)
+                    session.write_transaction(
+                        self._create_amenity, amenity.amenity, amenity.city, amenity.name, amenity.street)
+            print("public spaces loaded.")
 
     @staticmethod
     def _create_amenity(tx, amenity_type: str, city: str, name: str, street: str):
@@ -188,7 +175,7 @@ class PopulateDB:
     
     @staticmethod
     def get_random_house(tx):
-        result = tx.run("MATCH (h:House) RETURN ID(h) LIMIT 1")
+        result = tx.run("MATCH (h:House) RETURN ID(h) ORDER BY rand() LIMIT 1")
         return result.single()[0]
 
     @staticmethod
@@ -351,8 +338,7 @@ class PopulateDB:
                                          "WHERE ID(p) = $id AND l.livesFrom < $random_date AND ID(h1) <> $random_house AND ID(h2) = $random_house "
                                          "CREATE (p)-[l1:LIVES{livesFrom: l.livesFrom, movingDate : $random_date}]->(h1) "
                                          "CREATE (p)-[l2:LIVES{livesFrom: $random_date}]->(h2) "
-                                         "DELETE l "
-                                      "RETURN ID(l1), ID(l2)", id=id_person, random_date=random_date, random_house=random_house)
+                                         "DELETE l ", id=id_person, random_date=random_date, random_house=random_house)
             
 
 if __name__ == "__main__":
@@ -360,15 +346,26 @@ if __name__ == "__main__":
         neo4j_password = pass_reader.readline().split()[0]
         populator = PopulateDB("bolt://localhost:7687", "neo4j", neo4j_password)
         populator.clear_db()
-        # populator.create_people()
-        populator.create_family(15)
-        populator.create_meets_relations(50, (2020, 6, 19), (2021, 6, 19))
+        #parameter for create_family : n must be greater than 0, number of families in the db per city
+        populator.create_family(25)
+        #parameters for meets_relations :
+        #number of meets for each person
+        #starting date of meets
+        #ending date of meets
+        populator.create_meets_relations(15, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
-        populator.create_amenities(20)
-        populator.create_visits_relations(5, 2, (2020, 6, 19), (2021, 6, 19))
-        populator.moving_people(3)
+        #parameter for create_amenities : n must be greater than 0, number of amenities for each city
+        populator.create_amenities(10)
+        #parameters for create_visits :
+        #max number of days between one visit and another, for each person;
+        #min number of days between one visit and another, for each person;
+        #tuple for starting date of visits
+        #tuple for ending date of visits
+        populator.create_visits_relations(25, 10, (2020, 6, 19), (2021, 6, 19)) 
+        #parameter for moving_people : number of people moved to another house
+        populator.moving_people(20)
         print("all the data have been loaded successfully.")
         populator.close()
