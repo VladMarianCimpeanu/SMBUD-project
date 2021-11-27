@@ -1,7 +1,6 @@
 import random
 import os
 import sys
-import time
 import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
@@ -348,7 +347,8 @@ class PopulateDB:
         music = pygame.mixer.Sound("loading_visits.mp3")
         pygame.mixer.Sound.play(music)"""
         return None
-            
+
+
 if __name__ == "__main__":
     with open("password.txt", "r") as pass_reader:
         neo4j_password = pass_reader.readline().split()[0]
@@ -357,26 +357,26 @@ if __name__ == "__main__":
         if len(sys.argv) > 1 :
             if sys.argv[1] == 'rickroll':
                 populator.easter_egg()
-        #parameter for create_family : n must be greater than 0, number of families in the db per city
+        # parameter for create_family : n must be greater than 0, number of families in the db per city
         populator.create_family(25)
-        #parameters for meets_relations :
-        #number of meets for each person
-        #starting date of meets
-        #ending date of meets
+        # parameters for meets_relations :
+        # number of meets for each person
+        # starting date of meets
+        # ending date of meets
         populator.create_meets_relations(15, (2020, 6, 19), (2021, 6, 19))
         populator.create_vaccines()
         populator._create_vaccinates()
         populator.create_swabs()
         populator.create_tests()
-        #parameter for create_amenities : n must be greater than 0, number of amenities for each city
+        # parameter for create_amenities : n must be greater than 0, number of amenities for each city
         populator.create_amenities(10)
-        #parameters for create_visits :
-        #max number of days between one visit and another, for each person;
-        #min number of days between one visit and another, for each person;
-        #tuple for starting date of visits
-        #tuple for ending date of visits
+        # parameters for create_visits :
+        # max number of days between one visit and another, for each person;
+        # min number of days between one visit and another, for each person;
+        # tuple for starting date of visits
+        # tuple for ending date of visits
         populator.create_visits_relations(25, 10, (2020, 6, 19), (2021, 6, 19)) 
-        #parameter for moving_people : number of people moved to another house
+        # parameter for moving_people : number of people moved to another house
         populator.moving_people(20)
         print("all the data have been loaded successfully.")
         populator.close()
