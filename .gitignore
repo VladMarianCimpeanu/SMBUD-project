@@ -3,3 +3,4 @@
 __pycache__/
 password.txt
 connection_string.txt
+init.py
