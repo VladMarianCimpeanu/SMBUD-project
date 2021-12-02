@@ -39,3 +39,5 @@ certificati come green pass. Se facciamo cosi dobbiamo scrivere il perchè della
  possiede un certificato identificato dall'UCI dato.
  - il db dovrebbe poter essere utilizzato anche per poter visualizzare l'intero storico covid di una determinata persona. Assumendo che una persona possa essere identificata
  attraverso il codice fiscale (NB: nel qr code non esiste questa informazione, quindi per il punto precedente questa considerazione non è applicabile), basta indicizzare i   documenti per codice fiscale, in questo modo il filtraggio per codice fiscale è rapido in ogni caso. Da questo punto in poi tutto ciò che si può fare nel modello proposto da specifica può essere fatto allo stesso modo con il modello proposto da noi. (in realtà dobbiamo verificare che le query siano effettivamente semplici, ma così dovrebbe essere).
+ 
+NB: sappiamo che in questo modo c'è rindondanza dei dati per quanto riguarda l'anagrafica degli utenti ma è qualcosa che possiamo permetterci data la finalità di mongoDB
