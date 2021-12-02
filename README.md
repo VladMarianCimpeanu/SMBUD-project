@@ -22,6 +22,11 @@ Il recovery certificate non è richiesto da specifica ma può essere usato come 
 scadenza del certificato.
 
 
+Per far riferimento ad un authorized body nel documento Place si è pensato di utilizzare un pointer a differenza di un sottodocumento,
+in quanto gli enti sono pochi e vengono ripetuti molte volte. Sebbene in MongoDB le ridondanze non siano gravi, riteniamo che questo tipo di informazione 
+raramente possa tornare utile, per questo motivo si è pensato che la replica di tali dati sia eccessiva.
+
+
 Per semplificare le query per quanto riguarda la validità di un documento, possiamo assumere che per il db sia usato in uno 
 specifico stato (italia) e quindi la legge è unica e che per ogni tipo di certificato, l'intervallo di validità è noto e ben definito.
 In questo modo possiamo mettere la data di scadenza di un certificato nel db. L'utilità sta nel fatto che nella query non c'è bisogno di calcolare 
