@@ -4,7 +4,7 @@ import numpy as np
 import json
 from typing import Dict
 from codicefiscale import codicefiscale
-from .utils import random_birthday
+from .utils import random_birthday, random_phone_number
 
 
 class RandomItalianPerson:
@@ -78,8 +78,7 @@ class RandomItalianPerson:
             birthdate=self.birthdate,
             birthplace=self.birthplace
         )
-
-
+        self._data["phone_number"] = random_phone_number()
 
         self.surname_data = surname_data
 
@@ -106,6 +105,10 @@ class RandomItalianPerson:
     @property
     def sex(self) -> str:
         return self._data["sex"]
+
+    @property
+    def phone_number(self) -> str:
+        return self._data["phone_number"]
 
     @property
     def data(self) -> Dict:
