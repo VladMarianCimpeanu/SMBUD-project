@@ -79,6 +79,8 @@ class RandomItalianPerson:
             birthplace=self.birthplace
         )
 
+
+
         self.surname_data = surname_data
 
     @property
@@ -92,6 +94,10 @@ class RandomItalianPerson:
     @property
     def birthplace(self) -> str:
         return self._data["birth_municipality"]
+
+    @property
+    def tax_code(self) -> str:
+        return self._data["codice_fiscale"]
 
     @property
     def birthdate(self) -> str:
