@@ -7,7 +7,7 @@
 
 ## commands
 - add a vaccination to a given person
-- change the expiration date of a spefic type of certificate (f.i: governament rules changed and from now certificates released after
+- change the expiration date of a specific type of certificate (f.i: government rules changed and from now certificates released after
 the second dose of a specific brand will last 12 month instead of 6(?)).
 - (?)
 
