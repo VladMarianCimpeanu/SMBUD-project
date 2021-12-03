@@ -63,7 +63,7 @@ class MongoPopulate:
             "name": random_italian_person.name,
             "surname": random_italian_person.surname,
             "tax code": random_italian_person.tax_code,
-            "dob": random_italian_person.birthdate,
+            "dob": datetime.datetime.strptime(random_italian_person.birthdate,'%Y-%m-%d'),
             "emergency name": RandomItalianPerson().name + " " + RandomItalianPerson().surname,
             "emergency contact": random_italian_person.phone_number
         }
