@@ -21,7 +21,7 @@ all_uci = []
 class MongoPopulate:
     def __init__(self, connection_string):
         self.client = MongoClient(connection_string)
-        self.db = self.client.SMBUD2
+        self.db = self.client.SMBUD
         self.vaccines = None
 
     @staticmethod
@@ -55,8 +55,7 @@ class MongoPopulate:
         For sake of simplicity the sn number will be the same for all the certifications, even though in 
         reality it may changes due to mixed vaccinations."""
 
-    def create_vaccination(self, doctor_document, nurse_document, vaccination_place, vaccination_date, vaccine_name,
-                           vaccine_dose):
+    def create_vaccination(self, doctor_document, nurse_document, vaccination_place, vaccination_date, vaccine_name, vaccine_dose):
         if self.vaccines is None:
             self.vaccines = pd.read_csv("datasets/vaccines.csv")
         vaccination_document = {
@@ -73,8 +72,7 @@ class MongoPopulate:
             "place": vaccination_place,
             "date": vaccination_date,
             "expiration date": vaccination_date + datetime.timedelta(days=int(self.vaccines
-                                                                              .loc[
-                                                                                  self.vaccines["name"] == vaccine_name,
+                                                                              .loc[self.vaccines["name"] == vaccine_name,
                                                                                   "validity" + str(vaccine_dose)]))
         }
         return vaccination_document
@@ -111,8 +109,7 @@ class MongoPopulate:
         print("Recovery certificates created successfully.")
         return rec
 
-    def create_test(self, revoked, datetime_attribute, test_type, result, place_document, sanitary_operator_document,
-                    expiration_date):
+    def create_test(self, revoked, datetime_attribute, test_type, result, place_document, sanitary_operator_document, expiration_date):
         test_document = {
             "revoked": revoked,
             "datetime": datetime_attribute,
