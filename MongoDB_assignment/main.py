@@ -123,7 +123,7 @@ class MongoPopulate:
             test_document['expiration date'] = expiration_date
         return test_document
 
-    def create_tests(self, amount=4, hours_duration=72):
+    def create_tests(self, amount=100, hours_duration_rapid=48, hours_duration_molecular=72):
         print("Creation of test certificates in progress...")
         self.db.tests.drop()
         collection = self.db.tests
@@ -134,7 +134,10 @@ class MongoPopulate:
                 dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0], "%Y-%m-%d %H:%M:%S")
             test_type = random.choices(['Rapid', 'Molecular'], [0.95, 0.05])[0]
             result = random.choices(['Negative', 'Positive'], [0.95, 0.05])[0]
-            expiration_date = datetime_attribute + datetime.timedelta(hours=hours_duration)
+            if test_type == 'Rapid':
+                expiration_date = datetime_attribute + datetime.timedelta(hours=hours_duration_rapid)
+            else:
+                expiration_date = datetime_attribute + datetime.timedelta(hours=hours_duration_molecular)
             tests.append(self.create_test(revoked=revoked,
                                           datetime_attribute=datetime_attribute,
                                           test_type=test_type,
