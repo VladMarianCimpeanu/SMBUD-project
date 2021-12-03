@@ -63,9 +63,10 @@ class MongoPopulate:
             "name": random_italian_person.name,
             "surname": random_italian_person.surname,
             "tax code": random_italian_person.tax_code,
-            "dob": datetime.datetime.strptime(random_italian_person.birthdate,'%Y-%m-%d'),
-            "emergency name": RandomItalianPerson().name + " " + RandomItalianPerson().surname,
-            "emergency contact": random_italian_person.phone_number
+            "dob": datetime.datetime.strptime(random_italian_person.birthdate, '%Y-%m-%d'),
+            "contact": random_italian_person.phone_number,
+            "emergency name": RandomItalianPerson().name + " " + random_italian_person.surname,
+            "emergency contact": RandomItalianPerson().phone_number
         }
         return person
 
@@ -115,7 +116,6 @@ class MongoPopulate:
     """Function used to generate recovery certificates"""
 
     def create_recovery(self,days_duration=180):
-        print("Creation of recovery certificates in progress...")
         self.db.recovery.drop()  # recovery cleaning from db
         collection = self.db.recovery
         date = datetime.datetime.strptime(dg.DateGenerator().random_datetimes_or_dates('date').tolist()[0],
@@ -172,17 +172,18 @@ class MongoPopulate:
             "surname": person['surname'],
             "dob": person['dob'],
             "tax code": person['tax code'],
-            "emergency contact": person['emergency contact'],
+            "contact": person['contact'],
             "emergency name": person['emergency name'],
+            "emergency contact": person['emergency contact'],
             "uci": uci,
             cert_type: cert_type_info
         }
         return certificate
 
     def create_random_certificate(self, cert_type, collection):
-        person = random.choice(self.people)
         uci = self.get_new_uci()
         if cert_type == 'Recovery':
+            person = random.choice(self.recovery_people)
             recovery_dict = self.create_recovery()
             certificate_recovery = self.create_certificate(person, uci, 'Recovery', recovery_dict)
             collection.insert_one(certificate_recovery)
@@ -212,9 +213,11 @@ class MongoPopulate:
             collection.insert_one(certificate_test_2)
             pass
         elif cert_type == 'Test':
+            person = random.choice(self.people)
             certificate = self.create_certificate(person, uci, 'Test', self.create_random_test())
             collection.insert_one(certificate)
         elif cert_type == 'Vaccination':
+            # person = random.choice(self.people)
             pass
         else:
             print('Error')
@@ -231,6 +234,7 @@ class MongoPopulate:
             self.create_random_certificate('Test', collection)
         for i in range(0, num_vacc):
             self.create_random_certificate('Vaccination', collection)
+        print(str(num_rec*3+num_test+num_vacc)+" Certificates created!")
         return
 
 
