@@ -11,8 +11,6 @@ import pandas as pd
 import numpy as np
 
 
-
-
 class MongoPopulate:
     def __init__(self, connection_string):
         self.client = MongoClient(connection_string, tls=True, tlsAllowInvalidCertificates=True)
@@ -25,6 +23,22 @@ class MongoPopulate:
         self.people = []
         self.UCI = []
         self.vaccinated_people = []
+        self.authorized_bodies = {}
+
+    def generate_authorized_bodies(self):
+        loaded_data = pd.read_csv("datasets/auth_bodies.csv")
+        self.db.authorized_bodies.drop()
+        collection = self.db.authorized_bodies
+        for index, row in loaded_data.iterrows():
+            doc = {
+                "name": row["name"],
+                "city": row["city"],
+                "address": row["address"],
+                "civic number": row["civic number"],
+                "department": row["department"]
+            }
+            result = collection.insert_one(doc)
+            self.authorized_bodies[row["city"]] = result.inserted_id
 
     def get_new_uci(self) -> str:
         while True:
@@ -77,11 +91,14 @@ class MongoPopulate:
         places_df = pd.read_csv('datasets/locations.csv')  # read csv with places
         places = []  # initialize places as list
         for index, row in places_df.iterrows():
+            city, objectID = random.choice(list(self.authorized_bodies.items()))
             place = {
                 "building_name": row.building_name,
                 "type": row.type,
                 "region": row.region,
-                "gps" : str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180))
+                "gps" : str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180)),
+                "city": city,
+                "authorized by": objectID
             }
             places.append(place)  # append each place in form of dict in places list
         self.places = places
@@ -279,6 +296,7 @@ if __name__ == "__main__":
         connection_string = connection_string_reader.readline().split()[0]
         mongo_populate = MongoPopulate(connection_string)
         # places contains the list of all the places
+        mongo_populate.generate_authorized_bodies()
         mongo_populate.create_places()
         mongo_populate.create_people()
         # create_recovery: the first parameter is the amount of certificates that will be created
