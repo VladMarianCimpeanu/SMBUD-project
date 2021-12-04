@@ -2,7 +2,18 @@
 QUERIES
 ##############################################################################
 1.
-2.
+2.  given the UCI of green pass returns the expiration date
+db.certificates.find(
+    {
+        uci: "01ITA797891BBF264E88B9BB8E299440Z0A"
+    },
+    {
+        "Test.expiration_date": 1,
+        "Recovery.expiration_date": 1,
+        "Vaccination.expiration_date": 1,
+        "_id": 0
+    }
+)
 3.
 4.
 5.
