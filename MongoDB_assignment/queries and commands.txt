@@ -24,9 +24,56 @@ db.certificates.find(
 ##############################################################################
 COMMANDS
 ##############################################################################
-1.
-2.
-3.
+1.INSERT VACCINATION FOR ONE PERSON (fields to be inserted are parametrized)
+
+db.certificates.insertOne({
+  'name' : $name,
+  'surname' : $surname,
+  'dob' : $dob,
+  'tax code' : $taxcode,
+  'contact' : $contact,
+  'emergency name' : $emname,
+  'emergency contact' : $emcontact,
+  'uci' : $uci,
+  'vaccination' : {
+    'revoked' : False,
+    'name' : $vaccname,
+    'brand' : $vaccbrand,
+    'type' : $type,
+    'lot' : $lot,
+    'sn' : $sn,
+    'dn' : $dn,
+    'issuer' : 'Italian Ministry of Health',
+    'nurse' : {
+      'type' : 'Nurse',
+      'name' : $nursname,
+      'surname' : $nurssurn,
+      'tax_code' : $nurstax,
+      'contact' : $nurscont
+    },
+    'doctor' : {
+      'type' : 'Doctor',
+      'name' : $doctname,
+      'surname' : $doctsurn,
+      'tax_code' : $docttax,
+      'contact' : $doctcont
+    },
+    'place': {
+      'building_name' : $buildingname,
+      'type' : $buildtype,
+      'region' : $buildregion,
+      'gps' : $buildgps,
+      'city' : $buildcity,
+      'authorized by' : $authbody
+    },
+    'date' : $vaccdate,
+    'expiration date': $vaccexp
+  }
+})
+
+
+2.CHANGE EXPIRATION DATE OF CERTIFICATE
+3. ???
 
 
 
