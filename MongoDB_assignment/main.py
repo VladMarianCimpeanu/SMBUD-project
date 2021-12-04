@@ -280,7 +280,6 @@ class MongoPopulate:
         print("Creation of certificates in progress...")
         self.db.certificates.drop()  # recovery cleaning from db
         collection = self.db.certificates
-        certificates = []
         for i in range(0, num_rec):
             self.create_random_certificate('Recovery', collection)
         for i in range(0, num_test):
@@ -290,6 +289,9 @@ class MongoPopulate:
         print(str(num_rec*3+num_test+num_vacc)+" Certificates created!")
         return
 
+    def add_indexes_to_certificates(self):
+        self.db.certificates.create_index("tax code")
+        self.db.certificates.create_index("uci")
 
 if __name__ == "__main__":
     with open("connection_string.txt", "r") as connection_string_reader:
@@ -303,3 +305,4 @@ if __name__ == "__main__":
         # the second one is the duration - in days- of the certification
         # mongo_populate.create_recovery(10, 180)
         mongo_populate.create_certificates(3, 20, 10)
+        mongo_populate.add_indexes_to_certificates()
