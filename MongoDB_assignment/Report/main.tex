@@ -99,11 +99,15 @@ The assumptions taken into account are the following:
 \begin{itemize}
 
 \item The recovery document has been introduced in the document DB to distinguish the usual negative test result to the one did after an infection to consider a certain person healed from Covid-19. Using this document can be computationally useful because otherwise, to know if a person has a recovery certificate, it would be necessary to scan all the tests and check the relative results and dates to deduce an infection and a consequent healing. It has been also assumed that the recovery certificate doesn't get automatically released, but it is registered manually by whom of competence after a specific iter. The recovery certificate was not expressly required by the problem specification but it has been introduced because it can be used as support to calculate the expiration date of the certificate.
+\item Authorized bodies has been implemented as an autonomous collection and a pointer has been used in the document Place instead of a sub-document because they are few and they are repeated a big amount of times. Even if redundancy can be accepted in MongoDB, the information contained in this document are not widely used, for this reason having multiple copies of them could be inefficient.
+\item It has been assumed that the database only contains documents related to the Italian state. Thanks to this the government rules are well known and well defined and it allows to have the expiration date directly in the certificate document since rules changes rarely happen. In this last case the update would be a little time consuming but this choice is widely justified considering the fact that checking the validity of a certificate is one of the main reason of our database and having it directly in the document allow to access it instantaneously without any computation.
+\item As said in the problem description, the designed database would be mainly used to check the validity of a determined certificate. For this reason it has been decided to make a collection of certificates (with possibly more than one associated to the same person) instead of making a single one for every person containing all the relevant data. This choice allows to make the certificate access faster since they are indexed by UIC and it anyway allows to reconstruct the Covid history of a given person by looking for all his/her certificates also indexed by fiscal code. In conclusion, this choice allows to have the same database that would be obtained with the other approach but simplify the queries for which the database would be mainly used.
+\item The following database has been designed with the awareness of existence of the Covid certification, so the structure thought has been taken into consideration thanks to its efficency in the most used cases. If the same database would have to be designed without knowing the existence of the certification adding it later maybe it would have make to a different and adapted, and probably also less efficient, design.
 
 \end{itemize}
 \newpage
 \section{ER diagram}
-The designed ER diagram contains the following entities: Person, Vaccine facility, Certificate and Medical Stuff. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate. 
+The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab. 
 %The other classes have been introduced due to ER diagram correctness reasons, but they haven't been taken into account during the design of the Document Database because the last one allows a more flexible design.
 
 
@@ -114,9 +118,9 @@ The designed ER diagram contains the following entities: Person, Vaccine facilit
 \newpage
 
 \section{Document diagram}
-The designed Document diagram is shown below. Certificate and Sanitary Operator are represented as collections of documents. Contact is a sub-document of both Certificate and Sanitary operator documents. 
+The designed Document diagram is shown below. Certificate and Authorized body are represented as collections of documents.
 
-The certificate document represents an unique person and it contains him/her Covid information chronology. It can have Recovery, Swab and Vaccination as sub-document and these last two have both an event details sub-document that contains all the information related to the place where the determined event happened.
+The certificate document doesn't represent an unique person but it is specific for a determined event. It can have one between Recovery, Test and Vaccination as sub-document and these last two have both Place and Sanitary operators as sub-documents which contain all the information related to the place and the doctor/nurse involved in the specific event.
 \hfill\break
 \\
 The Recovery document has been implemented to make the recovery certificate validation easier and faster. Otherwise, doing this validation through the scan of the tests information would have been more complex due to the possibility of a person to do an unlimited amount of tests.
@@ -135,12 +139,11 @@ The Dataset has been built by making a script in Python, using some useful packa
 
 \\
 \hfill\break
-We have also used this piece of code to generate hospitals and pharmacies data. This query has been used in overpass turbo (a web-based tool for extracting OpenStreetMap data) selecting the map area of Rome, Naples and Milan.
+It has been also used a CSV document, downloaded directly from the official Italian Government github repository, of all the vaccination centres (due to the limited scale of the to make database only some regions have been taken into consideration).
 
-\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+A CSV file for vaccines information has been built by hand due to necessity with the relevant information.
 
-CODE
-\end{lstlisting}
+
 \newpage
 \section{Queries and Commands}
 \subsection{Queries}
@@ -213,19 +216,23 @@ CODE
 \end{lstlisting}
 \newpage
 \section{Generator database}
-The {\fontfamily{qcr}\selectfont"MongoDB-populator/main.py"} file is responsible of generating a random database.
+The {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} file is responsible of generating a random database.
 In order to correctly run the generator, it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the generator will be able to connect with the database.
 \\This script exploits the following packages: {\fontfamily{qcr}\selectfont pandas, numpy, PyMongo and python-codicefiscale}.
 
-\subsection{Facilities generation}
-This generator will create facilities data for the following cities: Rome, Milan and Naples. For each city it will create event details representing hospitals and pharmacies available in that specific town. 
+\subsection{Place generation}
+The CSV file {\fontfamily{qcr}\selectfont"datasets/locations.csv"} has been used to generate all the places related to tests and vaccinations. Due to database scale limitation the generation of places has been limited to the Lombardy region.
+%This generator will create facilities data for the following cities: Rome, Milan and Naples. For each city it will create event details representing hospitals and pharmacies available in that specific town. 
 %For safety sake, the parameter that sets the number of public spaces to generate should be lower than 46.
 
 \subsection{Certificate generation}
 In order to consistently generate people certificates...
 
-\subsection{... generation}
+\subsection{Sanitary operator generation}
+Sanitary operators information are randomly generated by using our adapted version of the random italian person package. 
+
+\subsection{Authorized body generation}
 ...
 
 
@@ -272,7 +279,8 @@ Some interesting conclusions can be drawn from the development of this project: 
     \item Random-italian-person package: https://pypi.org/project/random-italian-person
     \item PyMongo package: https://docs.mongodb.com/drivers/pymongo/
     \item Tkinter package: https://docs.python.org/3/library/tkinter.html
-    \item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
+    \item Italian Government repository: https://github.com/italia/covid19-opendata-vaccini
+    %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
 \end{itemize}
 
 
