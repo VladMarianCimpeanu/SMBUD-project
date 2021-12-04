@@ -16,8 +16,18 @@ db.certificates.find(
 )
 3.
 4.
-5.
-
+5. return all the historic(all vaccines and tests) of a given person
+db.certificates.find(
+    {
+        "tax code": "NNCCRS83H27B243L",
+    }
+    {
+        "Test": 1,
+        "Recovery": 1,
+        "Vaccination": 1,
+        "_id": 0
+    }
+)
 
 
 
