@@ -124,7 +124,7 @@ class MongoPopulate:
             "doctor": doctor_document,
             "place": vaccination_place,
             "date": vaccination_date,
-            "expiration date": vaccination_date + datetime.timedelta(days=int(self.vaccines
+            "expiration_date": vaccination_date + datetime.timedelta(days=int(self.vaccines
                                                                               .loc[
                                                                                   self.vaccines["name"] == vaccine_name,
                                                                                   "validity" + str(vaccine_dose)].
@@ -179,7 +179,7 @@ class MongoPopulate:
             "revoked": False,
             "date": date,
             "valid from": valid_date,
-            "expiration date": valid_date + datetime.timedelta(days=days_duration),
+            "expiration_date": valid_date + datetime.timedelta(days=days_duration),
             "uci swab": uci,
             "issuer": "Italian Ministry of Health"
         }
@@ -200,7 +200,7 @@ class MongoPopulate:
                 expiration_date = datetime_attribute + datetime.timedelta(hours=48)
             else:
                 expiration_date = datetime_attribute + datetime.timedelta(hours=72)
-            test_document['expiration date'] = expiration_date
+            test_document['expiration_date'] = expiration_date
         return test_document
 
     def create_random_test(self, prob_positive=0):
@@ -306,3 +306,4 @@ if __name__ == "__main__":
         # mongo_populate.create_recovery(10, 180)
         mongo_populate.create_certificates(3, 20, 10)
         mongo_populate.add_indexes_to_certificates()
+
