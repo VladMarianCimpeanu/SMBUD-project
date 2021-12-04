@@ -9,7 +9,7 @@ from pymongo import MongoClient
 from pprint import pprint
 import pandas as pd
 import numpy as np
-import googlemaps
+
 
 
 
@@ -18,7 +18,8 @@ class MongoPopulate:
         self.client = MongoClient(connection_string, tls=True, tlsAllowInvalidCertificates=True)
         self.db = self.client.SMBUD
         self.vaccines = None
-        self.sanitary_operators = []
+        self.doctors = []
+        self.nurses = []
         self.places = []
         self.recovery_people = []
         self.people = []
@@ -26,7 +27,6 @@ class MongoPopulate:
 
     def get_new_uci(self) -> str:
         while True:
-            print("here")
             uci = '01ITA797891BBF264E88B9BB8E' + ''.join(random.choices(string.digits, k=6)) + random.choice(
                 string.ascii_uppercase) + random.choice(string.digits) + random.choice(string.ascii_uppercase)
             if uci not in self.UCI:
@@ -36,10 +36,10 @@ class MongoPopulate:
     def create_people(self, num_doc=25, num_nurse=50, num_people=100, num_rec_people=5):
         for i in range(0, num_doc):
             random_italian_person = RandomItalianPerson()
-            self.sanitary_operators.append(self.create_sanitary_operator('Doctor', random_italian_person))
+            self.doctors.append(self.create_sanitary_operator('Doctor', random_italian_person))
         for i in range(0, num_nurse):
             random_italian_person = RandomItalianPerson()
-            self.sanitary_operators.append(self.create_sanitary_operator('Nurse', random_italian_person))
+            self.nurses.append(self.create_sanitary_operator('Nurse', random_italian_person))
         for i in range(0, num_people):
             random_italian_person = RandomItalianPerson()
             self.people.append(self.create_person(random_italian_person))
@@ -63,9 +63,10 @@ class MongoPopulate:
             "name": random_italian_person.name,
             "surname": random_italian_person.surname,
             "tax code": random_italian_person.tax_code,
-            "dob": random_italian_person.birthdate,
-            "emergency name": random_italian_person.name + random_italian_person.surname,
-            "emergency contact": random_italian_person.phone_number
+            "dob": datetime.datetime.strptime(random_italian_person.birthdate, '%Y-%m-%d'),
+            "contact": random_italian_person.phone_number,
+            "emergency name": RandomItalianPerson().name + " " + random_italian_person.surname,
+            "emergency contact": RandomItalianPerson().phone_number
         }
         return person
 
@@ -114,32 +115,25 @@ class MongoPopulate:
 
     """Function used to generate recovery certificates"""
 
-    def create_recovery(self, amount, days_duration):
-        print("Creation of recovery certificates in progress...")
+    def create_recovery(self,days_duration=180):
         self.db.recovery.drop()  # recovery cleaning from db
         collection = self.db.recovery
-        recoveries = []
-        for i in range(0, amount):
-            date = datetime.datetime.strptime(dg.DateGenerator().random_datetimes_or_dates('date').tolist()[0],
-                                              '%Y-%m-%d')
-            valid_date = date + datetime.timedelta(days=random.randrange(10, 21))
-            # the following while checks that the uci is unique and that it is not already present in the db
-            uci = self.get_new_uci()
-            recovery = {
-                "revoked": False,
-                "date": date,
-                "valid_from": valid_date,
-                "expiration_date": valid_date + datetime.timedelta(days=days_duration),
-                "uci_swab": uci,
-                "issuer": "Italian Ministry of Health"
-            }
-            recoveries.append(recovery)
-        rec = collection.insert_many(recoveries)
-        print("Recovery certificates created successfully.")
-        return rec
+        date = datetime.datetime.strptime(dg.DateGenerator().random_datetimes_or_dates('date').tolist()[0],
+                                          '%Y-%m-%d')
+        valid_date = date + datetime.timedelta(days=random.randrange(10, 21))
+        # the following while checks that the uci is unique and that it is not already present in the db
+        uci = self.get_new_uci()
+        recovery = {
+            "revoked": False,
+            "date": date,
+            "valid from": valid_date,
+            "expiration date": valid_date + datetime.timedelta(days=days_duration),
+            "uci swab": uci,
+            "issuer": "Italian Ministry of Health"
+        }
+        return recovery
 
-    def create_test(self, revoked, datetime_attribute, test_type, result, place_document, sanitary_operator_document,
-                    expiration_date):
+    def create_test(self, revoked, datetime_attribute, test_type, result, place_document, sanitary_operator_document):
         test_document = {
             "revoked": revoked,
             "datetime": datetime_attribute,
@@ -150,50 +144,84 @@ class MongoPopulate:
             "sanitary operator": sanitary_operator_document,
         }
         if result == "Negative":
+            if test_type == 'Rapid':
+                expiration_date = datetime_attribute + datetime.timedelta(hours=48)
+            else:
+                expiration_date = datetime_attribute + datetime.timedelta(hours=72)
             test_document['expiration date'] = expiration_date
         return test_document
 
-    def create_random_test(self, hours_duration_rapid=48, hours_duration_molecular=72):
+    def create_random_test(self, prob_positive = 0):
         revoked = False
         datetime_attribute = datetime.datetime.strptime(
             dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0], "%Y-%m-%d %H:%M:%S")
         test_type = random.choices(['Rapid', 'Molecular'], [0.95, 0.05])[0]
-        result = random.choices(['Negative', 'Positive'], [0.95, 0.05])[0]
-        if test_type == 'Rapid':
-            expiration_date = datetime_attribute + datetime.timedelta(hours=hours_duration_rapid)
-        else:
-            expiration_date = datetime_attribute + datetime.timedelta(hours=hours_duration_molecular)
+        result = random.choices(['Negative', 'Positive'], [1-prob_positive, prob_positive])[0]
         test = self.create_test(revoked=revoked,
                                 datetime_attribute=datetime_attribute,
                                 test_type=test_type,
                                 result=result,
                                 place_document=random.choices(self.places)[0],
-                                sanitary_operator_document=random.choice(self.sanitary_operators),
-                                expiration_date=expiration_date
+                                sanitary_operator_document=random.choice(self.nurses)
                                 )
         return test
 
-    def create_random_certificate(self, cert_type):
-        person = random.choice(self.people)
+    def create_certificate(self, person: dict, uci, cert_type, cert_type_info: dict):
         certificate = {
-         #   "version": "to-do",
             "name": person['name'],
             "surname": person['surname'],
             "dob": person['dob'],
             "tax code": person['tax code'],
-            "emergency contact": person['emergency contact'],
+            "contact": person['contact'],
             "emergency name": person['emergency name'],
-            "uci": "to-do"
+            "emergency contact": person['emergency contact'],
+            "uci": uci,
+            cert_type: cert_type_info
         }
+        return certificate
+
+    def create_random_certificate(self, cert_type, collection):
+        uci = self.get_new_uci()
         if cert_type == 'Recovery':
+            person = random.choice(self.recovery_people)
+            recovery_dict = self.create_recovery()
+            certificate_recovery = self.create_certificate(person, uci, 'Recovery', recovery_dict)
+            collection.insert_one(certificate_recovery)
+
+            test_1 = self.create_test(revoked=False,
+                                      datetime_attribute=recovery_dict['date'],
+                                      test_type='Molecular',
+                                      result='Positive',
+                                      place_document=random.choice(self.places),
+                                      sanitary_operator_document=random.choice(self.nurses))
+            certificate_test_1 = self.create_certificate(person,
+                                                         self.get_new_uci(),
+                                                         'Test',
+                                                         test_1)
+            collection.insert_one(certificate_test_1)
+
+            test_2 = self.create_test(revoked=False,
+                                      datetime_attribute=recovery_dict['valid from'],
+                                      test_type='Molecular',
+                                      result='Negative',
+                                      place_document=random.choice(self.places),
+                                      sanitary_operator_document=random.choice(self.nurses))
+            certificate_test_2 = self.create_certificate(person,
+                                                         recovery_dict['uci swab'],
+                                                         'Test',
+                                                         test_2)
+            collection.insert_one(certificate_test_2)
             pass
         elif cert_type == 'Test':
-            certificate["test"]=self.create_random_test()
+            person = random.choice(self.people)
+            certificate = self.create_certificate(person, uci, 'Test', self.create_random_test())
+            collection.insert_one(certificate)
         elif cert_type == 'Vaccination':
+            # person = random.choice(self.people)
             pass
         else:
             print('Error')
-        return certificate
+        return
 
     def create_certificates(self, num_rec, num_test, num_vacc):
         print("Creation of certificates in progress...")
@@ -201,12 +229,13 @@ class MongoPopulate:
         collection = self.db.certificates
         certificates = []
         for i in range(0, num_rec):
-            certificates.append(self.create_random_certificate('Recovery'))
+            self.create_random_certificate('Recovery', collection)
         for i in range(0, num_test):
-            certificates.append(self.create_random_certificate('Test'))
+            self.create_random_certificate('Test', collection)
         for i in range(0, num_vacc):
-            certificates.append(self.create_random_certificate('Vaccination'))
-        return collection.insert_many(certificates)
+            self.create_random_certificate('Vaccination', collection)
+        print(str(num_rec*3+num_test+num_vacc)+" Certificates created!")
+        return
 
 
 if __name__ == "__main__":
@@ -219,4 +248,4 @@ if __name__ == "__main__":
         # create_recovery: the first parameter is the amount of certificates that will be created
         # the second one is the duration - in days- of the certification
         # mongo_populate.create_recovery(10, 180)
-        mongo_populate.create_certificates(0, 10, 0)
+        mongo_populate.create_certificates(3, 20, 0)
