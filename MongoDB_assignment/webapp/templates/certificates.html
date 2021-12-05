@@ -1,0 +1,51 @@
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
+
+<style>
+  .document {
+    width: 450px;
+    height: 500px;
+    margin: 0 auto;
+    margin-top: 50px;
+    position: relative;
+    border-radius: 10% 10% 10% 10%;
+    border-color: #404040;
+    background: #7AFF71;
+    color: #404040;
+    font-family: 'Baloo Bhaijaan 2', cursive;
+    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3);
+  }
+  .expired_document {
+    width: 450px;
+    height: 500px;
+    margin: 0 auto;
+    margin-top: 50px;
+    position: relative;
+    border-radius: 10% 10% 10% 10%;
+    border-color: #404040;
+    background: #FF6F69;
+    color: #404040;
+    font-family: 'Baloo Bhaijaan 2', cursive;
+    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3);
+  }
+  .document_inside {
+    top: 10px;
+    width: 410px;
+    height: 450px;
+    margin: 20px;
+    position: relative;
+    color: #404040;
+    font-family: 'Baloo Bhaijaan 2', cursive;
+  }
+  .text_class {
+      font-family: 'Ubuntu', sans-serif;
+    }
+</style>
+
+
+<h1 class=text_class> Here you can find your certificates.</h1>
+<h2 class=text_class> Green coloured documents are valid certificates, red otherwise.</h2>
+<div>
+  {{value|safe}}
+</div>

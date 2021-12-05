@@ -49,11 +49,17 @@
     .text_class {
       font-family: 'Ubuntu', sans-serif;
     }
-  }
+
 </style>
 <h1 class=text_class> Welcome to your personal area, {{ value }}</h1>
 <div>
-  <button class=folder_vaccines type="sumbit">VACCINES</button>
-  <button class=folder_tests type="sumbit">TESTS</button>
-  <button class=folder_certificates type="sumbit">CERTIFICATES</button>
+  <form action="/tests/" method="post">
+    <button class=folder_tests type="submit" >TESTS</button>
+  </form>
+  <form action="/certificates/" method="post">
+    <button class=folder_certificates type="submit">CERTIFICATES</button>
+  </form>
+  <form action="/vaccines/" method="post">
+    <button class=folder_vaccines type="submit">VACCINES</button>
+  </form>
 </div>
