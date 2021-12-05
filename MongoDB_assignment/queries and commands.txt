@@ -33,7 +33,7 @@ db.certificates.find(
 db.certificates.find(
     {
         "tax code": "NNCCRS83H27B243L",
-    }
+    },
     {
         "test": 1,
         "recovery": 1,
