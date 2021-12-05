@@ -13,7 +13,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 app.config["MONGO_URI"] = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin" \
                           "&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
 app.secret_key = '12345'                        
-pymongo = PyMongo(app)
+pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
 db = pymongo.cx.SMBUD
 certificates: Collection = db.certificates
 
@@ -33,7 +33,8 @@ def personal_area():
         return abort(404)
     else:
         session['tax_code'] = request.form['tax_code']
-        return render_template('personal_area.html', value = request.form['tax_code'])
+        person = certificates.find_one_or_404({"tax_code": session["tax_code"]}, {"name": 1, "surname": 1, "_id": 0})
+        return render_template('personal_area.html', value=person["name"] + " " + person["surname"])
 
 
 @app.route('/certificates/<string:uci>', methods=["GET"])
