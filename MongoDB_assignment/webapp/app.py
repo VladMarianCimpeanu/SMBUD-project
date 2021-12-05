@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from pymongo.collection import Collection
-from flask import Flask, json, render_template
+from flask import Flask, json, render_template, request, abort, session
 from flask_pymongo import PyMongo
 from bson import json_util
 
@@ -12,6 +12,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 # app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 app.config["MONGO_URI"] = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin" \
                           "&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
+app.secret_key = '12345'                        
 pymongo = PyMongo(app)
 db = pymongo.cx.SMBUD
 certificates: Collection = db.certificates
@@ -23,8 +24,16 @@ def parse_json(data):
 @app.route('/')
 @app.route('/login/')
 def login():
-    return render_template('login.html')
+    if request.method == 'GET':
+        return render_template('login.html')
 
+@app.route('/personal_area/', methods = ['POST', 'GET'])
+def personal_area():
+    if request.method != 'POST':
+        return abort(404)
+    else:
+        session['tax_code'] = request.form['tax_code']
+        return render_template('personal_area.html')
 
 
 @app.route('/certificates/<string:uci>', methods=["GET"])
