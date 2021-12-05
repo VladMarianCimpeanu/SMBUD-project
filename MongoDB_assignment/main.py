@@ -225,8 +225,8 @@ class MongoPopulate:
             "dob": person['dob'],
             "tax_code": person['tax_code'],
             "contact": person['contact'],
-            "emergency name": person['emergency_name'],
-            "emergency contact": person['emergency_contact'],
+            "emergency_name": person['emergency_name'],
+            "emergency_contact": person['emergency_contact'],
             "uci": uci,
             cert_type: cert_type_info
         }
