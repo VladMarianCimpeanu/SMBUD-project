@@ -15,7 +15,20 @@ db.certificates.find(
     }
 )
 3.
-4.
+4. Let assume that someone died or is ill. We want to see if there is any correlation between the illness and the
+anamnesi of a doctor. This query returns the tax code of the doctor who performed the anamnesi before the last vaccine
+dosed to the specific person and the date of the last vaccination.
+db.certificates.find(
+    {
+        "tax code": $tax_code
+    },
+    {
+        "vaccination.doctor.tax_code": 1,
+        "vaccination.date": 1
+        _id: 0
+     }
+).sort({"vaccination.date": -1}).limit(1)
+
 5. return all the historic(all vaccines and tests) of a given person
 db.certificates.find(
     {
