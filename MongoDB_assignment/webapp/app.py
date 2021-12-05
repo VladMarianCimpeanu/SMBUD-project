@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from pymongo.collection import Collection
-from flask import Flask, json, url_for, request
+from flask import Flask, json, render_template
 from flask_pymongo import PyMongo
 from bson import json_util
 
@@ -20,6 +20,12 @@ certificates: Collection = db.certificates
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+@app.route('/')
+@app.route('/login/')
+def login():
+    return render_template('login.html')
+
+
 
 @app.route('/certificates/<string:uci>', methods=["GET"])
 def get_certificate(uci):  # put application's code here
@@ -27,11 +33,12 @@ def get_certificate(uci):  # put application's code here
     return parse_json(certificate)
 
 
+
 @app.route("/certificates/")
 def list_certificates():
 
     # For pagination, it's necessary to sort by name,
-    # then skip the number of docs that earlier pages would have displayed,
+    # then skip the number of docs that earlier templates would have displayed,
     # and then to limit to the fixed page size, ``per_page``.
     certificates_result = certificates.find().sort("uci")
 
