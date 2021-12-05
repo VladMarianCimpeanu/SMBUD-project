@@ -33,7 +33,7 @@ def personal_area():
         return abort(404)
     else:
         session['tax_code'] = request.form['tax_code']
-        return render_template('personal_area.html')
+        return render_template('personal_area.html', value = request.form['tax_code'])
 
 
 @app.route('/certificates/<string:uci>', methods=["GET"])
