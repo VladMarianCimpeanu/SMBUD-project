@@ -58,6 +58,9 @@ db.certificates.find(
     }
 )
 
+6. Query that returns the number of vaccination certificates released in a desired period
+db.certificates.countDocuments({"vaccination.date": {$gte: ISODate('2021-01-01'), $lte: ISODate('2021-02-01')}})
+
 
 
 ##############################################################################
