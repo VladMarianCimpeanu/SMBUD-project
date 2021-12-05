@@ -8,9 +8,9 @@ db.certificates.find(
         uci: "01ITA797891BBF264E88B9BB8E299440Z0A"
     },
     {
-        "Test.expiration_date": 1,
-        "Recovery.expiration_date": 1,
-        "Vaccination.expiration_date": 1,
+        "test.expiration_date": 1,
+        "recovery.expiration_date": 1,
+        "vaccination.expiration_date": 1,
         "_id": 0
     }
 )
@@ -35,9 +35,9 @@ db.certificates.find(
         "tax code": "NNCCRS83H27B243L",
     }
     {
-        "Test": 1,
-        "Recovery": 1,
-        "Vaccination": 1,
+        "test": 1,
+        "recovery": 1,
+        "vaccination": 1,
         "_id": 0
     }
 )
@@ -53,10 +53,10 @@ db.certificates.insertOne({
   'name' : $name,
   'surname' : $surname,
   'dob' : $dob,
-  'tax code' : $taxcode,
+  'tax_code' : $taxcode,
   'contact' : $contact,
-  'emergency name' : $emname,
-  'emergency contact' : $emcontact,
+  'emergency_name' : $emname,
+  'emergency_contact' : $emcontact,
   'uci' : $uci,
   'vaccination' : {
     'revoked' : False,
@@ -87,10 +87,10 @@ db.certificates.insertOne({
       'region' : $buildregion,
       'gps' : $buildgps,
       'city' : $buildcity,
-      'authorized by' : $authbody
+      'authorized_by' : $authbody
     },
     'date' : $vaccdate,
-    'expiration date': $vaccexp
+    'expiration_date': $vaccexp
   }
 })
 
@@ -98,6 +98,8 @@ db.certificates.insertOne({
 2.CHANGE EXPIRATION DATE OF CERTIFICATE
 In this example we assume that the rules changed and the validity of the second dose of any vaccine is extended by 2 months
 db.certificates.updateMany({"vaccination.dn": 2}, [{ $set: { "vaccination.expiration_date": { $add: ["$vaccination.expiration_date", 24*3600 * 1000 * 60]}}}])
+
+
 3. ???
 
 

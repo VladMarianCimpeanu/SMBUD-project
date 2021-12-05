@@ -34,7 +34,7 @@ class MongoPopulate:
                 "name": row["name"],
                 "city": row["city"],
                 "address": row["address"],
-                "civic number": row["civic number"],
+                "civic_number": row["civic number"],
                 "department": row["department"]
             }
             result = collection.insert_one(doc)
@@ -77,11 +77,11 @@ class MongoPopulate:
         person = {
             "name": random_italian_person.name,
             "surname": random_italian_person.surname,
-            "tax code": random_italian_person.tax_code,
+            "tax_code": random_italian_person.tax_code,
             "dob": datetime.datetime.strptime(random_italian_person.birthdate, '%Y-%m-%d'),
             "contact": random_italian_person.phone_number,
-            "emergency name": RandomItalianPerson().name + " " + random_italian_person.surname,
-            "emergency contact": RandomItalianPerson().phone_number
+            "emergency_name": RandomItalianPerson().name + " " + random_italian_person.surname,
+            "emergency_contact": RandomItalianPerson().phone_number
         }
         return person
 
@@ -98,7 +98,7 @@ class MongoPopulate:
                 "region": row.region,
                 "gps" : str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180)),
                 "city": city,
-                "authorized by": objectID
+                "authorized_by": objectID
             }
             places.append(place)  # append each place in form of dict in places list
         self.places = places
@@ -178,9 +178,9 @@ class MongoPopulate:
         recovery = {
             "revoked": False,
             "date": date,
-            "valid from": valid_date,
+            "valid_from": valid_date,
             "expiration_date": valid_date + datetime.timedelta(days=days_duration),
-            "uci swab": uci,
+            "uci_swab": uci,
             "issuer": "Italian Ministry of Health"
         }
         return recovery
@@ -193,7 +193,7 @@ class MongoPopulate:
             "issuer": "Italian Ministry of Health",
             "result": result,
             "place": place_document,
-            "sanitary operator": sanitary_operator_document,
+            "sanitary_operator": sanitary_operator_document,
         }
         if result == "Negative":
             if test_type == 'Rapid':
@@ -223,10 +223,10 @@ class MongoPopulate:
             "name": person['name'],
             "surname": person['surname'],
             "dob": person['dob'],
-            "tax code": person['tax code'],
+            "tax_code": person['tax_code'],
             "contact": person['contact'],
-            "emergency name": person['emergency name'],
-            "emergency contact": person['emergency contact'],
+            "emergency name": person['emergency_name'],
+            "emergency contact": person['emergency_contact'],
             "uci": uci,
             cert_type: cert_type_info
         }
@@ -234,10 +234,10 @@ class MongoPopulate:
 
     def create_random_certificate(self, cert_type, collection):
         uci = self.get_new_uci()
-        if cert_type == 'Recovery':
+        if cert_type == 'recovery':
             person = random.choice(self.recovery_people)
             recovery_dict = self.create_recovery()
-            certificate_recovery = self.create_certificate(person, uci, 'Recovery', recovery_dict)
+            certificate_recovery = self.create_certificate(person, uci, 'recovery', recovery_dict)
             collection.insert_one(certificate_recovery)
 
             test_1 = self.create_test(revoked=False,
@@ -248,27 +248,27 @@ class MongoPopulate:
                                       sanitary_operator_document=random.choice(self.nurses))
             certificate_test_1 = self.create_certificate(person,
                                                          self.get_new_uci(),
-                                                         'Test',
+                                                         'test',
                                                          test_1)
             collection.insert_one(certificate_test_1)
 
             test_2 = self.create_test(revoked=False,
-                                      datetime_attribute=recovery_dict['valid from'],
+                                      datetime_attribute=recovery_dict['valid_from'],
                                       test_type='Molecular',
                                       result='Negative',
                                       place_document=random.choice(self.places),
                                       sanitary_operator_document=random.choice(self.nurses))
             certificate_test_2 = self.create_certificate(person,
-                                                         recovery_dict['uci swab'],
-                                                         'Test',
+                                                         recovery_dict['uci_swab'],
+                                                         'test',
                                                          test_2)
             collection.insert_one(certificate_test_2)
             pass
-        elif cert_type == 'Test':
+        elif cert_type == 'test':
             person = random.choice(self.people)
-            certificate = self.create_certificate(person, uci, 'Test', self.create_random_test())
+            certificate = self.create_certificate(person, uci, 'test', self.create_random_test())
             collection.insert_one(certificate)
-        elif cert_type == 'Vaccination':
+        elif cert_type == 'vaccination':
             certifications = self.create_random_vaccinations(1)
             for certificate in certifications:
                 collection.insert_one(certificate)
@@ -281,16 +281,16 @@ class MongoPopulate:
         self.db.certificates.drop()  # recovery cleaning from db
         collection = self.db.certificates
         for i in range(0, num_rec):
-            self.create_random_certificate('Recovery', collection)
+            self.create_random_certificate('recovery', collection)
         for i in range(0, num_test):
-            self.create_random_certificate('Test', collection)
+            self.create_random_certificate('test', collection)
         for i in range(0, num_vacc):
-            self.create_random_certificate('Vaccination', collection)
+            self.create_random_certificate('vaccination', collection)
         print(str(num_rec*3+num_test+num_vacc)+" Certificates created!")
         return
 
     def add_indexes_to_certificates(self):
-        self.db.certificates.create_index("tax code")
+        self.db.certificates.create_index("tax_code")
         self.db.certificates.create_index("uci")
 
 if __name__ == "__main__":
