@@ -12,7 +12,7 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 # app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 app.config["MONGO_URI"] = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin" \
                           "&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
-app.secret_key = '12345'                        
+app.secret_key = '12345'
 pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
 db = pymongo.cx.SMBUD
 certificates: Collection = db.certificates
@@ -23,7 +23,7 @@ def parse_json(data):
 
 
 @app.route('/')
-@app.route('/login/')
+@app.route('/login')
 def login():
     if request.method == 'GET':
         return render_template('login.html')
@@ -45,10 +45,8 @@ def get_certificate():
     dynamic_value = generate_certificates_page(documents)
     return render_template("certificates.html", value=dynamic_value)
 
-
-@app.route("/certificates/")
+@app.route("/certificates")
 def list_certificates():
-
     # For pagination, it's necessary to sort by name,
     # then skip the number of docs that earlier templates would have displayed,
     # and then to limit to the fixed page size, ``per_page``.
