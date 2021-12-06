@@ -44,7 +44,14 @@ def get_certificate():
     dynamic_value = generate_certificates_page(documents)
     return render_template("certificates.html", value=dynamic_value)
 
+@app.route('/tests/', methods= ["GET", "POST"])
+def get_test():
+    documents = certificates.find({
+        "tax_code": session["tax_code"]})
+    dynamic_value = generate_tests_page(documents)
+    return render_template("tests.html", value = dynamic_value)
 
+<<<<<<< Updated upstream
 @app.route('/vaccines/', methods=["GET", "POST"])
 def get_vaccines():
     documents = list(certificates.find({"tax_code": session["tax_code"], "vaccination": {"$exists": True}}))
@@ -53,6 +60,10 @@ def get_vaccines():
 
 
 @app.route("/certificates")
+=======
+
+@app.route("/certificates/")
+>>>>>>> Stashed changes
 def list_certificates():
     # For pagination, it's necessary to sort by name,
     # then skip the number of docs that earlier templates would have displayed,
@@ -75,7 +86,7 @@ def generate_certificates_page(docs: list) -> str:
             else:
                 file_html += wrap_html(generate_certificate_vaccination(doc), ["document", "document_inside"])
         elif "test" in doc:
-            if doc["test"]["result"]:
+            if doc["test"]["result"] == "Positive":
                 file_html += ""
             elif doc["test"]["revoked"] or doc["test"]["expiration_date"] < datetime.now():
                 file_html += wrap_html(generate_certificate_test(doc), ["expired_document", "document_inside"])
@@ -88,6 +99,7 @@ def generate_certificates_page(docs: list) -> str:
                 file_html += wrap_html(generate_certificate_recovery(doc), ["document", "document_inside"])
     return file_html
 
+<<<<<<< Updated upstream
 
 def generate_vaccinations_page(docs: list) -> str:
     file_html = ""
@@ -99,6 +111,21 @@ def generate_vaccinations_page(docs: list) -> str:
     return file_html
 
 
+=======
+def generate_tests_page(docs: list) -> str:
+    file_html = ""
+    for doc in docs:
+        if "test" in doc:
+            if doc["test"]["revoked"] or doc["test"]["result"] == "Positive":
+                file_html += wrap_html(generate_certificate_test(doc), ["positive_test", "document_inside"])
+            else:
+                file_html += wrap_html(generate_certificate_test(doc), ["negative_test", "document_inside"])
+    '''if docs.isEmpty():
+        file_html += "<b> No test found. </b>"'''
+    return file_html
+    
+    
+>>>>>>> Stashed changes
 def clean_place(place):
     place.pop("authorized_by", None)
     place.pop("gps", None)
@@ -157,8 +184,6 @@ def clean_test(tst):
 
 
 def generate_certificate_test(doc):
-    if doc["test"]["result"] == "Positive":
-        return ""
     certificate = ""
     test, operator, place = clean_test(doc["test"])
     certificate += "<b>Swab</b><br>"
