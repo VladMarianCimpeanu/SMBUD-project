@@ -11,6 +11,7 @@
 \\Vlad Marian Cimpeanu - 10606922}
 \date{ \begin{figure}[b] \centering \includegraphics[scale=0.2]{Logo Polimi.png} \end{figure}
  }
+\usepackage[dvipsnames]{xcolor}
 
 \usepackage{ifxetex}
 \usepackage{ifluatex}
@@ -64,8 +65,7 @@
 \lstdefinelanguage{cypher}
 {
 	morekeywords={
-		MATCH, OPTIONAL, WHERE, NOT, AND, OR, XOR, RETURN, DISTINCT, ORDER, BY, ASC, ASCENDING, DESC, DESCENDING, UNWIND, AS, UNION, WITH, ALL, CREATE, DELETE, DETACH, REMOVE, SET, MERGE, SET, SKIP, LIMIT, IN, CASE, WHEN, THEN, ELSE, END,
-		INDEX, DROP, UNIQUE, CONSTRAINT, EXPLAIN, PROFILE, START, COUNT, IS, NULL
+		find, sort
 	}
 }
 
@@ -76,6 +76,7 @@
 	{...}{$\mycdots$}{1}
 	{theta}{$\theta$}{1}
 }
+\lstset{escapeinside={<@}{@>}}
 
 
 \begin{document}
@@ -103,6 +104,7 @@ The assumptions taken into account are the following:
 \item It has been assumed that the database only contains documents related to the Italian state. Thanks to this the government rules are well known and well defined and it allows to have the expiration date directly in the certificate document since rules changes rarely happen. In this last case the update would be a little time consuming but this choice is widely justified considering the fact that checking the validity of a certificate is one of the main reason of our database and having it directly in the document allow to access it instantaneously without any computation.
 \item As said in the problem description, the designed database would be mainly used to check the validity of a determined certificate. For this reason it has been decided to make a collection of certificates (with possibly more than one associated to the same person) instead of making a single one for every person containing all the relevant data. This choice allows to make the certificate access faster since they are indexed by UIC and it anyway allows to reconstruct the Covid history of a given person by looking for all his/her certificates also indexed by fiscal code. In conclusion, this choice allows to have the same database that would be obtained with the other approach but simplify the queries for which the database would be mainly used.
 \item The following database has been designed with the awareness of existence of the Covid certification, so the structure thought has been taken into consideration thanks to its efficency in the most used cases. If the same database would have to be designed without knowing the existence of the certification adding it later maybe it would have make to a different and adapted, and probably also less efficient, design.
+\item The following design has been chosen due to make the research of a certificate more efficient. Otherwise, by making an unique dossier for every person, finding a desired certificate by UCI would have meant finding all the people with the same name, surname and date of birth and scan all their certificates (dossier sub-document) looking at the one with the given UCI. The tax code can't be used because, in real cases, it would not be exposed in the certification due to privacy reasons.
 
 \end{itemize}
 \newpage
@@ -110,11 +112,15 @@ The assumptions taken into account are the following:
 The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab. 
 %The other classes have been introduced due to ER diagram correctness reasons, but they haven't been taken into account during the design of the Document Database because the last one allows a more flexible design.
 
+\hfill\break
+\hfill\break
+\hfill\break
 
-%\begin{figure}[h]
-%\centering
-%\includegraphics[scale=0.25]{er.png}
-%\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.30]{er.png}
+\end{figure}
 \newpage
 
 \section{Document diagram}
@@ -146,6 +152,7 @@ A CSV file for vaccines information has been built by hand due to necessity with
 
 \newpage
 \section{Queries and Commands}
+In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
 \subsection{Queries}
 \subsubsection{Query 1}
 Query description...
@@ -155,55 +162,169 @@ Query description...
 CODE
 
 \end{lstlisting}
-\subsubsection{Query 2}
-Query description...
+\subsubsection{Expiration date of certificate}
+The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format:  
+\\"01ITAXXXXXXYYYXXXYXXYXYYXYXXXXXXYXY" where X is a digit and Y is a capital letter.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.find(
+    {
+        uci: "<@\textbf{\color{magenta}{uci}}@>"
+    },
+    {
+        "test.expiration_date": 1,
+        "recovery.expiration_date": 1,
+        "vaccination.expiration_date": 1,
+        "_id": 0
+    }
+)
 
 \end{lstlisting}
-\subsubsection{Query 3}
-Query description...
+\subsubsection{People vaccinated by a nurse}
+This query can be used to find all the people (and therefore the related certificates with their information) that get vaccinated by a given sanitary operator in a certain period of time. It can be useful for instance in case, probably due to a mistake, a sanitary operator accidentally injects a saline solution instead of a vaccine, consequentially all the people must be tracked down and warn and their certificates must be revoked.\\
+The tax code is the fiscal code (16 digits alphanumeric code) of the nurse who performed the vaccination, min date and max date are the two dates which delimit the period of time and they must be in the following format YYYY-MM-DD.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.find(
+    {
+        "vaccination.nurse.tax_code": "<@\textbf{\color{magenta}{tax code}}@>",
+        "vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'), 
+                             $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')}
+    },
+    {
+        "_id": 0, 
+        "name": 1,
+        "surname": 1,
+        "tax code": 1,
+        "contact": 1,
+        "uci": 1,
+        "vaccination.date": 1
+    }
+)
 
 \end{lstlisting}
 
-\subsubsection{Query 4}
-Query description...
+\subsubsection{Doctor who performed an anamnesi}
+This query returns the tax code of the doctor who performed the anamnesi during the last vaccination of a specific person and the related date.
+It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of a doctor.\\
+The tax code parameter is the fiscal code (16 digits alphanumeric code) of the vaccinated person.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.find(
+    {
+        "tax_code": "<@\textbf{\color{magenta}{tax code}}@>"
+    },
+    {
+        "vaccination.doctor.tax_code": 1,
+        "vaccination.date": 1
+        _id: 0
+     }
+).sort({"vaccination.date": -1}).limit(1)
 
 \end{lstlisting}
-\subsubsection{Query 5}
-Query description...
+\subsubsection{Covid history of a person}
+The following query returns the entire Covid history (all the vaccinations and tests information) of a given person.
+The tax code parameter is the fiscal code (16 digits alphanumeric code) of the person whose history you want to look for.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.find(
+    {
+        "tax code": "<@\textbf{\color{magenta}{tax code}}@>",
+    },
+    {
+        "test": 1,
+        "recovery": 1,
+        "vaccination": 1,
+        "_id": 0
+    }
+)
+
+\end{lstlisting}
+\subsubsection{Vaccination amount per period}
+This query returns the amount of vaccination certificates released in a desired period.\\
+Min date and max date parameters are the two dates which delimit the period of time and they must be in the following format YYYY-MM-DD.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+db.certificates.countDocuments(
+    {"vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'), 
+                          $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')
+                          }
+    }
+)
+
 
 \end{lstlisting}
 \newpage
 \subsection{Commands}
-\subsubsection{Command 1}
-Command description...
+\subsubsection{New vaccination}
+This query add a new vaccination (and the relevant information) for a person.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.insertOne({
+  'name' : "<@\textbf{\color{magenta}{person name}}@>",
+  'surname' : "<@\textbf{\color{magenta}{person surname}}@>",
+  'dob' : "<@\textbf{\color{magenta}{person date of birth}}@>",
+  'tax_code' : "<@\textbf{\color{magenta}{person tax code}}@>",
+  'contact' : "<@\textbf{\color{magenta}{person mobile number}}@>",
+  'emergency_name' : "<@\textbf{\color{magenta}{name of emergency contact}}@>",
+  'emergency_contact' : "<@\textbf{\color{magenta}{mobile number of emergency contact}}@>",
+  'uci' : "<@\textbf{\color{magenta}{certificate uci}}@>",
+  'vaccination' : {
+    'revoked' : False,
+    'name' : "<@\textbf{\color{magenta}{vaccine name}}@>",
+    'brand' : "<@\textbf{\color{magenta}{vaccine brand}}@>",
+    'type' : "<@\textbf{\color{magenta}{vaccine type}}@>",
+    'lot' : "<@\textbf{\color{magenta}{vaccine lot}}@>",
+    'sn' : "<@\textbf{\color{magenta}{vaccine sn}}@>",
+    'dn' : "<@\textbf{\color{magenta}{vaccine dn}}@>",
+    'issuer' : "Italian Ministry of Health",
+    'nurse' : {
+      'type' : "Nurse",
+      'name' : "<@\textbf{\color{magenta}{nurse name}}@>",
+      'surname' : "<@\textbf{\color{magenta}{nurse surname}}@>",
+      'tax_code' : "<@\textbf{\color{magenta}{nurse tax code}}@>",
+      'contact' : "<@\textbf{\color{magenta}{nurse mobile number}}@>"
+    },
+    'doctor' : {
+      'type' : "Doctor",
+      'name' : "<@\textbf{\color{magenta}{doctor name}}@>",
+      'surname' : "<@\textbf{\color{magenta}{doctor surname}}@>",
+      'tax_code' : "<@\textbf{\color{magenta}{doctor tax code}}@>",
+      'contact' : "<@\textbf{\color{magenta}{doctor mobile number}}@>"
+    },
+    'place': {
+      'building_name' : "<@\textbf{\color{magenta}{building name}}@>",
+      'type' : "<@\textbf{\color{magenta}{building type}}@>",
+      'region' : "<@\textbf{\color{magenta}{building region}}@>",
+      'gps' : "<@\textbf{\color{magenta}{builfing coordinates}}@>",
+      'city' : "<@\textbf{\color{magenta}{building city}}@>",
+      'authorized_by' : "<@\textbf{\color{magenta}{building authorized body}}@>"
+    },
+    'date' : "<@\textbf{\color{magenta}{vaccination date}}@>",
+    'expiration_date': "<@\textbf{\color{magenta}{certificates expiration date}}@>"
+  }
+})
 
 \end{lstlisting}
-\subsubsection{Command 2}
-Command description...
+\subsubsection{Expiration date update}
+This query changes the expiration date of all the vaccination certificates related to the second dose. It can be used for instance in case of government rules changes to extend the validity of the certificates.
+Days is the amount of days (integer) that will increase or decrease the validity of the certificate. Sign can only be + (for increasing) or - (for decreasing).
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.updateMany(
+    {"vaccination.dn": 2}, 
+    [{ $set: { "vaccination.expiration_date": { 
+    $add: ["$vaccination.expiration_date", <@\textbf{\color{magenta}{sign}}@> 24*3600 * 1000 * <@\textbf{\color{magenta}{days}}@>]}}
+    }]
+)
+
 
 \end{lstlisting}
 \subsubsection{Command 3}
@@ -238,11 +359,11 @@ Sanitary operators information are randomly generated by using our adapted versi
 
 \newpage
 \section{Application description}
-Goal of the application {\fontfamily{qcr}\selectfont"GUI/App.py"} is to give some information about the Covid-19 Certification.
-The user can use the application in order to:
+Goal of the web application {\fontfamily{qcr}\selectfont"webapp/App.py"} is to give some information about the Covid-19 history and certifications about a specific person.
+The user, after having inserted his tax code to login, can use the application in order to:
 \begin{itemize}
-    \item Given information about a specific people, print all his valid certifications.
-    \item Given a UCI, check if the related certificate is still valid, who it belongs to and its expiration date according to the actual government regulation.
+    \item Visualize his/her certifications (valid or expired).
+    \item Visualize his entire Covid history through documents related to his Covis vaccination, test or recovery.
 \end{itemize}
 
 %\begin{figure}[h!]
@@ -262,11 +383,10 @@ The user can use the application in order to:
 \newpage
 
 \section{User guide}
-The application is meant to work on pc or macOS. As the application has been entirely developed in Python, it is not
-operative system dependent.
+The application is meant to work on every operating system since it is executed on a browser. As the application has been entirely developed in Python, it is not operative system dependent.
 \\In order to correctly run the application it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
-\\The user must check to have installed correctly in the virtual environment the following pacakges: {\fontfamily{qcr}\selectfont tkinter, pandas, PyMongo, numpy and python-codicefiscale}.
+\\The user must check to have installed correctly in the virtual environment the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, bson, PyMongo, pandas, numpy and python-codicefiscale}.
 
 \section{Conclusion}
 
@@ -278,7 +398,7 @@ Some interesting conclusions can be drawn from the development of this project: 
 \begin{itemize}
     \item Random-italian-person package: https://pypi.org/project/random-italian-person
     \item PyMongo package: https://docs.mongodb.com/drivers/pymongo/
-    \item Tkinter package: https://docs.python.org/3/library/tkinter.html
+    \item Flask package: https://flask.palletsprojects.com/en/2.0.x/
     \item Italian Government repository: https://github.com/italia/covid19-opendata-vaccini
     %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
 \end{itemize}
