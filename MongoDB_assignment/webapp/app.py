@@ -6,7 +6,6 @@ from flask_pymongo import PyMongo
 from bson import json_util
 from datetime import datetime
 
-
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 # app.config["MONGO_URI"] = os.getenv("MONGO_URI")
@@ -46,6 +45,13 @@ def get_certificate():
     return render_template("certificates.html", value=dynamic_value)
 
 
+@app.route('/vaccines/', methods=["GET", "POST"])
+def get_vaccines():
+    documents = list(certificates.find({"tax_code": session["tax_code"], "vaccination": {"$exists": True}}))
+    dynamic_value = generate_vaccinations_page(documents)
+    return render_template("vaccinations.html", value=dynamic_value)
+
+
 @app.route("/certificates")
 def list_certificates():
     # For pagination, it's necessary to sort by name,
@@ -80,6 +86,16 @@ def generate_certificates_page(docs: list) -> str:
                 file_html += wrap_html(generate_certificate_recovery(doc), ["expired_document", "document_inside"])
             else:
                 file_html += wrap_html(generate_certificate_recovery(doc), ["document", "document_inside"])
+    return file_html
+
+
+def generate_vaccinations_page(docs: list) -> str:
+    file_html = ""
+    if docs:
+        for doc in docs:
+            file_html += wrap_html(generate_certificate_vaccination(doc), ["document", "document_inside"])
+    else:
+        file_html += "<b>No vaccinations found</b>"
     return file_html
 
 
