@@ -2,6 +2,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
 
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
 <style>
   .folder_vaccines {
     width: 150px;
@@ -13,7 +14,6 @@
     border-color: #805D93;
     background: #805D93;
     color: white;
-    font-family: 'Baloo Bhaijaan 2', cursive;
     cursor: pointer;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
   }
@@ -27,7 +27,6 @@
     border-color: #169873;
     background: #169873;
     color: white;
-    font-family: 'Baloo Bhaijaan 2', cursive;
     cursor: pointer;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
   }
@@ -42,17 +41,16 @@
     border-color: #F76E68;
     background: #F76E68;
     color: white;
-    font-family: 'Baloo Bhaijaan 2', cursive;
     cursor: pointer;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
   }
     .text_class {
-      font-family: 'Ubuntu', sans-serif;
+      font-family: 'Montserrat', sans-serif;
     }
 
 </style>
 <h1 class=text_class> Welcome to your personal area, {{ value }}</h1>
-<div>
+<div class=text_class>
   <form action="/tests/" method="post">
     <button class=folder_tests type="submit" >TESTS</button>
   </form>
