@@ -33,9 +33,9 @@ def personal_area():
     if request.method != 'POST':
         return abort(404)
     else:
+        session['tax_code'] = request.form['tax_code']
         if session['tax_code'] == 'RICKASTLEY': #unlock easter egg
             return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ", code=302)
-        session['tax_code'] = request.form['tax_code']
         person = certificates.find_one_or_404({"tax_code": session["tax_code"]}, {"name": 1, "surname": 1, "_id": 0})
         return render_template('personal_area.html', value=person["name"] + " " + person["surname"])
 
