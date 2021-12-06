@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from pymongo.collection import Collection
-from flask import Flask, json, render_template, request, abort, session
+from flask import Flask, json, render_template, request, abort, session, redirect
 from flask_pymongo import PyMongo
 from bson import json_util
 from datetime import datetime
@@ -33,6 +33,8 @@ def personal_area():
     if request.method != 'POST':
         return abort(404)
     else:
+        if session['tax_code'] == 'RICKASTLEY': #unlock easter egg
+            return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ", code=302)
         session['tax_code'] = request.form['tax_code']
         person = certificates.find_one_or_404({"tax_code": session["tax_code"]}, {"name": 1, "surname": 1, "_id": 0})
         return render_template('personal_area.html', value=person["name"] + " " + person["surname"])
