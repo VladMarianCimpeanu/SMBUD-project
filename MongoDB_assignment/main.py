@@ -1,4 +1,5 @@
 import sys
+
 sys.path.insert(0, '../')
 import random
 import string
@@ -96,7 +97,7 @@ class MongoPopulate:
                 "building_name": row.building_name,
                 "type": row.type,
                 "region": row.region,
-                "gps" : str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180)),
+                "gps": str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180)),
                 "city": city,
                 "authorized_by": objectID
             }
@@ -119,16 +120,10 @@ class MongoPopulate:
             "lot": random.randint(200000, 300000),
             "sn": int(self.vaccines.loc[self.vaccines["name"] == vaccine_name, "sn"].reset_index(drop=True).iloc[0]),
             "dn": vaccine_dose,
-            "issuer": "Italian Ministry of Health",
             "nurse": nurse_document,
             "doctor": doctor_document,
             "place": vaccination_place,
-            "date": vaccination_date,
-            "expiration_date": vaccination_date + datetime.timedelta(days=int(self.vaccines
-                                                                              .loc[
-                                                                                  self.vaccines["name"] == vaccine_name,
-                                                                                  "validity" + str(vaccine_dose)].
-                                                                              reset_index(drop=True).iloc[0]))
+            "date": vaccination_date
         }
         return vaccination_document
 
@@ -152,7 +147,7 @@ class MongoPopulate:
                 else:
                     delta = random.randint(0, 10)
                     date_vaccination += datetime.timedelta(days=int(self.vaccines.loc[self.vaccines["name"] == vaccine,
-                                                                                       "validity" + str(dn - 1)]
+                                                                                      "validity" + str(dn - 1)]
                                                                     .reset_index(drop=True).iloc[0]) - delta)
                 vaccination_doc = self.create_vaccination(doctor_document=random.choice(self.doctors),
                                                           nurse_document=random.choice(self.nurses),
@@ -164,24 +159,17 @@ class MongoPopulate:
                 certificates.append(doc)
         return certificates
 
-
     """Function used to generate recovery certificates"""
 
-    def create_recovery(self,days_duration=180):
-        self.db.recovery.drop()  # recovery cleaning from db
-        collection = self.db.recovery
+    def create_recovery(self):
         date = datetime.datetime.strptime(dg.DateGenerator().random_datetimes_or_dates('date').tolist()[0],
                                           '%Y-%m-%d')
-        valid_date = date + datetime.timedelta(days=random.randrange(10, 21))
         # the following while checks that the uci is unique and that it is not already present in the db
         uci = self.get_new_uci()
         recovery = {
             "revoked": False,
             "date": date,
-            "valid_from": valid_date,
-            "expiration_date": valid_date + datetime.timedelta(days=days_duration),
-            "uci_swab": uci,
-            "issuer": "Italian Ministry of Health"
+            "uci_swab": uci
         }
         return recovery
 
@@ -190,17 +178,10 @@ class MongoPopulate:
             "revoked": revoked,
             "datetime": datetime_attribute,
             "type": test_type,
-            "issuer": "Italian Ministry of Health",
             "result": result,
             "place": place_document,
             "sanitary_operator": sanitary_operator_document,
         }
-        if result == "Negative":
-            if test_type == 'Rapid':
-                expiration_date = datetime_attribute + datetime.timedelta(hours=48)
-            else:
-                expiration_date = datetime_attribute + datetime.timedelta(hours=72)
-            test_document['expiration_date'] = expiration_date
         return test_document
 
     def create_random_test(self, prob_positive=0):
@@ -208,7 +189,7 @@ class MongoPopulate:
         datetime_attribute = datetime.datetime.strptime(
             dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0], "%Y-%m-%d %H:%M:%S")
         test_type = random.choices(['Rapid', 'Molecular'], [0.95, 0.05])[0]
-        result = random.choices(['Negative', 'Positive'], [1-prob_positive, prob_positive])[0]
+        result = random.choices(['Negative', 'Positive'], [1 - prob_positive, prob_positive])[0]
         test = self.create_test(revoked=revoked,
                                 datetime_attribute=datetime_attribute,
                                 test_type=test_type,
@@ -228,8 +209,28 @@ class MongoPopulate:
             "emergency_name": person['emergency_name'],
             "emergency_contact": person['emergency_contact'],
             "uci": uci,
-            cert_type: cert_type_info
+            "issuer": "Italian Ministry of Health"
         }
+        if cert_type == "test":
+            if cert_type_info['result'] == "Negative":
+                certificate['valid_from'] = cert_type_info['datetime']
+                if cert_type_info['type'] == "Rapid":
+                    certificate['expiration_date'] = cert_type_info['datetime'] + datetime.timedelta(hours=48)
+                else:
+                    certificate['expiration_date'] = cert_type_info['datetime'] + datetime.timedelta(hours=72)
+        elif cert_type == "vaccination":
+            certificate['valid_from'] = cert_type_info['date'] + datetime.timedelta(days=12)
+            certificate['expiration_date'] = cert_type_info['date'] + datetime.timedelta(days=int(self.vaccines
+                                                                         .loc[
+                                                                             self.vaccines["name"] == cert_type_info['name'],
+                                                                             "validity" + str(cert_type_info['dn'])]
+                                                                         .reset_index(drop=True).iloc[0]))
+        elif cert_type == "recovery":
+            certificate['valid_from'] = cert_type_info['date'] + datetime.timedelta(days=random.randrange(10, 21))
+            certificate['expiration_date'] = certificate['valid_from'] + datetime.timedelta(days=180)
+        else:
+            print("Error: certification type non valid!")
+        certificate[cert_type] = cert_type_info
         return certificate
 
     def create_random_certificate(self, cert_type, collection):
@@ -253,7 +254,7 @@ class MongoPopulate:
             collection.insert_one(certificate_test_1)
 
             test_2 = self.create_test(revoked=False,
-                                      datetime_attribute=recovery_dict['valid_from'],
+                                      datetime_attribute=certificate_recovery['valid_from'],
                                       test_type='Molecular',
                                       result='Negative',
                                       place_document=random.choice(self.places),
@@ -286,12 +287,13 @@ class MongoPopulate:
             self.create_random_certificate('test', collection)
         for i in range(0, num_vacc):
             self.create_random_certificate('vaccination', collection)
-        print(str(num_rec*3+num_test+num_vacc)+" Certificates created!")
+        print("Certificates created!")
         return
 
     def add_indexes_to_certificates(self):
         self.db.certificates.create_index("tax_code")
         self.db.certificates.create_index("uci")
+
 
 if __name__ == "__main__":
     with open("connection_string.txt", "r") as connection_string_reader:
@@ -306,4 +308,3 @@ if __name__ == "__main__":
         # mongo_populate.create_recovery(10, 180)
         mongo_populate.create_certificates(3, 20, 10)
         mongo_populate.add_indexes_to_certificates()
-
