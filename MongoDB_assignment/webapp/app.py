@@ -46,11 +46,13 @@ def get_certificate():
     dynamic_value = generate_certificates_page(documents)
     return render_template("certificates.html", value=dynamic_value)
 
+
 @app.route('/tests/', methods= ["GET", "POST"])
 def get_test():
     documents = list(certificates.find({"tax_code": session["tax_code"], "test": {"$exists": True}}))
     dynamic_value = generate_tests_page(documents)
-    return render_template("tests.html", value = dynamic_value)
+    return render_template("tests.html", value=dynamic_value)
+
 
 @app.route('/vaccines/', methods=["GET", "POST"])
 def get_vaccines():
@@ -76,23 +78,20 @@ def list_certificates():
 def generate_certificates_page(docs: list) -> str:
     file_html = ""
     for doc in docs:
-        if "vaccination" in doc:
-            if doc["vaccination"]["revoked"] or doc["vaccination"]["expiration_date"] < datetime.now():
-                file_html += wrap_html(generate_certificate_vaccination(doc), ["expired_document", "document_inside"])
+        if "expiration_date" in doc:  # positive tests do not have expiration date and are not certificates.
+            file_to_wrap = ""
+            if "vaccination" in doc:
+                file_to_wrap = generate_certificate_vaccination(doc)
+            elif "test" in doc:
+                file_to_wrap = generate_certificate_test(doc)
             else:
-                file_html += wrap_html(generate_certificate_vaccination(doc), ["document", "document_inside"])
-        elif "test" in doc:
-            if doc["test"]["result"] == "Positive":
-                file_html += ""
-            elif doc["test"]["revoked"] or doc["test"]["expiration_date"] < datetime.now():
-                file_html += wrap_html(generate_certificate_test(doc), ["expired_document", "document_inside"])
+                file_to_wrap = generate_certificate_recovery(doc)
+            if doc["revoked"] or doc["expiration_date"] < datetime.now():  # filtering all expired certificates
+                file_html += wrap_html(file_to_wrap, ["expired_document", "document_inside"])
             else:
-                file_html += wrap_html(generate_certificate_test(doc), ["document", "document_inside"])
-        elif "recovery" in doc:
-            if doc["recovery"]["revoked"] or doc["recovery"]["expiration_date"] < datetime.now():
-                file_html += wrap_html(generate_certificate_recovery(doc), ["expired_document", "document_inside"])
-            else:
-                file_html += wrap_html(generate_certificate_recovery(doc), ["document", "document_inside"])
+                file_html += wrap_html(file_to_wrap, ["document", "document_inside"])
+    if file_html == "":
+        return "<b> No certifications found. </b>"
     return file_html
 
 
@@ -109,7 +108,7 @@ def generate_vaccinations_page(docs: list) -> str:
 def generate_tests_page(docs: list) -> str:
     file_html = ""
     for doc in docs:
-        if doc["test"]["revoked"] or doc["test"]["result"] == "Positive":
+        if doc["revoked"] or doc["test"]["result"] == "Positive":
             file_html += wrap_html(generate_certificate_test(doc), ["positive_test", "document_inside"])
         else:
             file_html += wrap_html(generate_certificate_test(doc), ["negative_test", "document_inside"])
@@ -129,7 +128,6 @@ def clean_vaccination(vax) -> (dict, str, str, dict):
     doctor = vax["doctor"]["name"] + " " + vax["doctor"]["surname"]
     nurse = vax["nurse"]["name"] + " " + vax["nurse"]["surname"]
     place = clean_place(vax["place"])
-    vax.pop("revoked", None)
     vax.pop("doctor", None)
     vax.pop("nurse", None)
     vax.pop("place", None)
@@ -152,12 +150,33 @@ def add_dict_to_html(doc: dict, html: str) -> str:
     return html
 
 
+def generate_body_certificate(doc: dict) -> dict:
+    new_doc = {
+        "name": doc["name"],
+        "surname": doc["surname"],
+        "date of birth": doc["dob"],
+        "tax code": doc["tax_code"],
+        "UCI": doc["uci"],
+    }
+    if not("test" in doc and doc["test"]["result"] == "Positive"):
+        new_doc["expiration date"] = doc["expiration_date"]
+        new_doc["valid from"] = doc["valid_from"]
+    return new_doc
+
+
+def add_revocation_information(doc, string) -> str:
+    revoked_string = ""
+    if doc["revoked"]:
+        revoked_string = "(Revoked)"
+    return string + " " + revoked_string
+
+
 def generate_certificate_vaccination(doc):
     certificate = ""
     vax = doc["vaccination"]
     vax, doctor, nurse, place = clean_vaccination(vax)
-    certificate += "<b>Vaccination</b><br>"
-    certificate += "UCI: {}<br>".format(doc["uci"])
+    certificate += "<b>{}</b><br>".format(add_revocation_information(doc, "Vaccination"))
+    certificate = add_dict_to_html(generate_body_certificate(doc), certificate)
     certificate = add_dict_to_html(vax, certificate)
     certificate += "doctor: " + doctor + "<br>"
     certificate += "nurse: " + nurse + "<br>"
@@ -166,10 +185,8 @@ def generate_certificate_vaccination(doc):
 
 
 def clean_test(tst):
-    place = clean_place(tst["place"])
     operator = tst["sanitary_operator"]["name"] + " " + tst["sanitary_operator"]["surname"]
     place = clean_place(tst["place"])
-    tst.pop("revoked", None)
     tst.pop("sanitary_operator", None)
     tst.pop("place", None)
     return tst, operator, place
@@ -178,8 +195,8 @@ def clean_test(tst):
 def generate_certificate_test(doc):
     certificate = ""
     test, operator, place = clean_test(doc["test"])
-    certificate += "<b>Swab</b><br>"
-    certificate += "UCI: {}<br>".format(doc["uci"])
+    certificate += "<b>{}</b><br>".format(add_revocation_information(doc, "Swab"))
+    certificate = add_dict_to_html(generate_body_certificate(doc), certificate)
     certificate = add_dict_to_html(test, certificate)
     certificate += "sanitary operator: " + operator + "<br>"
     certificate = add_dict_to_html(place, certificate)
@@ -187,9 +204,8 @@ def generate_certificate_test(doc):
 
 
 def generate_certificate_recovery(doc):
-    certificate = "<b>Recovery</b><br>"
-    certificate += "UCI: {}<br>".format(doc["uci"])
-    doc["recovery"].pop("uci_swab", None)
+    certificate = "<b>{}</b><br>".format(add_revocation_information(doc, "Recovery"))
+    certificate = add_dict_to_html(generate_body_certificate(doc), certificate)
     certificate = add_dict_to_html(doc["recovery"], certificate)
     return certificate
 
