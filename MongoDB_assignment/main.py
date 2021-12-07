@@ -113,7 +113,6 @@ class MongoPopulate:
         if self.vaccines is None:
             self.vaccines = pd.read_csv("datasets/vaccines.csv")
         vaccination_document = {
-            "revoked": False,  # for simplicity sake all the vaccines will be legally valid by default
             "name": vaccine_name,
             "brand": self.vaccines.loc[self.vaccines["name"] == vaccine_name, "brand"].reset_index(drop=True).iloc[0],
             "type": self.vaccines.loc[self.vaccines["name"] == vaccine_name, "type"].reset_index(drop=True).iloc[0],
@@ -167,15 +166,13 @@ class MongoPopulate:
         # the following while checks that the uci is unique and that it is not already present in the db
         uci = self.get_new_uci()
         recovery = {
-            "revoked": False,
             "date": date,
             "uci_swab": uci
         }
         return recovery
 
-    def create_test(self, revoked, datetime_attribute, test_type, result, place_document, sanitary_operator_document):
+    def create_test(self, datetime_attribute, test_type, result, place_document, sanitary_operator_document):
         test_document = {
-            "revoked": revoked,
             "datetime": datetime_attribute,
             "type": test_type,
             "result": result,
@@ -190,8 +187,7 @@ class MongoPopulate:
             dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0], "%Y-%m-%d %H:%M:%S")
         test_type = random.choices(['Rapid', 'Molecular'], [0.95, 0.05])[0]
         result = random.choices(['Negative', 'Positive'], [1 - prob_positive, prob_positive])[0]
-        test = self.create_test(revoked=revoked,
-                                datetime_attribute=datetime_attribute,
+        test = self.create_test(datetime_attribute=datetime_attribute,
                                 test_type=test_type,
                                 result=result,
                                 place_document=random.choices(self.places)[0],
@@ -209,7 +205,8 @@ class MongoPopulate:
             "emergency_name": person['emergency_name'],
             "emergency_contact": person['emergency_contact'],
             "uci": uci,
-            "issuer": "Italian Ministry of Health"
+            "issuer": "Italian Ministry of Health",
+            "revoked": False
         }
         if cert_type == "test":
             if cert_type_info['result'] == "Negative":
@@ -241,8 +238,7 @@ class MongoPopulate:
             certificate_recovery = self.create_certificate(person, uci, 'recovery', recovery_dict)
             collection.insert_one(certificate_recovery)
 
-            test_1 = self.create_test(revoked=False,
-                                      datetime_attribute=recovery_dict['date'],
+            test_1 = self.create_test(datetime_attribute=recovery_dict['date'],
                                       test_type='Molecular',
                                       result='Positive',
                                       place_document=random.choice(self.places),
@@ -253,8 +249,7 @@ class MongoPopulate:
                                                          test_1)
             collection.insert_one(certificate_test_1)
 
-            test_2 = self.create_test(revoked=False,
-                                      datetime_attribute=certificate_recovery['valid_from'],
+            test_2 = self.create_test(datetime_attribute=certificate_recovery['valid_from'],
                                       test_type='Molecular',
                                       result='Negative',
                                       place_document=random.choice(self.places),
