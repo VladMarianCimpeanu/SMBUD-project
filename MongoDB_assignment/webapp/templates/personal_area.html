@@ -44,9 +44,24 @@
     cursor: pointer;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
   }
+
+  button:hover {
+    animation-name: background-color;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes background-color {
+    100% {
+      opacity: 75%;
+    }
+  }
+
     .text_class {
       font-family: 'Montserrat', sans-serif;
-    }
+  }
+
+
 
 </style>
 <h1 class=text_class> Welcome to your personal area, {{ value }}</h1>
