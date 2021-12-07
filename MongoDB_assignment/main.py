@@ -182,7 +182,6 @@ class MongoPopulate:
         return test_document
 
     def create_random_test(self, prob_positive=0):
-        revoked = False
         datetime_attribute = datetime.datetime.strptime(
             dg.DateGenerator().random_datetimes_or_dates('datetime').tolist()[0], "%Y-%m-%d %H:%M:%S")
         test_type = random.choices(['Rapid', 'Molecular'], [0.95, 0.05])[0]
