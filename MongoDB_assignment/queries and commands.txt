@@ -133,7 +133,7 @@ In this example we assume that the rules changed and the validity of the second 
 db.certificates.updateMany({"vaccination.dn": 2}, [{ $set: { "vaccination.expiration_date": { $add: ["$vaccination.expiration_date", 24*3600 * 1000 * 60]}}}])
 
 
-3. ???
+3. CHANGE REVOKED STATUS OF VACCINES PERFORMED BY A GIVEN NURSE IN A GIVEN DATE
 
 
 
