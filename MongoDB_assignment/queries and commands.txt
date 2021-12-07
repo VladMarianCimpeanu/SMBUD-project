@@ -22,9 +22,7 @@ db.certificates.find(
         uci: "01ITA797891BBF264E88B9BB8E299440Z0A"
     },
     {
-        "test.expiration_date": 1,
-        "recovery.expiration_date": 1,
-        "vaccination.expiration_date": 1,
+        "expiration_date": 1,
         "_id": 0
     }
 )
@@ -38,7 +36,7 @@ db.certificates.find(
     {
         "_id":0, "name":1,
         "surname":1,
-        "tax code":1,
+        "tax_code":1,
         "contact":1,
         "uci":1,
         "vaccination.date":1
