@@ -130,14 +130,13 @@ db.certificates.insertOne({
 
 2.CHANGE EXPIRATION DATE OF CERTIFICATE
 In this example we assume that the rules changed and the validity of the second dose of any vaccine is extended by 2 months
-db.certificates.updateMany({"vaccination.dn": 2}, [{ $set: { "vaccination.expiration_date": { $add: ["$vaccination.expiration_date", 24*3600 * 1000 * 60]}}}])
+db.certificates.updateMany({"vaccination.dn": 2}, [{ $set: { "expiration_date": { $add: ["$expiration_date", 24*3600 * 1000 * 60]}}}])
 
 
 3. CHANGE REVOKED STATUS OF VACCINES PERFORMED BY A GIVEN NURSE IN A GIVEN DATE
-
-
-
-
+Assuming that it was found out that a no vax nurse dosed fake vaccines in a given date, this command invalidate all the certificates related to
+the vaccinations done in that day by that nurse.
+db.certificates.updateMany({"vaccination.date": new Date("$YYYY-MM-DD"), "vaccination.nurse.tax_code": "$nurse_tax_code"}, {"$set": {"revoked": true}})
 
 
 
