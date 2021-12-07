@@ -4,15 +4,12 @@ QUERIES
 1.  given a tax code it returns when the last certificate expires
 db.certificates.find(
     {
-        'tax_code': "MRBNGS34A62I936V",
-        '$or': [
-        {'recovery.expiration_date' : {$exists: true}},
-        {'test.expiration_date' : {$exists: true}},
-        {'vaccination.expiration_date' : {$exists: true}}]
+        'tax_code': "CRTCNF80D66E752L",
+        'expiration_date' : {$exists: true}
     },
     {
         'uci': 1,
-        'expiration_date': { '$ifNull': ['$recovery.expiration_date', {'$ifNull': ['$test.expiration_date', '$vaccination.expiration_date']}]}
+        'expiration_date': 1
     }
 ).sort({"expiration_date": -1}).limit(1)
 
