@@ -271,6 +271,10 @@ class MongoPopulate:
             print('Error')
         return
 
+    """num_rec is the number of recovery documents to generate. 
+       This will also generate the tests necessary to make the recovery document consistent;
+       num_test is the number of test documents to generate; 
+       num_vacc is the number of people to vaccinate."""
     def create_certificates(self, num_rec, num_test, num_vacc):
         print("Creation of certificates in progress...")
         self.db.certificates.drop()  # recovery cleaning from db
@@ -300,5 +304,5 @@ if __name__ == "__main__":
         # create_recovery: the first parameter is the amount of certificates that will be created
         # the second one is the duration - in days- of the certification
         # mongo_populate.create_recovery(10, 180)
-        mongo_populate.create_certificates(3, 20, 10)
+        mongo_populate.create_certificates(15, 50, 40)
         mongo_populate.add_indexes_to_certificates()

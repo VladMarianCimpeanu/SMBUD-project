@@ -65,7 +65,7 @@
 \lstdefinelanguage{cypher}
 {
 	morekeywords={
-		find, sort
+		find, sort, updateMany, insertOne, countDocuments, limit
 	}
 }
 
@@ -109,7 +109,7 @@ The assumptions taken into account are the following:
 \end{itemize}
 \newpage
 \section{ER diagram}
-The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab. 
+The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
 %The other classes have been introduced due to ER diagram correctness reasons, but they haven't been taken into account during the design of the Document Database because the last one allows a more flexible design.
 
 \hfill\break
@@ -133,9 +133,9 @@ The Recovery document has been implemented to make the recovery certificate vali
 With this design choice the time complexity of validate a recovery certificate has been reduced.
 
 
-%\begin{center}
-%\includegraphics[scale=0.15]{Graph_diagram.png}
-%\end{center}
+\begin{center}
+\includegraphics[scale=0.15]{document_diagram.png}
+\end{center}
 
 
 \newpage
@@ -154,34 +154,43 @@ A CSV file for vaccines information has been built by hand due to necessity with
 \section{Queries and Commands}
 In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
 \subsection{Queries}
-\subsubsection{Query 1}
-Query description...
+\subsubsection{Last expiring certificate}
+The following query, given the tax code of a person, returns the date of his last expiring certificate and the UCI of such certificate. This query can be used to find out if a person
+has any valid green pass or not.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.find(
+    {
+        'tax_code': "<@\textbf{\color{magenta}{tax code}}@>",
+        'expiration_date' : {$exists: true}
+    },
+    {
+        'uci': 1,
+        'expiration_date': 1
+    }
+).sort({"expiration_date": -1}).limit(1)
 
 \end{lstlisting}
 \subsubsection{Expiration date of certificate}
-The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format:  
+The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format:
 \\"01ITAXXXXXXYYYXXXYXXYXYYXYXXXXXXYXY" where X is a digit and Y is a capital letter.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 db.certificates.find(
     {
-        uci: "<@\textbf{\color{magenta}{uci}}@>"
+        'uci': "<@\textbf{\color{magenta}{uci}}@>"
     },
     {
-        "test.expiration_date": 1,
-        "recovery.expiration_date": 1,
-        "vaccination.expiration_date": 1,
+        "expiration_date": 1,
         "_id": 0
     }
 )
 
 \end{lstlisting}
 \subsubsection{People vaccinated by a nurse}
+\label{subsec:nurse-query}
 This query can be used to find all the people (and therefore the related certificates with their information) that get vaccinated by a given sanitary operator in a certain period of time. It can be useful for instance in case, probably due to a mistake, a sanitary operator accidentally injects a saline solution instead of a vaccine, consequentially all the people must be tracked down and warn and their certificates must be revoked.\\
 The tax code is the fiscal code (16 digits alphanumeric code) of the nurse who performed the vaccination, min date and max date are the two dates which delimit the period of time and they must be in the following format YYYY-MM-DD.
 
@@ -190,11 +199,11 @@ The tax code is the fiscal code (16 digits alphanumeric code) of the nurse who p
 db.certificates.find(
     {
         "vaccination.nurse.tax_code": "<@\textbf{\color{magenta}{tax code}}@>",
-        "vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'), 
+        "vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'),
                              $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')}
     },
     {
-        "_id": 0, 
+        "_id": 0,
         "name": 1,
         "surname": 1,
         "tax code": 1,
@@ -208,7 +217,7 @@ db.certificates.find(
 
 \subsubsection{Doctor who performed an anamnesi}
 This query returns the tax code of the doctor who performed the anamnesi during the last vaccination of a specific person and the related date.
-It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of a doctor.\\
+It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor.\\
 The tax code parameter is the fiscal code (16 digits alphanumeric code) of the vaccinated person.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
@@ -251,7 +260,7 @@ Min date and max date parameters are the two dates which delimit the period of t
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 db.certificates.countDocuments(
-    {"vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'), 
+    {"vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'),
                           $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')
                           }
     }
@@ -319,20 +328,30 @@ Days is the amount of days (integer) that will increase or decrease the validity
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 db.certificates.updateMany(
-    {"vaccination.dn": 2}, 
-    [{ $set: { "vaccination.expiration_date": { 
+    {"vaccination.dn": 2},
+    [{ $set: { "vaccination.expiration_date": {
     $add: ["$vaccination.expiration_date", <@\textbf{\color{magenta}{sign}}@> 24*3600 * 1000 * <@\textbf{\color{magenta}{days}}@>]}}
     }]
 )
 
 
 \end{lstlisting}
-\subsubsection{Command 3}
-Command description...
+\subsubsection{Revoke certificate}
+The command proposed is used to revoke a certificate under a certain condition.
+The utility of such command, for instance, could be to revoke all the certificates related to vaccinations performed by a given nurse in a specific day for the same motivation
+explained in the nurse query in subsection \ref{subsec:nurse-query}.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+db.certificates.updateMany(
+    {
+        "vaccination.date": new Date("<@\textbf{\color{magenta}{YYYY-MM-DD}}@>"),
+        "vaccination.nurse.tax_code": "<@\textbf{\color{magenta}{nurse tax code}}@>"
+    },
+    {
+        "$set": {"revoked": true}
+    }
+)
 
 \end{lstlisting}
 \newpage
@@ -344,14 +363,14 @@ In order to correctly run the generator, it is mandatory to...
 
 \subsection{Place generation}
 The CSV file {\fontfamily{qcr}\selectfont"datasets/locations.csv"} has been used to generate all the places related to tests and vaccinations. Due to database scale limitation the generation of places has been limited to the Lombardy region.
-%This generator will create facilities data for the following cities: Rome, Milan and Naples. For each city it will create event details representing hospitals and pharmacies available in that specific town. 
+%This generator will create facilities data for the following cities: Rome, Milan and Naples. For each city it will create event details representing hospitals and pharmacies available in that specific town.
 %For safety sake, the parameter that sets the number of public spaces to generate should be lower than 46.
 
 \subsection{Certificate generation}
 In order to consistently generate people certificates...
 
 \subsection{Sanitary operator generation}
-Sanitary operators information are randomly generated by using our adapted version of the random italian person package. 
+Sanitary operators information are randomly generated by using our adapted version of the random italian person package.
 
 \subsection{Authorized body generation}
 ...
