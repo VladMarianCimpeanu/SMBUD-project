@@ -1,55 +1,91 @@
-<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap" rel="stylesheet">
-
-<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
-
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
 <style>
-  .folder_vaccines {
-    width: 150px;
-    height: 105px;
-    margin: 0 auto;
-    margin-top: 50px;
-    position: relative;
-    border-radius: 10% 10% 10% 10%;
-    border-color: #805D93;
-    background: #805D93;
-    color: white;
-    cursor: pointer;
-    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
-  }
-    .folder_certificates {
-    width: 150px;
-    height: 105px;
-    margin: 0 auto;
-    margin-top: 50px;
-    position: relative;
-    border-radius: 10% 10% 10% 10%;
-    border-color: #169873;
-    background: #169873;
-    color: white;
-    cursor: pointer;
-    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
-  }
+    .folder_tests {
+      width: 300px;
+      height: 200px;
+      display: inline-block;
+      margin: auto;
+      position: relative;
+      background-color:  #F76E68;
+      border-color:  #F76E68;
+      border-radius: 0 5px 5px 5px;
+      box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
+      margin-bottom: -8px;
+      margin-top: 12px;
+      cursor: pointer;
+    }
 
-  .folder_tests {
-    width: 150px;
-    height: 105px;
-    margin: 0 auto;
-    margin-top: 50px;
-    position: relative;
-    border-radius: 10% 10% 10% 10%;
-    border-color: #F76E68;
-    background: #F76E68;
-    color: white;
-    cursor: pointer;
-    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3)
-  }
+    .folder_tests:before {
+      content: '';
+      width: 50%;
+      height: 0.5em;
+      border-radius: 5px 10px 0 0;
+      background-color:  #F76E68;
+      border-color:  #F76E68;
+      position: absolute;
+      top: -0.5em;
+      left: -2px;
+      cursor: pointer;
+    }
+
+    .folder_vaccines {
+      width: 300px;
+      height: 200px;
+      display: inline-block;
+      margin: auto;
+      position: relative;
+      background-color: #805D93;
+      border-radius: 0 5px 5px 5px;
+      box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
+      margin-bottom: -8px;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .folder_vaccines:before {
+      content: '';
+      width: 50%;
+      height: 0.5em;
+      border-radius: 5px 10px 0 0;
+      background-color: #805D93;
+      position: absolute;
+      top: -0.5em;
+      left: -2px;
+      cursor: pointer;
+    }
+
+    .folder_certificates {
+      width: 300px;
+      height: 200px;
+      display: inline-block;
+      margin: auto;
+      position: relative;
+      background-color: #169873;
+      border-color: #169873;
+      border-radius: 0 5px 5px 5px;
+      box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
+      margin-bottom: -8px;
+      margin-top: 12px;
+      cursor: pointer;
+    }
+
+    .folder_certificates:before {
+      content: '';
+      width: 50%;
+      height: 0.5em;
+      border-radius: 5px 10px 0 0;
+      background-color: #169873;
+      position: absolute;
+      top: -0.5em;
+      left: -2px;
+      cursor: pointer;
+    }
 
   button:hover {
     animation-name: background-color;
     animation-duration: 500ms;
     animation-fill-mode: forwards;
-  }
+    }
 
   @keyframes background-color {
     100% {
@@ -57,13 +93,10 @@
     }
   }
 
-    .text_class {
-      font-family: 'Montserrat', sans-serif;
+  .text_class {
+    font-family: 'Montserrat', sans-serif;
   }
-
-
-
-</style>
+  </style>
 <h1 class=text_class> Welcome to your personal area, {{ value }}</h1>
 <div class=text_class>
   <form action="/tests/" method="post">
