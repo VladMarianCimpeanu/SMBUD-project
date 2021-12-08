@@ -298,15 +298,17 @@ db.certificates.insertOne({
   'emergency_name' : "<@\textbf{\color{magenta}{name of emergency contact}}@>",
   'emergency_contact' : "<@\textbf{\color{magenta}{mobile number of emergency contact}}@>",
   'uci' : "<@\textbf{\color{magenta}{certificate uci}}@>",
+  'revoked' : False,
+  'issuer' : "Italian Ministry of Health",
+  'expiration_date': "<@\textbf{\color{magenta}{certificates expiration date}}@>"
+  'valid_from' : "<@\textbf{\color{magenta}{starting validity date}}@>",
   'vaccination' : {
-    'revoked' : False,
     'name' : "<@\textbf{\color{magenta}{vaccine name}}@>",
     'brand' : "<@\textbf{\color{magenta}{vaccine brand}}@>",
     'type' : "<@\textbf{\color{magenta}{vaccine type}}@>",
     'lot' : "<@\textbf{\color{magenta}{vaccine lot}}@>",
     'sn' : "<@\textbf{\color{magenta}{vaccine sn}}@>",
     'dn' : "<@\textbf{\color{magenta}{vaccine dn}}@>",
-    'issuer' : "Italian Ministry of Health",
     'nurse' : {
       'type' : "Nurse",
       'name' : "<@\textbf{\color{magenta}{nurse name}}@>",
@@ -330,7 +332,6 @@ db.certificates.insertOne({
       'authorized_by' : "<@\textbf{\color{magenta}{building authorized body}}@>"
     },
     'date' : "<@\textbf{\color{magenta}{vaccination date}}@>",
-    'expiration_date': "<@\textbf{\color{magenta}{certificates expiration date}}@>"
   }
 })
 
@@ -393,25 +394,34 @@ The CSV file {\fontfamily{qcr}\selectfont"datasets/auth\_bodies.csv"} has been u
 \newpage
 \section{Application description}
 Goal of the web application {\fontfamily{qcr}\selectfont"webapp/App.py"} is to give some information about the Covid-19 history and certifications about a specific person.
-The user, after having inserted his tax code to login, can use the application in order to:
+The starting page of the web application is the login page where the user can use his tax code
+and password.
+
+As the main purpose of this project is not to build a full working application, the authentication procedure has not been implemented, thus it is possible to visualize the historic of a given person without
+digitising any password.
+\begin{center}
+\includegraphics[scale=0.23]{login.png}
+\end{center}
+The user, after logged in, will be redirected to his personal area where he can:
 \begin{itemize}
-    \item Visualize his/her certifications (valid or expired).
-    \item Visualize his entire Covid history through documents related to his Covis vaccination, test or recovery.
+    \item Visualize all his/her certifications (valid or expired).
+    \item Visualize his/her vaccines.
+    \item Visualize all his/her tests.
 \end{itemize}
 
-%\begin{figure}[h!]
-%  \centering
-%  \begin{subfigure}
-%    \includegraphics[scale=0.23]{danger_levels.png}
-%    \caption{Application displaying danger levels in Milan.}
-%  \end{subfigure}
-%  \hfill \break
-%  \begin{subfigure}
-%    \includegraphics[scale=0.23]{trend.png}
-%    \caption{Application displaying how Covid infection is spreading.}
-%  \end{subfigure}
-%  \label{fig:screen_from_App}
-%\end{figure}
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}
+    \includegraphics[scale=0.23]{home.png}
+    \caption{Application displaying the personal area to the user.}
+  \end{subfigure}
+  \hfill \break
+  \begin{subfigure}
+    \includegraphics[scale=0.23]{tests.png}
+    \caption{Application displaying the tests performed by the user. Red documents are positive tests, whereas green documents are negative tests.}
+  \end{subfigure}
+  \label{fig:screen_from_App}
+\end{figure}
 
 \newpage
 
@@ -420,12 +430,17 @@ The application is meant to work on every operating system since it is executed 
 %In order to correctly run the application it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
 \\The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, bson, PyMongo, pandas, numpy and python-codicefiscale}.
+\hfill\break
+\\There are two possible ways to run the demo: the first one is to connect to the following link: \href{https://c19-cert-viewer.herokuapp.com/}.
 
+In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/App.py"} and connect to {\fontfamily{qcr}\selectfont"loacalhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
+
+Note that by default both {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} and {\fontfamily{qcr}\selectfont"MongoDB-assignment/webapp/App.py"} are connected to the same server that can be accessed by anyone, for this reason it is not mandatory to change the connection string.
 \section{Conclusion}
 
-Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way. 
+Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way.
 
-A foundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This mean that a good practice for MongoDB databases design is to consider how users will query the data and how often.
+A fundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This mean that a good practice for MongoDB databases design is to consider how users will query the data and how often.
 
 \section{References and Sources}
 \begin{itemize}
