@@ -1,18 +1,219 @@
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap" rel="stylesheet">
 
 <style>
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: black;
+  opacity: 0.9;
+}
+
+  .box_log_in {
+    width: 400px;
+    height: 600px;
+    box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
+    border-radius: 30px;
+    border-color: #169873;
+    background-color: #7CF3A0;
+    margin-top: 7%;
+    margin-right: 20%;
+    margin-left: 37%;
+    padding-top: 100px;
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+
+  .logo_background {
+    height: 110px;
+    width: 110px;
+    background-color: #DDFFE7;
+    border-radius: 50%;
+    margin-top: 30px;
+    margin-left: 145px;
+    margin-right: 145px;
+  }
+
+
+  .horizontal_cross {
+    height: 20px;
+    width: 65px;
+    background-color: #FF45B5;
+    border-radius: 10px;
+    position: relative;
+    top: 37px;
+    left: 23px;
+  }
+
+  .vertical_cross {
+    height: 80px;
+    width: 20px;
+    background-color: #FF45B5;
+    border-radius: 10px;
+    position: relative;
+    top: -5px;
+    left: 44px;
+  }
+
+  .input-box {
+    font-family:'Ubuntu', sans-serif;
+    width: 350px;
+    height: 65px;
+    background-color: #DDFFE7;
+    border-radius: 10px;
+    position: relative;
+    top: 10px;
+    margin: 22px;
+  }
+
+  .input_tax_code {
+    position: relative;
+    width: 300px;
+    height: 30px;
+    font-family: 'Ubuntu', sans-serif;
+    background-color: #DDFFE7;
+    border: None;
+    top: 6px;
+    left: 49px;
+    font-size: 16px;
+  }
+
+    .input_password {
+    position: relative;
+    width: 300px;
+    height: 30px;
+    font-family: 'Ubuntu', sans-serif;
+    background-color: #DDFFE7;
+    border: None;
+    top: -9px;
+    left: 33px;
+    font-size: 16px;
+  }
+
+  input:hover {
+    animation-name: background-font;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+  }
+
+  button {
+    font-family:'Ubuntu', sans-serif;
+    background-color: #FF75D8;
+    border-radius: 50px;
+    width: 110px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    top: 39px;
+    left: 123;
+  }
+
+  button:hover {
+    animation-name: background-color;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
+    }
+
+  @keyframes background-color {
+    100% {
+      opacity: 80%;
+    }
+  }
+
+  @keyframes background-font {
+    100% {
+      opacity: 50%;
+    }
+  }
+
+  .description {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+    padding-left: 12px;
+    padding-top: 4px;
+  }
+
+  .lock {
+  background: #FF75D8;
+  border-radius: 3px;
+  width: 25px;
+  height: 20px;
+  //margin-top: 60px;
+  //margin-left: 60px;
+  position: relative;
+  top: 16px;
+  left: 16px;
+}
+
+.lock:before {
+  content: "";
+  display: block;
+  position: absolute;
+  border:3px solid #FF75D8;
+  top: -14px;
+  left: 2.3px;
+  width: 15px;
+  height: 27px;
+  border-radius: 35px 35px 0 0;
+}
+
+.person {
+  position: relative;
+  height: 0px;
+  width: 0px;
+  top: -4px;
+  left: 14px;
+}
+
+.person:after {
+  content: '';
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+  top: 29px;
+  height: 10px;
+  width: 25px;
+  border: 0px solid #FF75D8;
+  border-radius: 45px 45px 0 0;
+  border-width: 5px 6px 0px 6px;
+}
+
+.person:before {
+  content: '';
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  top: 11;
+  left: 2.5px;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 4.5px solid #FF75D8;
+}
+
   .text_class {
-  font-family: 'Ubuntu', sans-serif;
+    font-family: 'Ubuntu', sans-serif;
   }
 </style>
 
-<h1 class=text_class>Log in to your personal area </h1>
+
 <main>
-  <h3>
-  <form class=text_class action="../personal_area/" method = "post">
-    <input type="text" placeholder="insert your tax code here" name = "tax_code">
-    <input type="password" placeholder="password" name = "password">
-    <button type="submit">login</button>
-  </form>
-  </h3>
+    <div class=box_log_in>
+      <div class=logo_background>
+        <div class=horizontal_cross></div>
+        <div class=vertical_cross></div>
+      </div>
+      <h1 class=text_class>Log in to your personal area </h1>
+      <form class=text_class action="../personal_area/" method = "post">
+        <div class=input-box>
+          <div class=description>Your user name</div>
+          <div class=person></div>
+          <input type="text" placeholder="insert your tax code here" name = "tax_code" class=input_tax_code>
+        </div>
+        <div class=input-box>
+          <div class=description>Password</div>
+          <div class=lock>
+          <input type="password" placeholder="password" name = "password" class=input_password>
+        </div>
+        <button type="submit"><b>login</b></button>
+      </form>
+    </div>
 </main>
