@@ -111,7 +111,7 @@ The assumptions taken into account are the following:
 \section{ER diagram}
 The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Sanitary Operator, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
 
-Every person, identified by an unique tax code, can faces some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepares sanitary operators.
+Every person, identified by an unique tax code, can face some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepared sanitary operators.
 
 \hfill\break
 \hfill\break
@@ -131,7 +131,7 @@ The certificate document doesn't represent an unique person but it is specific f
 \hfill\break
 \\
 The Recovery document has been implemented to make the recovery certificate validation easier and faster. Otherwise, doing this validation through the scan of the tests information would have been more complex due to the possibility of a person to do an unlimited amount of tests.
-With this design choice the time complexity of validate a recovery certificate has been reduced.
+With this design choice the time complexity to validate a recovery certificate has been reduced.
 \hfill\break
 \hfill\break
 
@@ -144,10 +144,10 @@ As shown above, every certificate has an unique certification number and contain
 Certificates also have a boolean value called Revoked with a False default value, which can be switched to True in case a certification has been released due to a mistake, allowing in this way the possibility to make it unusable.
 \\
 
-Vaccination, Reovery and Test contains the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
+Vaccination, Recovery and Test contains the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
 \\
 
-Sanitary operator and Place instead have information about when an event has happened and by whom it has been performed. This information can be useful, for instance in case of mistakes or doubts, to track down the sanitary operator or the doctor who performed the vaccination or test.
+Sanitary operator and Place instead have information about where an event has happened and by whom it has been performed. This information can be useful, for instance in case of mistakes or doubts, to track down the sanitary operator or the doctor who performed the vaccination or test.
 
 \section{Dataset description}
 The Dataset has been built by making a script in Python, using some useful packages like: {\fontfamily{qcr}\selectfont random-italian-person} that automatically generates people with random attributes (this package has been modified due to our necessity); the official {\fontfamily{qcr}\selectfont PyMongo} driver for Python for the communication with the Database since it allows to make queries directly from Python.
@@ -166,7 +166,7 @@ In the following chapter all the queries and commands parameters (part of the co
 Some parameters information can be useful for different queries or commands so they are written here to avoid writing them multiple times:
 \begin{itemize}
     \item The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format: \\"01ITAXXXXXXYYYXXXYXXYXYYXYXXXXXXYXY" where X is a digit and Y is a capital letter.
-    \item The tax code ("codice fiscale" in italy) is a 16 digits alphanumeric code and follow the usual italian format.
+    \item The tax code ("codice fiscale" in italy) is a 16 digits alphanumeric code and follows the usual italian format.
     \item Dates must be in the following format YYYY-MM-DD.
 \end{itemize}
 \subsection{Queries}
@@ -207,7 +207,7 @@ db.certificates.find(
 \end{lstlisting}
 \subsubsection{People vaccinated by a nurse}
 \label{subsec:nurse-query}
-This query can be used to find all the people (and therefore the related certificates with their information) that get vaccinated by a given sanitary operator in a certain period of time. It can be useful for instance in case, probably due to a mistake, a sanitary operator accidentally injects a saline solution instead of a vaccine, consequentially all the people must be tracked down and warn and their certificates must be revoked.\\
+This query can be used to find all the people (and therefore the related certificates with their information) that get vaccinated by a given sanitary operator in a certain period of time. It can be useful for instance in case, probably due to a mistake, a sanitary operator accidentally injects a saline solution instead of a vaccine, consequentially all the people must be tracked down and warned and their certificates must be revoked.\\
 The tax code is the fiscal code of the nurse who performed the vaccination, min date and max date are the two dates which delimit the period of time.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
@@ -233,7 +233,7 @@ db.certificates.find(
 \newpage
 \subsubsection{Doctor who performed an anamnesi}
 This query returns the tax code of the doctor who performed the anamnesi during the last vaccination of a specific person and the related date.
-It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor. 
+It can be used for instance, in case someone dies in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor. 
 
 The tax code parameter is the fiscal code of the vaccinated person.
 
@@ -285,7 +285,7 @@ db.certificates.countDocuments(
 \newpage
 \subsection{Commands}
 \subsubsection{New vaccination}
-This query add a new vaccination (and the relevant information) for a person.
+This query adds a new vaccination (and the relevant information) for a person.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -382,7 +382,7 @@ The CSV file {\fontfamily{qcr}\selectfont"datasets/locations.csv"} has been used
 %For safety sake, the parameter that sets the number of public spaces to generate should be lower than 46.
 
 \subsection{Certificate generation}
-In order to consistently generate certificates information about people have been randomly generated by using our adapted version of the random italian person package. A function has been implemented in order to generate random UCI (by using a real italian format).
+In order to consistently generate certificates, information about people have been randomly generated by using our adapted version of the random italian person package. A function has been implemented in order to generate random UCI (by using a real italian format).
 
 \subsection{Sanitary operator generation}
 Sanitary operators information have been randomly generated by using our adapted version of the random italian person package.
@@ -399,29 +399,31 @@ and password.
 
 As the main purpose of this project is not to build a full working application, the authentication procedure has not been implemented, thus it is possible to visualize the historic of a given person without
 digitising any password.
+\hfill\break
+\hfill\break
+
 \begin{center}
 \includegraphics[scale=0.23]{login.png}
 \end{center}
+\hfill\break
+\hfill\break
+
 The user, after logged in, will be redirected to his personal area where he can:
 \begin{itemize}
     \item Visualize all his/her certifications (valid or expired).
     \item Visualize his/her vaccines.
     \item Visualize all his/her tests.
 \end{itemize}
-
-\begin{figure}[h!]
-  \centering
-  \begin{subfigure}
-    \includegraphics[scale=0.23]{home.png}
+\begin{center}
+\includegraphics[scale=0.23]{home.png}
     \caption{Application displaying the personal area to the user.}
-  \end{subfigure}
-  \hfill \break
-  \begin{subfigure}
-    \includegraphics[scale=0.23]{tests.png}
-    \caption{Application displaying the tests performed by the user. Red documents are positive tests, whereas green documents are negative tests.}
-  \end{subfigure}
-  \label{fig:screen_from_App}
-\end{figure}
+    
+\end{center}
+
+\begin{center}
+\includegraphics[scale=0.23]{tests.png}
+    \caption{Application displaying the tests performed by the user. Red documents are positive tests, whereas green documents are negative tests.}\end{center}
+
 
 \newpage
 
@@ -435,12 +437,13 @@ The application is meant to work on every operating system since it is executed 
 
 In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/App.py"} and connect to {\fontfamily{qcr}\selectfont"loacalhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
 
-Note that by default both {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} and {\fontfamily{qcr}\selectfont"MongoDB-assignment/webapp/App.py"} are connected to the same server that can be accessed by anyone, for this reason it is not mandatory to change the connection string.
+Note that by default both {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} and
+\\{\fontfamily{qcr}\selectfont"MongoDB-assignment/webapp/App.py"} are connected to the same server that can be accessed by anyone, for this reason it is not mandatory to change the connection string.
 \section{Conclusion}
 
 Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way.
 
-A fundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This mean that a good practice for MongoDB databases design is to consider how users will query the data and how often.
+A fundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This means that a good practice for MongoDB databases design is to consider how users will query the data and how often.
 
 \section{References and Sources}
 \begin{itemize}
