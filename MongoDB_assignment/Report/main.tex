@@ -109,8 +109,9 @@ The assumptions taken into account are the following:
 \end{itemize}
 \newpage
 \section{ER diagram}
-The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Medical Stuff, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
-%The other classes have been introduced due to ER diagram correctness reasons, but they haven't been taken into account during the design of the Document Database because the last one allows a more flexible design.
+The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Sanitary Operator, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
+
+Every person, identified by an unique tax code, can faces some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepares sanitary operators.
 
 \hfill\break
 \hfill\break
@@ -131,28 +132,43 @@ The certificate document doesn't represent an unique person but it is specific f
 \\
 The Recovery document has been implemented to make the recovery certificate validation easier and faster. Otherwise, doing this validation through the scan of the tests information would have been more complex due to the possibility of a person to do an unlimited amount of tests.
 With this design choice the time complexity of validate a recovery certificate has been reduced.
+\hfill\break
+\hfill\break
 
 
 \begin{center}
-\includegraphics[scale=0.15]{document_diagram.png}
+\includegraphics[scale=0.18]{document_diagram.png}
 \end{center}
+As shown above, every certificate has an unique certification number and contains all the information about the person to whom it belongs like for instance name, surname and tax code. It also has information about the period while it can be used like the validity starting date and the expiration date. 
 
+Certificates also have a boolean value called Revoked with a False default value, which can be switched to True in case a certification has been released due to a mistake, allowing in this way the possibility to make it unusable.
+\\
 
-\newpage
+Vaccination, Reovery and Test contains the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
+\\
+
+Sanitary operator and Place instead have information about when an event has happened and by whom it has been performed. This information can be useful, for instance in case of mistakes or doubts, to track down the sanitary operator or the doctor who performed the vaccination or test.
 
 \section{Dataset description}
-The Dataset has been built by making a script in Python, using some useful packages like: random-italian-person that automatically generates people with random attributes (this package has been modified due to our necessity); the official PyMongo driver for Python for the communication with the Database since it allows to make queries directly from Python.
+The Dataset has been built by making a script in Python, using some useful packages like: {\fontfamily{qcr}\selectfont random-italian-person} that automatically generates people with random attributes (this package has been modified due to our necessity); the official {\fontfamily{qcr}\selectfont PyMongo} driver for Python for the communication with the Database since it allows to make queries directly from Python.
 
 \\
 \hfill\break
 It has been also used a CSV document, downloaded directly from the official Italian Government github repository, of all the vaccination centres (due to the limited scale of the to make database only some regions have been taken into consideration).
 
-A CSV file for vaccines information has been built by hand due to necessity with the relevant information.
+CSV files for vaccines information and authorized bodies have been built by hand due to necessity with the relevant information.
 
 
 \newpage
 \section{Queries and Commands}
-In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
+In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text. 
+
+Some parameters information can be useful for different queries or commands so they are written here to avoid writing them multiple times:
+\begin{itemize}
+    \item The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format: \\"01ITAXXXXXXYYYXXXYXXYXYYXYXXXXXXYXY" where X is a digit and Y is a capital letter.
+    \item The tax code ("codice fiscale" in italy) is a 16 digits alphanumeric code and follow the usual italian format.
+    \item Dates must be in the following format YYYY-MM-DD.
+\end{itemize}
 \subsection{Queries}
 \subsubsection{Last expiring certificate}
 The following query, given the tax code of a person, returns the date of his last expiring certificate and the UCI of such certificate. This query can be used to find out if a person
@@ -172,9 +188,9 @@ db.certificates.find(
 ).sort({"expiration_date": -1}).limit(1)
 
 \end{lstlisting}
+\newpage
 \subsubsection{Expiration date of certificate}
-The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. The UCI (unique certificate identifier) is an alphanumeric string and must be in the following format:
-\\"01ITAXXXXXXYYYXXXYXXYXYYXYXXXXXXYXY" where X is a digit and Y is a capital letter.
+The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. 
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -192,7 +208,7 @@ db.certificates.find(
 \subsubsection{People vaccinated by a nurse}
 \label{subsec:nurse-query}
 This query can be used to find all the people (and therefore the related certificates with their information) that get vaccinated by a given sanitary operator in a certain period of time. It can be useful for instance in case, probably due to a mistake, a sanitary operator accidentally injects a saline solution instead of a vaccine, consequentially all the people must be tracked down and warn and their certificates must be revoked.\\
-The tax code is the fiscal code (16 digits alphanumeric code) of the nurse who performed the vaccination, min date and max date are the two dates which delimit the period of time and they must be in the following format YYYY-MM-DD.
+The tax code is the fiscal code of the nurse who performed the vaccination, min date and max date are the two dates which delimit the period of time.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -214,11 +230,12 @@ db.certificates.find(
 )
 
 \end{lstlisting}
-
+\newpage
 \subsubsection{Doctor who performed an anamnesi}
 This query returns the tax code of the doctor who performed the anamnesi during the last vaccination of a specific person and the related date.
-It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor.\\
-The tax code parameter is the fiscal code (16 digits alphanumeric code) of the vaccinated person.
+It can be used for instance, in case someone die in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor. 
+
+The tax code parameter is the fiscal code of the vaccinated person.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -236,7 +253,7 @@ db.certificates.find(
 \end{lstlisting}
 \subsubsection{Covid history of a person}
 The following query returns the entire Covid history (all the vaccinations and tests information) of a given person.
-The tax code parameter is the fiscal code (16 digits alphanumeric code) of the person whose history you want to look for.
+The tax code is the fiscal code of the person whose history you want to look for.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -254,17 +271,14 @@ db.certificates.find(
 
 \end{lstlisting}
 \subsubsection{Vaccination amount per period}
-This query returns the amount of vaccination certificates released in a desired period.\\
-Min date and max date parameters are the two dates which delimit the period of time and they must be in the following format YYYY-MM-DD.
+This query returns the amount of vaccination certificates released in a desired period. Min date and max date parameters are the two dates which delimit the period of time.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 db.certificates.countDocuments(
     {"vaccination.date": {$gte: ISODate('<@\textbf{\color{magenta}{min date}}@>'),
-                          $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')
-                          }
-    }
-)
+                          $lte: ISODate('<@\textbf{\color{magenta}{max date}}@>')}
+                          }   )
 
 
 \end{lstlisting}
@@ -357,7 +371,7 @@ db.certificates.updateMany(
 \newpage
 \section{Generator database}
 The {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} file is responsible of generating a random database.
-In order to correctly run the generator, it is mandatory to...
+In order to correctly run the generator, it is mandatory to store the MongoDB connection string (with the correct username and password) in a .txt file named {\fontfamily{qcr}\selectfont connection-string.txt} saved in the directory {\fontfamily{qcr}\selectfont MongoDB\_assignment}.
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the generator will be able to connect with the database.
 \\This script exploits the following packages: {\fontfamily{qcr}\selectfont pandas, numpy, PyMongo and python-codicefiscale}.
 
@@ -367,13 +381,13 @@ The CSV file {\fontfamily{qcr}\selectfont"datasets/locations.csv"} has been used
 %For safety sake, the parameter that sets the number of public spaces to generate should be lower than 46.
 
 \subsection{Certificate generation}
-In order to consistently generate people certificates...
+In order to consistently generate certificates information about people have been randomly generated by using our adapted version of the random italian person package. A function has been implemented in order to generate random UCI (by using a real italian format).
 
 \subsection{Sanitary operator generation}
-Sanitary operators information are randomly generated by using our adapted version of the random italian person package.
+Sanitary operators information have been randomly generated by using our adapted version of the random italian person package.
 
 \subsection{Authorized body generation}
-...
+The CSV file {\fontfamily{qcr}\selectfont"datasets/auth\_bodies.csv"} has been used to generate all the authorized bodies documents. Due to database scale limitation their generation has been limited to only some of them present in the Lombardy region.
 
 
 \newpage
@@ -403,15 +417,15 @@ The user, after having inserted his tax code to login, can use the application i
 
 \section{User guide}
 The application is meant to work on every operating system since it is executed on a browser. As the application has been entirely developed in Python, it is not operative system dependent.
-\\In order to correctly run the application it is mandatory to...
+%In order to correctly run the application it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
-\\The user must check to have installed correctly in the virtual environment the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, bson, PyMongo, pandas, numpy and python-codicefiscale}.
+\\The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, bson, PyMongo, pandas, numpy and python-codicefiscale}.
 
 \section{Conclusion}
 
-Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. \\
+Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way. 
 
-...
+A foundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This mean that a good practice for MongoDB databases design is to consider how users will query the data and how often.
 
 \section{References and Sources}
 \begin{itemize}
