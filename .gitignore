@@ -2,5 +2,4 @@
 .ipynb_checkpoints/
 __pycache__/
 password.txt
-connection_string.txt
 init.py
