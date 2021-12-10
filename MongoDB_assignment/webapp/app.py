@@ -1,5 +1,5 @@
 from datetime import datetime
-import os
+import os, argparse
 from pymongo.collection import Collection
 from flask import Flask, json, render_template, request, abort, session, redirect
 from flask_pymongo import PyMongo
@@ -7,14 +7,7 @@ from bson import json_util
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-# app.config["MONGO_URI"] = os.getenv("MONGO_URI")
-app.config["MONGO_URI"] = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin" \
-                          "&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
-app.secret_key = '12345'
-pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
-db = pymongo.cx.SMBUD
-certificates: Collection = db.certificates
+DEFAULT_URI = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
 
 
 def parse_json(data):
@@ -211,5 +204,19 @@ def generate_certificate_recovery(doc):
 
 
 if __name__ == '__main__':
+    # Parsing URI
+    parser = argparse.ArgumentParser(description="Flask server for webapp used to display COVID-19 certificates")
+    parser.add_argument('--uri', dest='uri', default=DEFAULT_URI, help="URI for connection to MongoDB Atlas")
+    args = parser.parse_args()
+    connection_string = args.uri
+
+    # Setting app and pymongo
+    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+    app.config["MONGO_URI"] = connection_string
+    app.secret_key = '12345'
+    pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
+    db = pymongo.cx.SMBUD
+    certificates: Collection = db.certificates
+
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

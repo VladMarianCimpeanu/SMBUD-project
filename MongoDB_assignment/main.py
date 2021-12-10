@@ -1,4 +1,5 @@
 import sys
+import argparse
 
 sys.path.insert(0, '../')
 import random
@@ -296,7 +297,12 @@ class MongoPopulate:
 
 if __name__ == "__main__":
     with open("connection_string.txt", "r") as connection_string_reader:
-        connection_string = connection_string_reader.readline().split()[0]
+
+        parser = argparse.ArgumentParser(description="Generator of random C19 certificates to store in a MongoDB database")
+        parser.add_argument('--uri', dest='uri', default=connection_string_reader.readline().split()[0], help="URI for connection to MongoDB Atlas")
+        args = parser.parse_args()
+        connection_string = args.uri
+
         mongo_populate = MongoPopulate(connection_string)
         # places contains the list of all the places
         mongo_populate.generate_authorized_bodies()
