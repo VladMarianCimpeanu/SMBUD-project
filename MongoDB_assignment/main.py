@@ -97,6 +97,7 @@ class MongoPopulate:
                 "building_name": row.building_name,
                 "type": row.type,
                 "region": row.region,
+                "address" : RandomItalianHouse('Milan').address,
                 "gps": str(random.uniform(-90, 90)) + "," + str(random.uniform(-180, 180)),
                 "city": city,
                 "authorized_by": objectID
