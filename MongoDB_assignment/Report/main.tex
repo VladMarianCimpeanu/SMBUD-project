@@ -115,10 +115,15 @@ The assumptions taken into account are the following:
 
 %Every person, identified by an unique tax code, can face some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepared sanitary operators.
 
-The designed ER diagram contains the following entities: Person, Certificate, Event, Issuer, Sanitary operator, Place and Authorized body.\\More precisely, a Person can receive a Certificate regarding a Vaccination, Swab or a Recovery and it is issued by an Issuer, for instance, in Italy by the Ministry of health. \\The Recovery certificate, in a relational DB, should contain as foreign key the UCI of the negative swab that proofs the recovery of a given person.
-\\The Vaccination and Swab certificate refer to a vaccination or test Event happened in a specific Place, that has been authorized by an Authorized body. \\Vaccination events are performed by a Doctor, responsible of the anamnesi, and by a Nurse, responsible of the injection, whereas the test can be performed by a generic Sanitary operator.
-\hfill\break
-\hfill\break
+The designed ER diagram contains the following entities: Person, Certificate, Event, Issuer, Sanitary operator, Place and Authorized body. 
+
+More precisely, a Person can receive a Certificate regarding a Vaccination, Swab or a Recovery and it is issued by an Issuer, for instance, in Italy by the Ministry of health. 
+
+The Recovery certificate, in a relational DB, should contain as foreign key the UCI of the negative swab that proofs the recovery of a given person.
+
+The Vaccination and Swab certificate refer to a vaccination or test Event happened in a specific Place, that has been authorized by an Authorized body. 
+
+Vaccination events are performed by a Doctor, responsible of the anamnesi, and by a Nurse, responsible of the injection, whereas the test can be performed by a generic Sanitary operator.
 \hfill\break
 
 
@@ -133,22 +138,18 @@ The designed Document diagram is shown below. Certificate and Authorized body ar
 For each person there can be more than one certificate, each representing a specific event. It can have one between Recovery, Test and Vaccination as sub-document and these last two have both Place and Sanitary operators as sub-documents which contain all the information related to the place and the doctor/nurse involved in the specific event.
 \hfill\break
 \\The recovery document has been introduced in the document DB to distinguish the usual negative test result from the one done after an infection to consider a certain person healed from Covid-19. Using this document can be computationally useful because otherwise, to know if a person has a recovery certificate, it would be necessary to scan all the tests and check the relative results and dates to deduce an infection and a consequent healing.
-\\It has been also assumed that the recovery certificate doesn't get automatically released, but it is registered manually by whom of competence after a specific iter.
-\\The recovery certificate was not expressly required by the problem specification but it has been introduced because it can be used as support to calculate the expiration date of the certificate.
 
-\hfill\break
+It has been also assumed that the recovery certificate doesn't get automatically released, but it is registered manually by whom of competence after a specific iter. The recovery certificate was not expressly required by the problem specification but it has been introduced because it can be used as support to calculate the expiration date of the certificate.
 \hfill\break
 \begin{center}
-\includegraphics[scale=0.18]{document_diagram.png}
+\includegraphics[scale=0.155]{document_diagram.png}
 \end{center}
-
+\\
 As shown above, every certificate has a unique certification identifier and contains all the information about the person to whom it belongs like for instance name, surname and tax code. It also has information about the period during which it can be used, like the validity starting date and the expiration date.
 
 Certificates also have a boolean value called Revoked with a False default value, which can be switched to True in case a certification has been released due to a mistake, allowing in this way the possibility to make it unusable.
-\\
 
 Vaccination, Recovery and Test contain the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
-\\
 
 Sanitary operator and Place instead have information about where an event has happened and by whom it has been performed. This information can be useful, for instance in case of mistakes or doubts, to track down the sanitary operator or the doctor who performed the vaccination or test.
 \\ Authorized bodies has been implemented as an autonomous collection and a pointer, instead of a sub-document, has been used in the document Place because they are few and they are repeated a big amount of times. Even if redundancy can be accepted in MongoDB, the information contained in this document are not widely used, for this reason having multiple copies of them could be inefficient.
@@ -337,8 +338,7 @@ db.certificates.insertOne({
       'authorized_by' : "<@\textbf{\color{magenta}{building authorized body}}@>"
     },
     'date' : "<@\textbf{\color{magenta}{vaccination date}}@>",
-  }
-})
+  }})
 
 \end{lstlisting}
 \subsubsection{Expiration date update}
@@ -412,8 +412,7 @@ digitising any password.
 \end{center}
 \hfill\break
 \hfill\break
-
-The user, after logged in, will be redirected to his personal area where he can:
+\\The user, after logged in, will be redirected to his personal area where he can:
 \begin{itemize}
     \item Visualize all his/her certifications (valid or expired).
     \item Visualize his/her vaccines.
@@ -427,7 +426,7 @@ The user, after logged in, will be redirected to his personal area where he can:
 
 \begin{center}
 \includegraphics[scale=0.23]{tests.png}
-    \caption{Application displaying the tests performed by the user. Red documents are positive tests, whereas green documents are negative tests.}\end{center}
+    \caption{Application displaying the tests performed by the user. \\Red documents are positive tests, whereas green documents are negative tests.}\end{center}
 
 
 \newpage
@@ -436,14 +435,21 @@ The user, after logged in, will be redirected to his personal area where he can:
 The application is meant to work on every operating system since it is executed on a browser. As the application has been entirely developed in Python, it is not operative system dependent.
 %In order to correctly run the application it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
-\\The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, PyMongo, pandas, numpy and python-codicefiscale}.
+
+The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, PyMongo, pandas, numpy and python-codicefiscale}.
 \hfill\break
-\\There are two possible ways to run the demo: the first one is to connect to the following link: \href{https://c19-cert-viewer.herokuapp.com/}.
+Both the db generator and the WebApp use by default the connection string contained in the following file: \\ 
+{\fontfamily{qcr}\selectfont"MongoDB\_assignment/webapp/connection\_string.txt"}.
 
-In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/App.py"} and connect to {\fontfamily{qcr}\selectfont"localhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
+It can also be run on a custom instance by specifying a URI using the --uri argument from command line, e.g.\\
+{\fontfamily{qcr}\selectfont python main.py --uri mongodb+srv://...}\\
+{\fontfamily{qcr}\selectfont python app.py --uri mongodb+srv://...}
+\hfill\break
+\\
+There are two possible ways to run the demo: the first one is to connect to the following link \url{https://c19-cert-viewer.herokuapp.com/}, that works only on the default database.
 
-Note that by default both {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} and
-\\{\fontfamily{qcr}\selectfont"MongoDB-assignment/webapp/App.py"} are connected to the same server that can be accessed by anyone, for this reason it is not mandatory to change the connection string.
+In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/app.py"} and connect to {\fontfamily{qcr}\selectfont"localhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
+
 \section{Conclusion}
 
 Some interesting conclusions can be drawn from the development of this project:
@@ -457,10 +463,10 @@ A further development of the db design could be the temporary suspension of cert
 
 \section{References and Sources}
 \begin{itemize}
-    \item Random-italian-person package: https://pypi.org/project/random-italian-person
-    \item PyMongo package: https://docs.mongodb.com/drivers/pymongo/
-    \item Flask package: https://flask.palletsprojects.com/en/2.0.x/
-    \item Italian Government repository: https://github.com/italia/covid19-opendata-vaccini
+    \item \url{Random-italian-person package: https://pypi.org/project/random-italian-person}
+    \item \url{PyMongo package: https://docs.mongodb.com/drivers/pymongo/}
+    \item \url{Flask package: https://flask.palletsprojects.com/en/2.0.x/}
+    \item \url{Italian Government repository: https://github.com/italia/covid19-opendata-vaccini}
     %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
 \end{itemize}
 
