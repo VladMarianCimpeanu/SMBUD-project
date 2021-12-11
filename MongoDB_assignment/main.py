@@ -50,7 +50,7 @@ class MongoPopulate:
                 self.UCI.append(uci)
                 return uci
 
-    def create_people(self, num_doc=25, num_nurse=50, num_people=100, num_rec_people=5):
+    def create_people(self, num_doc=25, num_nurse=50, num_people=600, num_rec_people=300):
         for i in range(0, num_doc):
             random_italian_person = RandomItalianPerson()
             self.doctors.append(self.create_sanitary_operator('Doctor', random_italian_person))
@@ -308,8 +308,11 @@ if __name__ == "__main__":
         mongo_populate.generate_authorized_bodies()
         mongo_populate.create_places()
         mongo_populate.create_people()
-        # create_recovery: the first parameter is the amount of certificates that will be created
-        # the second one is the duration - in days- of the certification
-        # mongo_populate.create_recovery(10, 180)
-        mongo_populate.create_certificates(15, 50, 40)
+        """
+        the first parameter is the number of recovery documents to generate. 
+            This will also generate the tests necessary to make the recovery document consistent;
+        the second parameter is the number of test documents to generate; 
+        the third parameter is the number of people to vaccinate.
+        """
+        mongo_populate.create_certificates(50, 450, 450)
         mongo_populate.add_indexes_to_certificates()
