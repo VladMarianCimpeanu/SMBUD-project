@@ -45,11 +45,11 @@ anamnesi of a doctor. This query returns the tax code of the doctor who performe
 dosed to the specific person and the date of the last vaccination.
 db.certificates.find(
     {
-        "tax code": $tax_code
+        "tax_code": $tax_code
     },
     {
         "vaccination.doctor.tax_code": 1,
-        "vaccination.date": 1
+        "vaccination.date": 1,
         _id: 0
      }
 ).sort({"vaccination.date": -1}).limit(1)
