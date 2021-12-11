@@ -7,11 +7,26 @@ from bson import json_util
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = '12345'
+
 DEFAULT_URI = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
+certificates: Collection
+connection_string = DEFAULT_URI
 
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
+
+
+@app.before_first_request
+def setup():
+    # Setting app and pymongo
+    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+    app.config["MONGO_URI"] = connection_string
+    pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
+    db = pymongo.cx.SMBUD
+    global certificates
+    certificates = db.certificates
 
 
 @app.route('/')
@@ -27,7 +42,7 @@ def personal_area():
         return abort(404)
     else:
         session['tax_code'] = request.form['tax_code']
-        if session['tax_code'] == 'RICKASTLEY': #unlock easter egg
+        if session['tax_code'] == 'RICKASTLEY':  # unlock easter egg
             return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ", code=302)
         person = certificates.find_one_or_404({"tax_code": session["tax_code"]}, {"name": 1, "surname": 1, "_id": 0})
         return render_template('personal_area.html', value=person["name"] + " " + person["surname"])
@@ -40,7 +55,7 @@ def get_certificate():
     return render_template("certificates.html", value=dynamic_value)
 
 
-@app.route('/tests/', methods= ["GET", "POST"])
+@app.route('/tests/', methods=["GET", "POST"])
 def get_test():
     documents = list(certificates.find({"tax_code": session["tax_code"], "test": {"$exists": True}}))
     dynamic_value = generate_tests_page(documents)
@@ -108,8 +123,8 @@ def generate_tests_page(docs: list) -> str:
     if not docs:
         file_html += "<b> No tests found. </b>"
     return file_html
-    
-    
+
+
 def clean_place(place):
     place.pop("authorized_by", None)
     place.pop("gps", None)
@@ -151,7 +166,7 @@ def generate_body_certificate(doc: dict) -> dict:
         "tax code": doc["tax_code"],
         "UCI": doc["uci"],
     }
-    if not("test" in doc and doc["test"]["result"] == "Positive"):
+    if not ("test" in doc and doc["test"]["result"] == "Positive"):
         new_doc["expiration date"] = doc["expiration_date"]
         new_doc["valid from"] = doc["valid_from"]
     return new_doc
@@ -209,14 +224,6 @@ if __name__ == '__main__':
     parser.add_argument('--uri', dest='uri', default=DEFAULT_URI, help="URI for connection to MongoDB Atlas")
     args = parser.parse_args()
     connection_string = args.uri
-
-    # Setting app and pymongo
-    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-    app.config["MONGO_URI"] = connection_string
-    app.secret_key = '12345'
-    pymongo = PyMongo(app, tls=True, tlsAllowInvalidCertificates=True)
-    db = pymongo.cx.SMBUD
-    certificates: Collection = db.certificates
 
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
