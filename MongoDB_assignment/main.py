@@ -50,7 +50,7 @@ class MongoPopulate:
                 self.UCI.append(uci)
                 return uci
 
-    def create_people(self, num_doc=25, num_nurse=50, num_people=100, num_rec_people=5):
+    def create_people(self, num_doc=25, num_nurse=50, num_people=100, num_rec_people=20):
         for i in range(0, num_doc):
             random_italian_person = RandomItalianPerson()
             self.doctors.append(self.create_sanitary_operator('Doctor', random_italian_person))
