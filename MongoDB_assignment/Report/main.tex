@@ -99,20 +99,24 @@ The assumptions taken into account are the following:
 
 \begin{itemize}
 
-\item The recovery document has been introduced in the document DB to distinguish the usual negative test result to the one did after an infection to consider a certain person healed from Covid-19. Using this document can be computationally useful because otherwise, to know if a person has a recovery certificate, it would be necessary to scan all the tests and check the relative results and dates to deduce an infection and a consequent healing. It has been also assumed that the recovery certificate doesn't get automatically released, but it is registered manually by whom of competence after a specific iter. The recovery certificate was not expressly required by the problem specification but it has been introduced because it can be used as support to calculate the expiration date of the certificate.
-\item Authorized bodies has been implemented as an autonomous collection and a pointer has been used in the document Place instead of a sub-document because they are few and they are repeated a big amount of times. Even if redundancy can be accepted in MongoDB, the information contained in this document are not widely used, for this reason having multiple copies of them could be inefficient.
-\item It has been assumed that the database only contains documents related to the Italian state. Thanks to this the government rules are well known and well defined and it allows to have the expiration date directly in the certificate document since rules changes rarely happen. In this last case the update would be a little time consuming but this choice is widely justified considering the fact that checking the validity of a certificate is one of the main reason of our database and having it directly in the document allow to access it instantaneously without any computation.
-\item As said in the problem description, the designed database would be mainly used to check the validity of a determined certificate. For this reason it has been decided to make a collection of certificates (with possibly more than one associated to the same person) instead of making a single one for every person containing all the relevant data. This choice allows to make the certificate access faster since they are indexed by UIC and it anyway allows to reconstruct the Covid history of a given person by looking for all his/her certificates also indexed by fiscal code. In conclusion, this choice allows to have the same database that would be obtained with the other approach but simplify the queries for which the database would be mainly used.
-\item The following database has been designed with the awareness of existence of the Covid certification, so the structure thought has been taken into consideration thanks to its efficency in the most used cases. If the same database would have to be designed without knowing the existence of the certification adding it later maybe it would have make to a different and adapted, and probably also less efficient, design.
-\item The following design has been chosen due to make the research of a certificate more efficient. Otherwise, by making an unique dossier for every person, finding a desired certificate by UCI would have meant finding all the people with the same name, surname and date of birth and scan all their certificates (dossier sub-document) looking at the one with the given UCI. The tax code can't be used because, in real cases, it would not be exposed in the certification due to privacy reasons.
+
+\item It has been assumed that the database only contains documents related to the Italian state. Thanks to this the government rules are well known and well defined and it allows to have the expiration date directly in the certificate document since rules changes rarely happen.
+\\In this last case the update would be a little time consuming, but this choice is widely justified considering the fact that checking the validity of a certificate is one of the main reasons of our database, and having it directly in the document allow to access it instantaneously without any computation.
+\item As said in the problem description, the designed database would be mainly used to check the validity of a determined certificate. For this reason it has been decided to make a collection of certificates (with possibly more than one associated to the same person) instead of making a single one for every person containing all the relevant data. This choice allows to make the certificate access faster since they are indexed by UCI and it anyway allows to reconstruct the Covid history of a given person by looking for all his/her certificates also indexed by fiscal code.
+\\In conclusion, this choice allows to have the same database that would be obtained with the other approach, moreover simplifies the queries for which the database would be mainly used.
+\item The following database has been designed with the awareness of existence of the Covid certification, so the structure thought has been taken into consideration thanks to its efficiency in the most used cases.
+%If the same database had to be designed without knowing the existence of the certification, adding it later, may result in a different and adapted, and probably also less efficient, design.
+\item The following design has been chosen to make the research of a certificate more efficient. Otherwise, by making an unique dossier for every person, finding a desired certificate by UCI would have meant finding all the people with the same name, surname and date of birth and scan all their certificates (dossier sub-document) looking at the one with the given UCI. \\The tax code can not be used because, in real cases, it would not be exposed in the certification due to privacy reasons.
 
 \end{itemize}
-\newpage
+%\newpage
 \section{ER diagram}
-The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Sanitary Operator, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
+%The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Sanitary Operator, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
 
-Every person, identified by an unique tax code, can face some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepared sanitary operators.
+%Every person, identified by an unique tax code, can face some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepared sanitary operators.
 
+The designed ER diagram contains the following entities: Person, Certificate, Event, Issuer, Sanitary operator, Place and Authorized body.\\More precisely, a Person can receive a Certificate regarding a Vaccination, Swab or a Recovery and it is issued by an Issuer, for instance, in Italy by the Ministry of health. \\The Recovery certificate, in a relational DB, should contain as foreign key the UCI of the negative swab that proofs the recovery of a given person.
+\\The Vaccination and Swab certificate refer to a vaccination or test Event happened in a specific Place, that has been authorized by an Authorized body. \\Vaccination events are performed by a Doctor, responsible of the anamnesi, and by a Nurse, responsible of the injection, whereas the test can be performed by a generic Sanitary operator.
 \hfill\break
 \hfill\break
 \hfill\break
@@ -126,42 +130,42 @@ Every person, identified by an unique tax code, can face some events, like for i
 
 \section{Document diagram}
 The designed Document diagram is shown below. Certificate and Authorized body are represented as collections of documents.
-
-The certificate document doesn't represent an unique person but it is specific for a determined event. It can have one between Recovery, Test and Vaccination as sub-document and these last two have both Place and Sanitary operators as sub-documents which contain all the information related to the place and the doctor/nurse involved in the specific event.
+For each person there can be more than one certificate, each representing a specific event. It can have one between Recovery, Test and Vaccination as sub-document and these last two have both Place and Sanitary operators as sub-documents which contain all the information related to the place and the doctor/nurse involved in the specific event.
 \hfill\break
-\\
-The Recovery document has been implemented to make the recovery certificate validation easier and faster. Otherwise, doing this validation through the scan of the tests information would have been more complex due to the possibility of a person to do an unlimited amount of tests.
-With this design choice the time complexity to validate a recovery certificate has been reduced.
+\\The recovery document has been introduced in the document DB to distinguish the usual negative test result from the one done after an infection to consider a certain person healed from Covid-19. Using this document can be computationally useful because otherwise, to know if a person has a recovery certificate, it would be necessary to scan all the tests and check the relative results and dates to deduce an infection and a consequent healing.
+\\It has been also assumed that the recovery certificate doesn't get automatically released, but it is registered manually by whom of competence after a specific iter.
+\\The recovery certificate was not expressly required by the problem specification but it has been introduced because it can be used as support to calculate the expiration date of the certificate.
+
 \hfill\break
 \hfill\break
-
-
 \begin{center}
 \includegraphics[scale=0.18]{document_diagram.png}
 \end{center}
-As shown above, every certificate has an unique certification number and contains all the information about the person to whom it belongs like for instance name, surname and tax code. It also has information about the period while it can be used like the validity starting date and the expiration date. 
+
+As shown above, every certificate has a unique certification identifier and contains all the information about the person to whom it belongs like for instance name, surname and tax code. It also has information about the period during which it can be used, like the validity starting date and the expiration date.
 
 Certificates also have a boolean value called Revoked with a False default value, which can be switched to True in case a certification has been released due to a mistake, allowing in this way the possibility to make it unusable.
 \\
 
-Vaccination, Recovery and Test contains the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
+Vaccination, Recovery and Test contain the relevant information about the performance, like for instance the date of the event and the type of tests or vaccine.
 \\
 
 Sanitary operator and Place instead have information about where an event has happened and by whom it has been performed. This information can be useful, for instance in case of mistakes or doubts, to track down the sanitary operator or the doctor who performed the vaccination or test.
+\\ Authorized bodies has been implemented as an autonomous collection and a pointer, instead of a sub-document, has been used in the document Place because they are few and they are repeated a big amount of times. Even if redundancy can be accepted in MongoDB, the information contained in this document are not widely used, for this reason having multiple copies of them could be inefficient.
 
 \section{Dataset description}
 The Dataset has been built by making a script in Python, using some useful packages like: {\fontfamily{qcr}\selectfont random-italian-person} that automatically generates people with random attributes (this package has been modified due to our necessity); the official {\fontfamily{qcr}\selectfont PyMongo} driver for Python for the communication with the Database since it allows to make queries directly from Python.
 
 \\
 \hfill\break
-It has been also used a CSV document, downloaded directly from the official Italian Government github repository, of all the vaccination centres (due to the limited scale of the to make database only some regions have been taken into consideration).
+A CSV document has been used, downloaded directly from the official Italian Government github repository, of all the vaccination centres (due to the limited scale of the to make database only some regions have been taken into consideration).
 
 CSV files for vaccines information and authorized bodies have been built by hand due to necessity with the relevant information.
 
 
 \newpage
 \section{Queries and Commands}
-In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text. 
+In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
 
 Some parameters information can be useful for different queries or commands so they are written here to avoid writing them multiple times:
 \begin{itemize}
@@ -179,7 +183,8 @@ has any valid green pass or not.
 db.certificates.find(
     {
         'tax_code': "<@\textbf{\color{magenta}{tax code}}@>",
-        'expiration_date' : {$exists: true}
+        'expiration_date' : {$exists: true},
+        'revoked': false
     },
     {
         'uci': 1,
@@ -190,7 +195,7 @@ db.certificates.find(
 \end{lstlisting}
 \newpage
 \subsubsection{Expiration date of certificate}
-The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces. 
+The following query, given a UCI of a certificate, returns its expiration date. This can be useful for instance for the control of certification validity for the access of public spaces.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -222,7 +227,7 @@ db.certificates.find(
         "_id": 0,
         "name": 1,
         "surname": 1,
-        "tax code": 1,
+        "tax_code": 1,
         "contact": 1,
         "uci": 1,
         "vaccination.date": 1
@@ -233,7 +238,7 @@ db.certificates.find(
 \newpage
 \subsubsection{Doctor who performed an anamnesi}
 This query returns the tax code of the doctor who performed the anamnesi during the last vaccination of a specific person and the related date.
-It can be used for instance, in case someone dies in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor. 
+It can be used for instance, in case someone dies in the next days of a vaccination, to track down the doctor who performed the anamnesi to see if there is any correlation between the death and the anamnesi of the doctor.
 
 The tax code parameter is the fiscal code of the vaccinated person.
 
@@ -259,7 +264,7 @@ The tax code is the fiscal code of the person whose history you want to look for
 
 db.certificates.find(
     {
-        "tax code": "<@\textbf{\color{magenta}{tax code}}@>",
+        "tax_code": "<@\textbf{\color{magenta}{tax code}}@>",
     },
     {
         "test": 1,
@@ -417,7 +422,7 @@ The user, after logged in, will be redirected to his personal area where he can:
 \begin{center}
 \includegraphics[scale=0.23]{home.png}
     \caption{Application displaying the personal area to the user.}
-    
+
 \end{center}
 
 \begin{center}
@@ -431,19 +436,24 @@ The user, after logged in, will be redirected to his personal area where he can:
 The application is meant to work on every operating system since it is executed on a browser. As the application has been entirely developed in Python, it is not operative system dependent.
 %In order to correctly run the application it is mandatory to...
 %store the Neo4j password in {\fontfamily{qcr}\selectfont"neo4jDB-populator/password.txt"}, in this way the application will be able to connect with the database.
-\\The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, bson, PyMongo, pandas, numpy and python-codicefiscale}.
+\\The user must check to have correctly installed, in the virtual environment, the following pacakges: {\fontfamily{qcr}\selectfont Flask, Flask-PyMongo, PyMongo, pandas, numpy and python-codicefiscale}.
 \hfill\break
 \\There are two possible ways to run the demo: the first one is to connect to the following link: \href{https://c19-cert-viewer.herokuapp.com/}.
 
-In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/App.py"} and connect to {\fontfamily{qcr}\selectfont"loacalhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
+In alternative, it is possible to run locally {\fontfamily{qcr}\selectfont"webapp/App.py"} and connect to {\fontfamily{qcr}\selectfont"localhost:port"} where {\fontfamily{qcr}\selectfont"port"} is the port number suggested by the console.
 
 Note that by default both {\fontfamily{qcr}\selectfont"MongoDB-assignment/main.py"} and
 \\{\fontfamily{qcr}\selectfont"MongoDB-assignment/webapp/App.py"} are connected to the same server that can be accessed by anyone, for this reason it is not mandatory to change the connection string.
 \section{Conclusion}
 
-Some interesting conclusions can be drawn from the development of this project: Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way.
+Some interesting conclusions can be drawn from the development of this project:
+
+Document databases are, if well designed, easy to use and really scalable. Thanks to a good db structure most queries can be easily written in a compact way.
 
 A fundamental property of MongoDB databases is the need to optimize data access, which puts the focus on query patterns. This means that a good practice for MongoDB databases design is to consider how users will query the data and how often.
+
+A further development of the db design could be the temporary suspension of certificates, it could be easily done in two different ways, the first approach would consist in using the revoked attribute like an 'enumeration', instead of using it as a boolean, to distinguish definitive revokes and temporary suspension.
+\\The other way would consist in adding a boolean attribute 'suspended' in the certificate document, changing it (when needed) with a trigger: for instance, when uploading a swab, the trigger should do a check between all the certificate of the person who did it and, if necessary, change, for instance in case of a positive test result, the suspended attribute of all the valid certificates, from false to true.
 
 \section{References and Sources}
 \begin{itemize}
