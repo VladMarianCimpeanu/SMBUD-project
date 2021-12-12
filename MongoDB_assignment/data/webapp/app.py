@@ -9,7 +9,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = '12345'
 
-DEFAULT_URI = "mongodb+srv://andreac99:tmJXfW55Skt75z@cluster0.7px16.mongodb.net/test?authSource=admin&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
+DEFAULT_URI = "mongodb+srv://SMBUD:SMBUD@cluster0.7px16.mongodb.net/test?authSource=admin&replicaSet=atlas-i8fr10-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true"
 certificates: Collection
 connection_string = DEFAULT_URI
 
