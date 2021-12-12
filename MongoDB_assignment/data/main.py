@@ -1,7 +1,7 @@
 import sys
 import argparse
 
-sys.path.insert(0, '../')
+# sys.path.insert(0, '../../')
 import random
 import string
 import datetime
@@ -28,6 +28,7 @@ class MongoPopulate:
         self.authorized_bodies = {}
 
     def generate_authorized_bodies(self):
+        print("Generating authorized bodies...")
         loaded_data = pd.read_csv("datasets/auth_bodies.csv")
         self.db.authorized_bodies.drop()
         collection = self.db.authorized_bodies
@@ -41,6 +42,7 @@ class MongoPopulate:
             }
             result = collection.insert_one(doc)
             self.authorized_bodies[row["city"]] = result.inserted_id
+            print("Authorized bodies generated.")
 
     def get_new_uci(self) -> str:
         while True:
@@ -51,12 +53,15 @@ class MongoPopulate:
                 return uci
 
     def create_people(self, num_doc=25, num_nurse=50, num_people=600, num_rec_people=300):
+        print("Forming new doctors...")
         for i in range(0, num_doc):
             random_italian_person = RandomItalianPerson()
             self.doctors.append(self.create_sanitary_operator('Doctor', random_italian_person))
+        print("Forming new nurses...")
         for i in range(0, num_nurse):
             random_italian_person = RandomItalianPerson()
             self.nurses.append(self.create_sanitary_operator('Nurse', random_italian_person))
+        print("Creating new people...")
         for i in range(0, num_people):
             random_italian_person = RandomItalianPerson()
             self.people.append(self.create_person(random_italian_person))
@@ -283,10 +288,22 @@ class MongoPopulate:
         collection = self.db.certificates
         for i in range(0, num_rec):
             self.create_random_certificate('recovery', collection)
+            if i == num_rec - 1:
+                print("{} people have been recovered".format(i + 1))
+            elif i % 50 == 0 and i != 0:
+                print("{} people have been recovered".format(i))
         for i in range(0, num_test):
             self.create_random_certificate('test', collection)
+            if i == num_test - 1:
+                print("{} people have been tested".format(i + 1))
+            elif i % 50 == 0 and i != 0:
+                print("{} people have been tested".format(i))
         for i in range(0, num_vacc):
             self.create_random_certificate('vaccination', collection)
+            if i == num_vacc - 1:
+                print("{} people have been vaccinated".format(i + 1))
+            elif i % 50 == 0 and i != 0:
+                print("{} people have been vaccinated".format(i))
         print("Certificates created!")
         return
 
