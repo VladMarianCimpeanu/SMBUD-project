@@ -10,6 +10,12 @@ the following packages:
 - numpy  
 - python-codicefiscale
 - dnspython
+
+There is the possibility to run the following command:
+
+`/data/ pip install -r requirements.txt`
+
+that will install all the needed requirements.
 ## Notes
 Both the db generator and the WebApp use by default the connection string
 contained in the following file:
@@ -18,7 +24,7 @@ contained in the following file:
 ## Generator guidelines
 In order to run the generator type the following command in the `data` directory:
 
-`python main.py –uri URI` 
+`python main.py –-uri URI` 
 
 where `URI` is the connection string to use to connect to a specific
 db. If the URI is not specified, the generator the default connection string.
@@ -29,7 +35,7 @@ the following link https://c19-cert-viewer.herokuapp.com/, that works only on
 the default database.
 In alternative, it is possible to run in the `/data/webapp/` directory the following command:
 
-`python app.py -uri URI` 
+`python app.py --uri URI` 
 
 where `URI` is the connection string to use to connect to a specific
 db. If the URI is not specified, the server will connect with the default connection string
