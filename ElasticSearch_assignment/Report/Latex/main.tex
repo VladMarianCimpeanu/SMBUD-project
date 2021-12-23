@@ -97,7 +97,10 @@ Andrea Cerasani - 10680486
 \section{Introduction}
 
 \subsection{Problem Specification}
-The aim of this project was to ...
+The aim of this project was to design, store and query data on a NoSQL DB supporting a data analysis scenario over data about COVID-19 vaccination statistics. The purpose is that of building a comprehensive database of vaccinations.
+
+A given vaccinations dataset has been assigned, with the purpose to pick a time interval of at least 3 months from it and, by using an ElasticSearch installation, import the data, apply the appropriate schema design choices, implement some queries aiming at exploring the data statistics and design a basic visualization dashboard of the results.
+
 \subsection{Hypothesis}
 The assumptions taken into account are the following:
 
@@ -126,10 +129,11 @@ The assumptions taken into account are the following:
 \newpage
 \section{Dataset description}
 \subsection{Vaccine summary dataset}
-The Dataset of the project has been downloaded from The official Italian Government Github repository at the following link : \url{...}.
+The Dataset of the project has been downloaded from The official Italian Government Github repository at the following link :\\ \url{https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/\\dati/somministrazioni-vaccini-latest.csv}.
 \\
 \hfill\break
-It contains information about administered vaccines and it is made by the following fields:
+It contains information about administered vaccines in Italy and it is made by the following fields:
+\hfill\break
 \begin{center}
 \begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
   \hline
@@ -139,24 +143,48 @@ It contains information about administered vaccines and it is made by the follow
   \hline
   area & string & Code of the delivery region\\
     \hline
-  ultimo\_aggiornamento & datetime & Day of the last update of the total\\ 
+      supplier & string & Complete name of the supplier of the vaccine\\
     \hline
-  dosi\_consegnate & integer & Total number of vaccine doses delivered by region\\
+          administration date & datetime & Administration date of the vaccines\\
+              \hline
+          age group & string & Age group to which the subjects to whom the vaccine were administered belong\\
+                        \hline
+          male count & integer & Number of vaccinations administered to males per day, region and age group\\
+                        \hline
+          female count & integer & Number of vaccinations administered to females per day, region and age group\\
     \hline
-  dosi\_somministrate & integer & Total number of vaccine doses administered by region\\ 
+  first doses & integer & Number of people administered with the first dose\\ 
     \hline
-  percentuale\_somminist-\hfill\break razione & number & Percentage of administered doses over delivered doses\\ 
+  second doses & integer & Number of people administered with the second dose\\
     \hline
-  codice\_NUTS1 & string & European classification of NUTS territorial units: NUTS level 1\\ 
-    \hline
-  codice\_NUTS2 & string & European classification of NUTS territorial units: NUTS level 2\\ 
-    \hline
-  codice\_regione\_ISTAT & integer & ISTAT code of the Region\\
-    \hline
-  nome\_regione & string & Standard denomination of the area (where necessary bilingual denomination)\\ 
-  \hline
+
 \end{tabular}
 \end{center}
+
+\newpage
+\begin{center}
+\begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
+\hline
+  post infection doses & integer & Number of administrations given to subjects with previous covid-19 infection in the 3-6 month period and who, therefore, conclude the vaccination cycle with a single dose\\ 
+    \hline
+  booster doses & integer & Number of people administered with an additional dose/recall\\ 
+    \hline
+  NUTS1 code & string & European classification of NUTS territorial units: NUTS level 1\\ 
+    \hline
+  NUTS2 code & string & European classification of NUTS territorial units: NUTS level 2\\ 
+    \hline
+  ISTAT region code & integer & ISTAT code of the Region\\
+    \hline
+  region name & string & Standard denomination of the area (where necessary bilingual denomination)\\ 
+  \hline
+  \end{tabular}
+\end{center}
+\hfill\break
+The data types written in the table are the 'original' ones, so the ones used by the dataset creator. 
+
+The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed. (CHECK??)
+
+The dataset period taken into consideration for statistical purposes is the one that goes from the first day of the year 2021 to the last day of September 2021. (CHECK??)
 
 \newpage
 \subsection{... dataset}
