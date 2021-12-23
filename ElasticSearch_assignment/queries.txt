@@ -1,10 +1,70 @@
+# DELTA VACCINATION PER AREA
+    For each region, this query returns the percentage of the difference between vaccinations of a given date and its
+    precedent day, calculated with respect to the amount of vaccinations performed the precedent day.
+    If the vaccinations have increased, the percentage will be positive, negative otherwise.
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "group_by_date": {
+      "terms": {
+        "field": "nome_area"
+      },
+      "aggs": {
+        "today_vaccinations" :{
+          "filter": {
+            "term" : {
+              "data_somministrazione": "now-31d/d"
+            }
+          },
+          "aggs": {
+            "amount": {
+              "sum": {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "yesterday_vaccinations" : {
+          "filter": {
+            "term" : {
+              "data_somministrazione": "now-32d/d"
+            }
+          },
+          "aggs" : {
+            "amount": {
+              "sum" :{
+                "script": {
+                  "source": "doc['sesso_femminile'].value + doc['sesso_maschile'].value"
+                }
+              }
+            }
+          }
+        },
+        "delta_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "today" : "today_vaccinations>amount",
+              "yesterday" : "yesterday_vaccinations>amount"
+            },
+            "script": "(params.today - params.yesterday) / params.yesterday * 100"
+          }
+        }
+      }
+    }
+  }
+}
+
+
 # PERCENTAGE FULL COVERAGE VACCINATION
     It calculates the percentage of people which has already completed the vaccination cycle.
-    The percentage is calculated in respect to all the vaccinated people, so all the people that has already received
+    The percentage is calculated with respect to all the vaccinated people, so all the people that has already received
     at least one dose.
     The cycle is considered completed if:
-        - if one is vaccinated with Janssen vaccine.
-        - if one has already received the second dose.
+        - one is vaccinated with Janssen vaccine.
+        - one has already received the second dose.
 
 GET vaccinations/_search
 {
