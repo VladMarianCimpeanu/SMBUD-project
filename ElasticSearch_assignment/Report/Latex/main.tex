@@ -1,0 +1,285 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage{array}
+\renewcommand*{\arraystretch}{2}
+
+
+
+
+\title{SMBUD 2021 - Project work 3}
+\author{\\Aman Gabba - 10793117 \\
+Andrea Cerasani - 10680486
+\\Giovanni Demasi - 10656704
+\\Pasquale Dazzeo - 10562130
+\\Vlad Marian Cimpeanu - 10606922}
+\date{ \begin{figure}[b] \centering \includegraphics[scale=0.2]{Logo Polimi.png} \end{figure}
+ }
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{ifxetex}
+\usepackage{ifluatex}
+\newif\ifxetexorluatex % a new conditional starts as false
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi>0
+   \xetexorluatextrue
+\fi
+
+\ifxetexorluatex
+  \usepackage{fontspec}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage[lighttt]{lmodern}
+\fi
+
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{upquote}
+
+\definecolor{keyword}{HTML}{2771a3}
+\definecolor{pattern}{HTML}{b53c2f}
+\definecolor{string}{HTML}{be681c}
+\definecolor{relation}{HTML}{7e4894}
+\definecolor{variable}{HTML}{107762}
+\definecolor{comment}{HTML}{8d9094}
+
+\lstset{
+	numbers=none,
+	stepnumber=1,
+	numbersep=5pt,
+	basicstyle=\small\ttfamily,
+	keywordstyle=\color{keyword}\bfseries\ttfamily,
+	commentstyle=\color{comment}\ttfamily,
+	stringstyle=\color{string}\ttfamily,
+	identifierstyle=,
+	showstringspaces=false,
+	aboveskip=3pt,
+	belowskip=3pt,
+	columns=flexible,
+	keepspaces=true,
+	breaklines=true,
+	captionpos=b,
+	tabsize=2,
+	frame=none,
+}
+
+\lstset{upquote=true}
+
+\lstdefinelanguage{cypher}
+{
+	morekeywords={
+		find, sort, updateMany, insertOne, countDocuments, limit
+	}
+}
+
+
+\newcommand{\mycdots}{\cdot\!\cdot\!\cdot}
+\lstset{language=cypher,
+	literate=*
+	{...}{$\mycdots$}{1}
+	{theta}{$\theta$}{1}
+}
+\lstset{escapeinside={<@}{@>}}
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Problem Specification}
+The aim of this project was to ...
+\subsection{Hypothesis}
+The assumptions taken into account are the following:
+
+\begin{itemize}
+
+
+\item ...
+
+\end{itemize}
+%\newpage
+%\section{ER diagram}
+%The designed ER diagram contains the following entities: Person, Place, Authorized body, Certificate, Event and Sanitary operator. Nurse and Doctor have been designed as sub-entities of Sanitary Operator, Vaccine and Swab have been designed as sub-entities of Certificate and the Recovery entity is related to a swab.
+
+%Every person, identified by an unique tax code, can face some events, like for instance a vaccination, in determinates places with unique GPS coordinates. Through an event a person can obtain a certificate with unique UCI useful for checking its valitidy. Every certification is issued by an authorized issuer and all the events are performed by prepared sanitary operators.
+
+\hfill\break
+\newpage
+
+\section{... diagram}
+...
+
+%\hfill\break
+%\begin{center}
+%\includegraphics[scale=0.155]{document_diagram.png}
+%\end{center}
+\newpage
+\section{Dataset description}
+\subsection{Vaccine summary dataset}
+The Dataset of the project has been downloaded from The official Italian Government Github repository at the following link : \url{...}.
+\\
+\hfill\break
+It contains information about administered vaccines and it is made by the following fields:
+\begin{center}
+\begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
+  \hline
+  \bfseries{Field} & \bfseries{Data type} & \bfseries{Description} \\
+  \hline\hline
+  index & integer & Record identification code\\
+  \hline
+  area & string & Code of the delivery region\\
+    \hline
+  ultimo\_aggiornamento & datetime & Day of the last update of the total\\ 
+    \hline
+  dosi\_consegnate & integer & Total number of vaccine doses delivered by region\\
+    \hline
+  dosi\_somministrate & integer & Total number of vaccine doses administered by region\\ 
+    \hline
+  percentuale\_somminist-\hfill\break razione & number & Percentage of administered doses over delivered doses\\ 
+    \hline
+  codice\_NUTS1 & string & European classification of NUTS territorial units: NUTS level 1\\ 
+    \hline
+  codice\_NUTS2 & string & European classification of NUTS territorial units: NUTS level 2\\ 
+    \hline
+  codice\_regione\_ISTAT & integer & ISTAT code of the Region\\
+    \hline
+  nome\_regione & string & Standard denomination of the area (where necessary bilingual denomination)\\ 
+  \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\subsection{... dataset}
+We have also, as optional point of this porject, integrated our analysis with another dataset ...
+
+\newpage
+\section{Queries and Commands}
+In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
+
+Some parameters information can be useful for different queries or commands so they are written here to avoid writing them multiple times:
+\begin{itemize}
+    \item ...
+\end{itemize}
+\subsection{Queries}
+\subsubsection{Query 1}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 2}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 3}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 4}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 5}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 6}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 7}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Query 8}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\newpage
+\subsection{Commands}
+\subsubsection{Command 1}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\subsubsection{Command 2}
+The following query...
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+CODE
+
+\end{lstlisting}
+\newpage
+
+\section{Dashboard description}
+The Kibana Dashboard has been made by...
+
+\newpage
+
+\section{User guide}
+...
+
+\section{Conclusion}
+
+Some interesting conclusions can be drawn from the development of this project:
+
+...
+
+\section{References and Sources}
+\begin{itemize}
+    %\item \url{Random-italian-person package: https://pypi.org/project/random-italian-person}
+    %\item \url{PyMongo package: https://docs.mongodb.com/drivers/pymongo/}
+    %\item \url{Flask package: https://flask.palletsprojects.com/en/2.0.x/}
+    \item Elastic Guide: \url{https://www.elastic.co/guide/index.html}
+    \item Italian Government repository: \url{https://github.com/italia/covid19-opendata-vaccini}
+    
+    %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
+\end{itemize}
+
+
+
+\end{document}
