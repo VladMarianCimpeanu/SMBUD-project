@@ -1,0 +1,86 @@
+# PERCENTAGE FULL COVERAGE VACCINATION
+    It calculates the percentage of people which has already completed the vaccination cycle.
+    The percentage is calculated in respect to all the vaccinated people, so all the people that has already received
+    at least one dose.
+    The cycle is considered completed if:
+        - if one is vaccinated with Janssen vaccine.
+        - if one has already received the second dose.
+
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs":{
+    "group_by": {
+      "date_range": {
+        "field": "data_somministrazione",
+        "ranges": [
+          {
+            "from": "2020-12-27",
+            "to": "now"
+          }
+        ]
+      },
+      "aggs": {
+        "sum_first_dose": {
+          "sum" :{
+            "field" : "prima_dose"
+          }
+        },
+        "sum_second_dose" : {
+          "sum" : {
+            "field" : "seconda_dose"
+          }
+        },
+        "sum_Janssen": {
+          "filter": {
+            "term" : {
+              "fornitore": "Janssen"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "field": "prima_dose"
+              }
+            }
+          }
+        },
+        "full_coverage_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "first_dose": "sum_first_dose",
+              "second_dose": "sum_second_dose",
+              "janssen_vax": "sum_Janssen>amount"
+            },
+            "script": "(params.second_dose + params.janssen_vax)/ params.first_dose * 100"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+# VACCINATION TREND
+    For each day it returns all the vaccinations done.
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "group_by_date": {
+      "date_histogram": {
+        "field": "data_somministrazione",
+        "interval": "day"
+      },
+      "aggs": {
+        "sum_vaccinations": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+            }
+          }
+        }
+      }
+    }
+  }
+}
