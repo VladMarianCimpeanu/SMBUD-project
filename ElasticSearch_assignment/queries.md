@@ -13,3 +13,15 @@
 ## interesting datasets
  https://github.com/pcm-dpc/COVID-19/blob/master/dati-statistici-riferimento/popolazione-istat-regione-range.csv
  https://github.com/pcm-dpc/COVID-19/blob/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv
+ 
+
+## about the data set -**IMPORTANT**
+It should be better to keep all the codes as **keywords** instead of **numbers** for the following reason:
+
+
+codice_regione_ISTAT are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there 
+is the possibility to associate data to regions according to ISTAT code convention, by the way, the format used by kibana
+  is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that
+  convention as kibana will find the following codes "1, 2, 3, 4, ...".
+  As the origina dataset does not follow the kibana convention, it has to be adapted through the script 
+  `dataset_cleaner.py`
