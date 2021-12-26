@@ -1,15 +1,22 @@
 ## queries
-- Increment of vaccinated people per region (per age range)
-- Trend of vaccines per day (per region)
-- Rank regions per vaccinations for a given day
-- Percentages or absolute number of people who completed the vaccination cycle
-- Percentages or absolute numbers of brand of vaccine per period
-- Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago (https://www.governo.it/it/cscovid19/report-vaccini/)
+- Increment of vaccinated people per region (per age range) fatto
+- Trend of vaccines per day (per region) fatto
+- Rank regions per vaccinations for a given day Andrea
+- Percentages or absolute number of people who completed the vaccination cycle fatto
+- Percentages or absolute numbers of brand of vaccine per period Giovanni
+- Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago (https://www.governo.it/it/cscovid19/report-vaccini/) Andrea
+- Given a specific day, rank the age ranges per vaccinations Giovanni
+- Percentages of first dose / second dose / booster administrations for a given period Giovanni
 - ~~Percentages about second / booster dose compared to first dose / second dose (watch out for mixed doses)~~
 
 ## additional queries
-- We could integrate ISTAT data per region and get percentage of vaccinated people over total inhabitants
+- We could integrate ISTAT data per region and get percentage of vaccinated people over total inhabitants / difference for sex
 - We could integrate delivered doses and get the percentage of administred doses over delivered ones
+
+## commands
+- Modify the number of administrations for a given day and a region
+- Insert an entry for a new day for a given day, age range and region
+
 ## interesting datasets
  https://github.com/pcm-dpc/COVID-19/blob/master/dati-statistici-riferimento/popolazione-istat-regione-range.csv
  https://github.com/pcm-dpc/COVID-19/blob/master/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv
