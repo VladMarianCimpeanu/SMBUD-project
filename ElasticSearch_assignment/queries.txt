@@ -144,3 +144,523 @@ GET vaccinations/_search
     }
   }
 }
+
+# Percentages of brand of vaccine per period
+
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs":{
+    "group_by": {
+      "date_range": {
+        "field": "data_somministrazione",
+        "ranges": [
+          {
+            "from": "2021-09-01",
+            "to": "2021-10-01"
+          }
+        ]
+      },
+      "aggs": {
+        "Janssen_vaccinations": {
+          "filter": {
+            "term" : {
+              "fornitore": "Janssen"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                }
+              }
+            }
+          }
+        },
+        "Pfizer_vaccinations": {
+          "filter": {
+            "term" : {
+              "fornitore": "Pfizer/BioNTech"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                }
+              }
+            }
+          }
+        },
+        "Moderna_vaccinations": {
+          "filter": {
+            "term" : {
+              "fornitore": "Moderna"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                }
+              }
+            }
+          }
+        },
+        "Astrazeneca_vaccinations": {
+          "filter": {
+            "term" : {
+              "fornitore": "Vaxzevria (AstraZeneca)"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                }
+              }
+            }
+          }
+        },
+        "Prifez_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Pfizer": "Pfizer_vaccinations>amount",
+              "Moderna": "Moderna_vaccinations>amount",
+              "Janssen": "Janssen_vaccinations>amount",
+              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+            },
+            "script": "(params.Pfizer)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+          }
+        },
+        "Moderna_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Pfizer": "Pfizer_vaccinations>amount",
+              "Moderna": "Moderna_vaccinations>amount",
+              "Janssen": "Janssen_vaccinations>amount",
+              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+            },
+            "script": "(params.Moderna)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+          }
+        },
+        "Astrazeneca_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Pfizer": "Pfizer_vaccinations>amount",
+              "Moderna": "Moderna_vaccinations>amount",
+              "Janssen": "Janssen_vaccinations>amount",
+              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+            },
+            "script": "(params.Astrazeneca)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+          }
+        },
+        "Janssen_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Pfizer": "Pfizer_vaccinations>amount",
+              "Moderna": "Moderna_vaccinations>amount",
+              "Janssen": "Janssen_vaccinations>amount",
+              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+            },
+            "script": "(params.Janssen)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+# Percentages of first dose / second dose / booster administrations for a given period
+
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "group_by_date": {
+      "date_range": {
+        "field": "data_somministrazione",
+        "ranges": [
+          {
+            "from": "2021-11-01",
+            "to": "2021-12-01"
+          }
+        ]
+      },
+      "aggs": {
+        "first_doses": {
+          "sum": {
+            "field" : "prima_dose"
+          }
+        },
+        "second_doses": {
+          "sum": {
+            "field" : "seconda_dose"
+          }
+        },
+        "boosters": {
+          "sum": {
+            "field" : "dose_addizionale_booster"
+          }
+        },
+        "First_dose_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "First": "first_doses",
+              "Second": "second_doses",
+              "Booster": "boosters"
+            },
+            "script": "(params.First)/ (params.First + params.Second + params.Booster) * 100"
+          }
+        },
+        "Second_dose_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "First": "first_doses",
+              "Second": "second_doses",
+              "Booster": "boosters"
+            },
+            "script": "(params.Second)/ (params.First + params.Second + params.Booster) * 100"
+          }
+        },
+        "Booster_Percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "First": "first_doses",
+              "Second": "second_doses",
+              "Booster": "boosters"
+            },
+            "script": "(params.Booster)/ (params.First + params.Second + params.Booster) * 100"
+          }
+        }
+      }
+    }
+  }
+}
+
+# Given a specific period, return the vaccination percentage per age range
+
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "group_by_date": {
+      "date_range": {
+        "field": "data_somministrazione",
+        "ranges": [
+          {
+            "from": "2021-11-01",
+            "to": "2021-11-02"
+          }
+        ]
+      },
+      "aggs": {
+        "teens_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "12-19"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "20s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "20-29"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "30s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "30-39"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "40s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "40-49"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "50s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "50-59"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "60s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "60-69"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "70s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "70-79"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "80s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "80-89"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "90s_range": {
+          "filter": {
+            "term" : {
+              "fascia_anagrafica": "90+"
+            }
+          },
+          "aggs": {
+            "amount" : {
+              "sum" : {
+                "script": {
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+                }
+              }
+            }
+          }
+        },
+        "teen_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.Teen) / (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "20s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.20)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "30s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.30)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "40s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.40)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "50s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.50)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "60s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.60)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "70s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.70)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "80s_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.80)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        },
+        "90+_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "Teen": "teens_range>amount",
+              "20": "20s_range>amount",
+              "30": "30s_range>amount",
+              "40": "40s_range>amount",
+              "50": "50s_range>amount",
+              "60": "60s_range>amount",
+              "70": "70s_range>amount",
+              "80": "80s_range>amount",
+              "90": "90s_range>amount"
+            },
+            "script": "(params.90)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
