@@ -654,8 +654,24 @@ GET vaccinations/_search
 }
 
 
-
-
+# NEW DOCUMENT
+POST /istat/_doc
+{
+  "data_somministrazione": "2022-01-01",
+  "fornitore": "Pfizer/BioNTech",
+  "area": "ABR",
+  "fascia_anagrafica": "10-19",
+  "sesso_maschile": "1",
+  "sesso_femminile": "1",
+  "prima_dose": "1",
+  "seconda_dose": "2",
+  "pregressa_infezione": "0",
+  "dose_addizionale_booster": "0",
+  "codice_NUTS1": "ITF",
+  "codice_NUTS2": "ITF1",
+  "codice_regione_ISTAT": "13",
+  "nome_area": "Abruzzo"
+}
 
 
 
