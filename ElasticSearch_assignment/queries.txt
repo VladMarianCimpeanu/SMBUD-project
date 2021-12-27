@@ -673,8 +673,36 @@ POST /istat/_doc
   "nome_area": "Abruzzo"
 }
 
-
-
+# Find a document through data_somministrazione, codice_regione_ISTAT, fornitore and fascia_anagrafica
+GET /istat/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "data_somministrazione": "2021-02-02"
+          }
+        },
+        {
+          "match": {
+            "codice_regione_ISTAT": "13"
+          }
+        },
+        {
+          "match": {
+            "fornitore": "Pfizer/BioNTech"
+          }
+        },
+        {
+          "match": {
+            "fascia_anagrafica": "30-39"
+          }
+        }
+      ]
+    }
+  }
+}
 
 
 
