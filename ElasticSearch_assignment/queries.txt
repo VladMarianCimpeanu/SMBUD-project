@@ -704,7 +704,13 @@ GET /istat/_search
   }
 }
 
-
+# Command 1: Given a document_id update the number of (first) doses
+POST /istat/_update/8FjS_H0BhG8f5U0W2n46
+{
+  "doc": {
+    "prima_dose" : 3000
+  }
+}
 
 
 
