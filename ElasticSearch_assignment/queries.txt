@@ -1,3 +1,5 @@
+QUERIES
+
 # DELTA VACCINATION PER AREA
     For each region, this query returns the percentage of the difference between vaccinations of a given date and its
     precedent day, calculated with respect to the amount of vaccinations performed the precedent day.
@@ -654,25 +656,6 @@ GET vaccinations/_search
 }
 
 
-# NEW DOCUMENT
-POST /istat/_doc
-{
-  "data_somministrazione": "2022-01-01",
-  "fornitore": "Pfizer/BioNTech",
-  "area": "ABR",
-  "fascia_anagrafica": "10-19",
-  "sesso_maschile": "1",
-  "sesso_femminile": "1",
-  "prima_dose": "1",
-  "seconda_dose": "2",
-  "pregressa_infezione": "0",
-  "dose_addizionale_booster": "0",
-  "codice_NUTS1": "ITF",
-  "codice_NUTS2": "ITF1",
-  "codice_regione_ISTAT": "13",
-  "nome_area": "Abruzzo"
-}
-
 # Find a document through data_somministrazione, codice_regione_ISTAT, fornitore and fascia_anagrafica
 GET /istat/_search
 {
@@ -704,12 +687,72 @@ GET /istat/_search
   }
 }
 
+# Rank regions per vaccinations for a given day
+GET vaccinations/_search
+{
+  "size" : 0,
+  "query": {
+    "bool": {
+      "must":{
+        "term": {
+          "data_somministrazione": {
+            "value": "2021-12-22"
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "group_by_region": {
+      "terms": {
+        "field": "nome_area"
+        , "size": 21
+      },
+      "aggs": {
+        "sum_vaccinations": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+            }
+          }
+        },
+        "sort_by_vaccinations":{
+          "bucket_sort": {
+            "sort": [{ "sum_vaccinations": { "order": "desc" } }]
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+COMMANDS
 # Command 1: Given a document_id update the number of (first) doses
 POST /istat/_update/8FjS_H0BhG8f5U0W2n46
 {
   "doc": {
     "prima_dose" : 3000
   }
+}
+# Command 2: Create a new document with data for a given day, region, brand and age range
+POST /istat/_doc
+{
+  "data_somministrazione": "2022-01-01",
+  "fornitore": "Pfizer/BioNTech",
+  "area": "ABR",
+  "fascia_anagrafica": "10-19",
+  "sesso_maschile": "1",
+  "sesso_femminile": "1",
+  "prima_dose": "1",
+  "seconda_dose": "2",
+  "pregressa_infezione": "0",
+  "dose_addizionale_booster": "0",
+  "codice_NUTS1": "ITF",
+  "codice_NUTS2": "ITF1",
+  "codice_regione_ISTAT": "13",
+  "nome_area": "Abruzzo"
 }
 
 
