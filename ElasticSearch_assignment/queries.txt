@@ -653,11 +653,39 @@ GET vaccinations/_search
   }
 }
 
+#PERCENTAGE OF VACCINATED PEOPLE PER REGION
 
-
-
-
-
+GET /istat*/_search
+{
+  "size" : 0,
+  "aggs":{
+    "group_by_region":{
+      "terms" : {
+        "field" : "codice_regione_ISTAT"
+      },
+      "aggs": {
+        "total_vaccinated": {
+          "sum": {
+            "field" : "prima_dose"
+          }
+        },
+        "total_people": {
+          "sum": {
+            "field" : "totale_generale"
+          }
+        },
+        "ratio_vaccinated_people": {
+          "bucket_script": {
+            "buckets_path": {"vacc": "total_vaccinated",
+              "total" : "total_people"
+            },
+            "script":"(params.vacc/params.total)*100"
+          }
+        }
+      }
+    }
+  }
+  }
 
 
 
