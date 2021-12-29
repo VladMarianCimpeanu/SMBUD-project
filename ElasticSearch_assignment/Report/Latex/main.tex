@@ -124,7 +124,25 @@ The assumptions taken into account are the following:
 %\includegraphics[scale=0.155]{document_diagram.png}
 %\end{center}
 \newpage
-\section{Dataset}
+\section{Datasets}
+In the table shown below, the data types written are the 'original' ones, so the ones used by the datasets creators. 
+
+The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed, except for the ISTAT region code field.
+It is better to keep all the ISTAT region codes as keywords instead of numbers for the following reason:
+
+they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, by the way, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
+
+As the original datasets does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
+
+\hfill\break
+\hfill\break
+Both datasets used have Istat region code as field, to understand what it is it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+\hfill\break
+\hfill\break
+\hfill\break
+When the two datasets will be imported, both created indexes will use Istat region code to identify a region. The original dateset used for istat\_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento (22) provinces. For this reason codes have been corrected in order to link the two indexes.
+
+\newpage
 \subsection{Vaccine administration dataset}
 The Dataset used for the project is named {\fontfamily{qcr}\selectfont"somministrazioni-vaccini-latest.csv"} and it has been downloaded from the {\fontfamily{qcr}\selectfont"dati"} folder from the official Italian Government Github repository at the following link :\\ \url{https://github.com/italia/covid19-opendata-vaccini}.
 \subsubsection{Schema}
@@ -177,26 +195,59 @@ This dataset contains information about administered vaccines in Italy and it is
   \end{tabular}
 \end{center}
 \hfill\break
-The data types written in the table are the 'original' ones, so the ones used by the dataset creator. 
-
-The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed, except for the ISTAT region code field.
-It is better to keep all the ISTAT region codes as keywords instead of numbers for the following reason:
-
-they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, by the way, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
-
-As the original dataset does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
 \hfill\break
-\hfill\break
-To understand what Istat region code is, it is suggested to visit the following link: \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+
 
 %The dataset period taken into consideration for statistical purposes is the one that goes from the first day of the year 2021 to the last day of September 2021.
 
 \newpage
 \subsection{Istat population dataset}
-As optional point of this project, analysis has been integrated with another dataset which contains information about the Italian population, like number of people per age range per region or number of people per gender per region.
+As optional point of this project, analysis has been integrated with another dataset which contains information about the Italian population, like number of people per age range and region or number of people per gender per region. The dataset has been downloaded from a Covid-19 related Github repository at the following link: \url{https://github.com/pcm-dpc/COVID-19}, it is located in the {\fontfamily{qcr}\selectfont"dati-statistici-riferimento"} folder and it is the one named {\fontfamily{qcr}\selectfont"popolazione-istat-regione-range.csv"}.
 
 \subsubsection{Schema}
-...
+This dataset contains information about population number per region and age range in Italy. It is made by the following fields:
+\hfill\break
+\begin{center}
+\begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
+  \hline
+  \bfseries{Field} & \bfseries{Data type} & \bfseries{Description} \\
+  \hline\hline
+  ISTAT region code & integer & ISTAT code of the Region\\
+  \hline
+  NUTS1 code & string & European classification of NUTS territorial units: NUTS level 1\\
+    \hline
+      NUTS1 description & string & Cardinal direction based on the NUTS1 code\\
+    \hline
+          NUTS2 code & string & European classification of NUTS territorial units: NUTS level 2\\
+              \hline
+                        region name & string & Standard denomination of the area (where necessary bilingual denomination)\\
+                        \hline
+          area & string & Code of the region\\
+                        \hline
+          region latitude & float & Latitude coordinate of the region\\
+                        \hline
+          region longitude & float & Longitude coordinate of the region\\
+    \hline
+    
+\end{tabular}
+\end{center}
+
+\newpage
+\begin{center}
+\begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
+\hline
+  age range & string & Age range to which the population numbers refers\\ 
+    \hline
+  male count & integer & Number of males in the population, per region and age range\\
+    \hline
+
+  female count & integer & Number of females in the population, per region and age range\\ 
+    \hline
+  total count & integer & Number of males plus females in the population, per region and age range\\ 
+    \hline
+  \end{tabular}
+\end{center}
+\hfill\break
 
 \newpage
 \section{Queries and Commands}
@@ -217,7 +268,7 @@ If the vaccinations have increased, the percentage will be positive, negative ot
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -273,8 +324,9 @@ GET vaccinations/_search
 }
 
 \end{lstlisting}
+\newpage
 \subsubsection{Percentage full covered vaccinations}
-The following query calculates the percentage of people which has already completed the vaccination cycle. The percentage is calculated with respect to all the vaccinated people, so everyone that has already received at least one dose.
+The following query calculates the percentage of people which has already completed the vaccination cycle, starting from the date the vaccinations started. The percentage is calculated with respect to all the vaccinated people, so everyone that has already received at least one dose.
 The cycle is considered completed if a person:
 \begin{itemize}
 \item is vaccinated with Janssen vaccine.
@@ -283,7 +335,7 @@ The cycle is considered completed if a person:
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs":{
@@ -343,7 +395,7 @@ This query returns, for each day, all the vaccinations done.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -366,12 +418,13 @@ GET vaccinations/_search
 }
 
 \end{lstlisting}
+\newpage
 \subsubsection{Brand administrated vaccines percentage for a given period}
 The following query, given a period of time, returns the percentage of the administrated vaccines per brand.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs":{
@@ -500,12 +553,13 @@ GET vaccinations/_search
 }
 
 \end{lstlisting}
+\newpage
 \subsubsection{Percentages of administrated doses,  by dose number, for a given period}
 This query returns the percentage of first doses, second doses and boosters administrated during the given period.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -571,12 +625,13 @@ GET vaccinations/_search
 }
 
 \end{lstlisting}
+\newpage
 \subsubsection{Vaccination percentage per age range for a given period}
 The following query returns the percentage of vaccinated people per age range during the given period.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -591,15 +646,13 @@ GET vaccinations/_search
         ]
       },
       "aggs": {
-        "teens_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "12-19"
-            }
+        "age_range": {
+          "terms": {
+            "field": "fascia_anagrafica"
           },
           "aggs": {
-            "amount" : {
-              "sum" : {
+            "amount":{
+              "sum": {
                 "script": {
                   "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
                 }
@@ -607,276 +660,137 @@ GET vaccinations/_search
             }
           }
         },
-        "20s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "20-29"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "30s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "30-39"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "40s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "40-49"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "50s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "50-59"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "60s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "60-69"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "70s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "70-79"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "80s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "80-89"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "90s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "90+"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
+        "total": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
             }
           }
         },
         "teen_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "Teen": "age_range['12-19']>amount",
+              "tot": "total"
             },
-            "script": "(params.Teen) / (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.Teen) / (params.tot) * 100"
           }
         },
         "20s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "20": "age_range['20-29']>amount",
+              "tot":"total"
             },
-            "script": "(params.20)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.20)/ (params.tot) * 100"
           }
         },
         "30s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "30": "age_range['30-39']>amount",
+              "tot": "total"
             },
-            "script": "(params.30)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.30)/ (params.tot) * 100"
           }
         },
         "40s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "40": "age_range['40-49']>amount",
+              "tot": "total"
             },
-            "script": "(params.40)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.40)/ (params.tot) * 100"
           }
         },
         "50s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "50": "age_range['50-59']>amount",
+              "tot": "total"
             },
-            "script": "(params.50)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.50)/ (params.tot) * 100"
           }
         },
         "60s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "60": "age_range['60-69']>amount",
+              "tot": "total"
             },
-            "script": "(params.60)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.60)/ (params.tot) * 100"
           }
         },
         "70s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "70": "age_range['70-79']>amount",
+              "tot": "total"
             },
-            "script": "(params.70)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.70)/ (params.tot) * 100"
           }
         },
         "80s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "80": "age_range['80-89']>amount",
+              "tot": "total"
             },
-            "script": "(params.80)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.80)/ (params.tot) * 100"
           }
         },
         "90+_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "90": "age_range['90+']>amount",
+              "tot": "total"
             },
-            "script": "(params.90)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.90)/ (params.tot) * 100"
+     	    }
+        }
+      }
+    }
+  }
+}
+
+\end{lstlisting}
+\newpage
+\subsubsection{Regions ranking per number of vaccinations for a given day}
+The following query returns the ranking of regions per number of vaccines administrated, for a given date.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+GET istat_vaccinations/_search
+{
+  "size" : 0,
+  "query": {
+    "bool": {
+      "must":{
+        "term": {
+          "data_somministrazione": {
+            "value": "<@\textbf{\color{magenta}{Date}}@>"
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "group_by_region": {
+      "terms": {
+        "field": "nome_area"
+        , "size": 21
+      },
+      "aggs": {
+        "sum_vaccinations": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
+            }
+          }
+        },
+        "sort_by_vaccinations":{
+          "bucket_sort": {
+            "sort": [{ "sum_vaccinations": { "order": "desc" } }]
           }
         }
       }
@@ -884,32 +798,124 @@ GET vaccinations/_search
   }
 }
 
-
 \end{lstlisting}
-\subsubsection{Query 7}
-The following query...
+\newpage
+\subsubsection{Percentage of booster administrated}
+The following query returns percentage of people who received booster dose over those who completed the vaccination cycle at least 5 months ago and are potentially subject to booster dose.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+GET istat_vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "all_matching_docs": {
+      "filters": {
+        "filters": {
+          "all": {
+            "match_all": {}
+          }
+        }
+      },
+      "aggs":{
+        "sum_booster":{
+          "sum": {
+            "field": "dose_addizionale_booster"
+          }
+        },
+        "booster_candidates": {
+          "filter": {
+            "range": {
+              "data_somministrazione": {
+                "lte": "2021-12-22||-5M"
+              }
+            }
+          },
+          "aggs": {
+            "sum_second_dose" : {
+              "sum" : {
+                "field" : "seconda_dose"
+              }
+            },
+            "sum_janssen": {
+              "filter": {
+                "term" : {
+                  "fornitore": "Janssen"
+                }
+              },
+              "aggs": {
+                "amount" : {
+                  "sum" : {
+                    "field": "prima_dose"
+                  }
+                }
+              }
+            },
+            "sum_previous_infection": {
+              "sum" : {
+                "field" : "pregressa_infezione"
+              }
+            }
+          }
+        },
+        "booster_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "second_dose" : "booster_candidates>sum_second_dose",
+              "janssen" : "booster_candidates>sum_janssen>amount",
+              "previous_infection" : "booster_candidates>sum_previous_infection",
+              "booster" : "sum_booster"
+            },
+            "script": "params.booster / (params.second_dose + params.janssen + params.previous_infection) * 100"
+          }
+        }
+      }
+    }
+  }
+}
 
 \end{lstlisting}
-\subsubsection{Query 8}
-The following query...
+\newpage
+\subsubsection{Percentage of vaccinated people per region}
+This query uses both datasets and returns the percentage of vaccinated people per region over its total population.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+GET /istat*/_search
+{
+  "size" : 0,
+  "aggs":{
+    "group_by_region":{
+      "terms" : {
+        "field" : "codice_regione_ISTAT"
+      },
+      "aggs": {
+        "total_vaccinated": {
+          "sum": {
+            "field" : "prima_dose"
+          }
+        },
+        "total_people": {
+          "sum": {
+            "field" : "totale_generale"
+          }
+        },
+        "ratio_vaccinated_people": {
+          "bucket_script": {
+            "buckets_path": {
+	      "vacc": "total_vaccinated",
+              "total" : "total_people"
+            },
+            "script":"(params.vacc/params.total)*100"
+         }
+        }
+      }
+    }
+  }
+}
 
 \end{lstlisting}
-\subsubsection{Query 9}
-The following query...
-
-\begin{lstlisting}[language=cypher, label=lst:cypher-example]
-
-CODE
-
-\end{lstlisting}
+\newpage
 \subsubsection{Query 10}
 The following query...
 
@@ -926,7 +932,7 @@ This command creates a new database document. Here it is reported a complete exa
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-POST /vaccinations/_doc
+POST /istat_vaccinations/_doc
 {
   "data_somministrazione": "<@\textbf{\color{magenta}{Date}}@>",
   "fornitore": "<@\textbf{\color{magenta}{Supplier}}@>",
@@ -956,7 +962,7 @@ With this query it is possible to find a document id by specifing these fields: 
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-GET /vaccinations/_search
+GET /istat_vaccinations/_search
 {
   "query": {
     "bool": {
@@ -993,7 +999,7 @@ Now it is possible to update the number of doses of the document found.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-POST /vaccinations/_update/8FjS_H0BhG8f5U0W2n46
+POST /istat_vaccinations/_update/8FjS_H0BhG8f5U0W2n46
 {
   "doc": {
     "prima_dose" : 3000
@@ -1026,20 +1032,29 @@ This section has been used to briefly describe all the different graphs of the d
 \section{User guide}
 
 \subsection{Import data}
-CHECH - SEZIONE SCRITTA VELOCEMENTE, da rifinire
 \subsubsection{Import vaccinations dataset}
 After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\selectfont"upload file"} button present in the home page. Now the file named {\fontfamily{qcr}\selectfont"cleaned\_data.csv"} must be dragged and dropped in the opened page.
 
-After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the following index name {\fontfamily{qcr}\selectfont"vaccinations"}. In the mapping section, at line number 16, the word long must be replaced with keyword.
+After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_vaccinations"} index name. In the mapping section, at line number 16, the word "long" must be replaced with "keyword".
 
 In the Ingest pipeline section, lines from number 36 to number 42 (both included) must be deleted.
 Then, by clicking the import button, vaccinations data will be imported succesfully.
 
 \subsubsection{Import Istat population dataset}
-Qui piu o meno è come quello sopra, anche i suoi codici istat vanno adattati e andrà messo keyword nel mapping
+After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\selectfont"upload file"} button present in the home page. Now the file named {\fontfamily{qcr}\selectfont"new\_istat\_code.csv"} must be dragged and dropped in the opened page.
+
+After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_population"} index name. In the mapping section, at line number 13, the word "long" must be replaced with "keyword".
+
+In the Ingest pipeline section, lines from number 33 to number 39 (both included) must be deleted.
+Then, by clicking the import button, vaccinations data will be imported succesfully.
+
+\subsubsection{Create merged index}
+...
 
 \subsection{Import dashboard}
-After having opened Kibana it is necessary to go in the {\fontfamily{qcr}\selectfont"Stack management"} section. From this page, click the {\fontfamily{qcr}\selectfont"Saved objects"} button present in the left bar, in the kibana section. In the new page click the {\fontfamily{qcr}\selectfont"Import data"} button and then upload the {\fontfamily{qcr}\selectfont"dashboard.ndjson"} file. 
+After having opened Kibana it is necessary to go in the {\fontfamily{qcr}\selectfont"Stack management"} section. From this page, the {\fontfamily{qcr}\selectfont"Saved objects"} button present in the left bar, in the Kibana section, must be clicked. 
+
+In the new page it is necessary to click the {\fontfamily{qcr}\selectfont"Import data"} button and then upload the {\fontfamily{qcr}\selectfont"dashboard.ndjson"} file. 
 
 It is important to select as index the one referred to (?????? probabilmente ci andra quello misto tra istat e vaccini ?????).
 After that just click the {\fontfamily{qcr}\selectfont"Import"} button; the dashboard will now be visible in {\fontfamily{qcr}\selectfont"Dashboard"} section.
