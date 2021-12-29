@@ -128,6 +128,7 @@ The assumptions taken into account are the following:
 \subsection{Vaccine administration dataset}
 The Dataset used for the project is named {\fontfamily{qcr}\selectfont"somministrazioni-vaccini-latest.csv"} and it has been downloaded from the {\fontfamily{qcr}\selectfont"dati"} folder from the official Italian Government Github repository at the following link :\\ \url{https://github.com/italia/covid19-opendata-vaccini}.
 \subsubsection{Schema}
+\label{subsec:vaccination schema}
 This dataset contains information about administered vaccines in Italy and it is made by the following fields:
 \hfill\break
 \begin{center}
@@ -186,6 +187,8 @@ they are numbers but for compatibility reasons they should be considered as keyw
 As the original dataset does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
 \hfill\break
 \hfill\break
+To understand what Istat region code is, it is suggested to visit the following link: \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+
 %The dataset period taken into consideration for statistical purposes is the one that goes from the first day of the year 2021 to the last day of September 2021.
 
 \newpage
@@ -197,11 +200,14 @@ As optional point of this project, analysis has been integrated with another dat
 
 \newpage
 \section{Queries and Commands}
-In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with \textbf{\color{magenta}{magenta}} bold text.
+In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with {\color{magenta}{magenta}} bold text.
 
 Some parameters information can be useful for different queries or commands so they are written here to avoid writing them multiple times:
 \begin{itemize}
-    \item \textbf{\color{magenta}{Start date}} and \textbf{\color{magenta}{End date}} are, respectevely, the starting date of a period and the ending date of a period. Dates must be in the following format YYYY-MM-DD and, obviously, End date must be subsequent to Start date.
+    \item {\color{magenta}{Start date}} and {\color{magenta}{End date}} are, respectevely, the starting date of a period and the ending date of a period. Dates must be in the following format YYYY-MM-DD and, obviously, End date must be subsequent to Start date.
+    \item {\color{magenta}{Date}} is a generic date and it must be in the following format YYYY-MM-DD.
+    \item {\color{magenta}{Supplier}}, for coherence w.r.t other documents, must be one of the following: Moderna, Janssen, Pfizer/BioNTech or Vaxzevria (AstraZeneca).
+    \item {\color{magenta}{Age range}} must follow one of this format: 12-19, x0-x9 or 90+ (where x is a number between 2 and 8)
 \end{itemize}
 \subsection{Queries}
 The first eight queries refer only on the vaccination dataset. Instead, the last two queries refer to both vaccination and Istat population dataset.
@@ -914,20 +920,84 @@ CODE
 \end{lstlisting}
 \newpage
 \subsection{Commands}
-\subsubsection{Command 1}
-The following query...
+All the fields of the following commands are parameters, some will be highlighted in magenta, other won't, due to their exhaustive explanation that can be found in section \ref{subsec:vaccination schema}.
+\subsubsection{Create new document}
+This command creates a new database document. Here it is reported a complete example. 
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+POST /vaccinations/_doc
+{
+  "data_somministrazione": "<@\textbf{\color{magenta}{Date}}@>",
+  "fornitore": "<@\textbf{\color{magenta}{Supplier}}@>",
+  "area": "ABR",
+  "fascia_anagrafica": "<@\textbf{\color{magenta}{Age range}}@>",
+  "sesso_maschile": "1",
+  "sesso_femminile": "1",
+  "prima_dose": "1",
+  "seconda_dose": "2",
+  "pregressa_infezione": "0",
+  "dose_addizionale_booster": "0",
+  "codice_NUTS1": "ITF",
+  "codice_NUTS2": "ITF1",
+  "codice_regione_ISTAT": "13",
+  "nome_area": "Abruzzo"
+}
 
 \end{lstlisting}
-\subsubsection{Command 2}
-The following query...
+\newpage
+\subsubsection{Update of number of first doses}
+This command, given a specific document id, update the number of first doses. Here it is reported both the command and also the query useful to find a document it.
+\hfill\break
+\hfill\break
+\textbf{Find document id}
+\hfill\break
+With this query it is possible to find a document id by specifing these fields: data\_somministrazione, codice\_regione\_ISTAT, fornitore and fascia\_anagrafica.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-CODE
+GET /vaccinations/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "data_somministrazione": "<@\textbf{\color{magenta}{Date}}@>"
+          }
+        },
+        {
+          "match": {
+            "codice_regione_ISTAT": "13"
+          }
+        },
+        {
+          "match": {
+            "fornitore": "<@\textbf{\color{magenta}{Supplier}}@>"
+          }
+        },
+        {
+          "match": {
+            "fascia_anagrafica": "<@\textbf{\color{magenta}{Age Range}}@>"
+          }
+        }
+      ]
+    }
+  }
+}
+\end{lstlisting}
+\hfill\break
+\textbf{First doses update}
+\hfill\break
+Now it is possible to update the number of doses of the document found.
+
+\begin{lstlisting}[language=cypher, label=lst:cypher-example]
+
+POST /vaccinations/_update/8FjS_H0BhG8f5U0W2n46
+{
+  "doc": {
+    "prima_dose" : 3000
+} }
 
 \end{lstlisting}
 \newpage
