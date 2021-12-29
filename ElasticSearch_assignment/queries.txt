@@ -4,7 +4,7 @@ QUERIES
     For each region, this query returns the percentage of the difference between vaccinations of a given date and its
     precedent day, calculated with respect to the amount of vaccinations performed the precedent day.
     If the vaccinations have increased, the percentage will be positive, negative otherwise.
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -68,7 +68,7 @@ GET vaccinations/_search
         - one is vaccinated with Janssen vaccine.
         - one has already received the second dose.
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs":{
@@ -125,7 +125,7 @@ GET vaccinations/_search
 
 # VACCINATION TREND
     For each day it returns all the vaccinations done.
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -149,7 +149,7 @@ GET vaccinations/_search
 
 # Percentages of brand of vaccine per period
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs":{
@@ -280,7 +280,7 @@ GET vaccinations/_search
 
 # Percentages of first dose / second dose / booster administrations for a given period
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -347,7 +347,7 @@ GET vaccinations/_search
 
 # Given a specific period, return the vaccination percentage per age range
 
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
@@ -692,7 +692,7 @@ GET /istat*/_search
 
 
 # Find a document through data_somministrazione, codice_regione_ISTAT, fornitore and fascia_anagrafica
-GET /istat/_search
+GET /istat_vaccinations/_search
 {
   "query": {
     "bool": {
@@ -723,7 +723,7 @@ GET /istat/_search
 }
 
 # Rank regions per vaccinations for a given day
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "query": {
@@ -760,7 +760,7 @@ GET vaccinations/_search
 
 
 # Find a document through data_somministrazione, codice_regione_ISTAT, fornitore and fascia_anagrafica
-GET /istat/_search
+GET /istat_vaccinations/_search
 {
   "query": {
     "bool": {
@@ -791,7 +791,7 @@ GET /istat/_search
 }
 
 # Rank regions per vaccinations for a given day
-GET vaccinations/_search
+GET istat_vaccinations/_search
 {
   "size" : 0,
   "query": {
@@ -833,14 +833,14 @@ GET vaccinations/_search
 
 COMMANDS
 # Command 1: Given a document_id update the number of (first) doses
-POST /istat/_update/8FjS_H0BhG8f5U0W2n46
+POST /istat_vaccinations/_update/8FjS_H0BhG8f5U0W2n46
 {
   "doc": {
     "prima_dose" : 3000
   }
 }
 # Command 2: Create a new document with data for a given day, region, brand and age range
-POST /istat/_doc
+POST /istat_vaccinations/_doc
 {
   "data_somministrazione": "2022-01-01",
   "fornitore": "Pfizer/BioNTech",
