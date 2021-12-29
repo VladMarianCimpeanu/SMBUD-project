@@ -1,3 +1,11 @@
+# NEW - !ADD TO REPORT
+added new dataset of the population. NOW we should use 2 indexes:
+- istat_population: index about italian population
+- istat_vaccinations: index about the vaccinations
+both indexes use codice_regione_ISTAT code to identify a region. The original dateset used for 
+  istat_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento
+  (22) provinces. For this reason codes have been corrected in order to link the two indexes.
+
 ## queries
 - Increment of vaccinated people per region (per age range) ✅
 - Trend of vaccines per day (per region) ✅
@@ -10,7 +18,7 @@
 - ~~Percentages about second / booster dose compared to first dose / second dose (watch out for mixed doses)~~
 
 ## additional queries
-- We could integrate ISTAT data per region and get percentage of vaccinated people over total inhabitants / difference for sex
+- We could integrate ISTAT data per region and get percentage of vaccinated people over total inhabitants / difference for sex ✅
 - We could integrate delivered doses and get the percentage of administred doses over delivered ones
 
 ## commands
@@ -32,3 +40,4 @@ is the possibility to associate data to regions according to ISTAT code conventi
   convention as kibana will find the following codes "1, 2, 3, 4, ...".
   As the origina dataset does not follow the kibana convention, it has to be adapted through the script 
   `dataset_cleaner.py`
+
