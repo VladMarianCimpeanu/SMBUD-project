@@ -362,15 +362,13 @@ GET istat_vaccinations/_search
         ]
       },
       "aggs": {
-        "teens_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "12-19"
-            }
+        "age_range": {
+          "terms": {
+            "field": "fascia_anagrafica"
           },
           "aggs": {
-            "amount" : {
-              "sum" : {
+            "amount":{
+              "sum": {
                 "script": {
                   "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
                 }
@@ -378,277 +376,93 @@ GET istat_vaccinations/_search
             }
           }
         },
-        "20s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "20-29"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "30s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "30-39"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "40s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "40-49"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "50s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "50-59"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "60s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "60-69"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "70s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "70-79"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "80s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "80-89"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
-            }
-          }
-        },
-        "90s_range": {
-          "filter": {
-            "term" : {
-              "fascia_anagrafica": "90+"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
-                }
-              }
+        "total": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
             }
           }
         },
         "teen_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "Teen": "age_range['12-19']>amount",
+              "tot": "total"
             },
-            "script": "(params.Teen) / (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.Teen) / (params.tot) * 100"
           }
         },
         "20s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "20": "age_range['20-29']>amount",
+              "tot":"total"
             },
-            "script": "(params.20)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.20)/ (params.tot) * 100"
           }
         },
         "30s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "30": "age_range['30-39']>amount",
+              "tot": "total"
             },
-            "script": "(params.30)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.30)/ (params.tot) * 100"
           }
         },
         "40s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "40": "age_range['40-49']>amount",
+              "tot": "total"
             },
-            "script": "(params.40)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.40)/ (params.tot) * 100"
           }
         },
         "50s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "50": "age_range['50-59']>amount",
+              "tot": "total"
             },
-            "script": "(params.50)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.50)/ (params.tot) * 100"
           }
         },
         "60s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "60": "age_range['60-69']>amount",
+              "tot": "total"
             },
-            "script": "(params.60)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.60)/ (params.tot) * 100"
           }
         },
         "70s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "70": "age_range['70-79']>amount",
+              "tot": "total"
             },
-            "script": "(params.70)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.70)/ (params.tot) * 100"
           }
         },
         "80s_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "80": "age_range['80-89']>amount",
+              "tot": "total"
             },
-            "script": "(params.80)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
+            "script": "(params.80)/ (params.tot) * 100"
           }
         },
         "90+_percentage" : {
           "bucket_script": {
             "buckets_path": {
-              "Teen": "teens_range>amount",
-              "20": "20s_range>amount",
-              "30": "30s_range>amount",
-              "40": "40s_range>amount",
-              "50": "50s_range>amount",
-              "60": "60s_range>amount",
-              "70": "70s_range>amount",
-              "80": "80s_range>amount",
-              "90": "90s_range>amount"
+              "90": "age_range['90+']>amount",
+              "tot": "total"
             },
-            "script": "(params.90)/ (params.Teen + params.20 + params.30 + params.40 +params.50 + params.60 + params.70 + params.80 + params.90) * 100"
-     	  }
+            "script": "(params.90)/ (params.tot) * 100"
+     	    }
         }
       }
     }
