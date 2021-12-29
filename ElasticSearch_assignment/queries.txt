@@ -643,6 +643,77 @@ GET istat_vaccinations/_search
   }
 }
 
+# Percentage of people who received booster dose over those who completed the vaccination cycle at least 5 months ago
+# and are potentially subject to booster dose
+
+GET vaccinations/_search
+{
+  "size" : 0,
+  "aggs": {
+    "all_matching_docs": {
+      "filters": {
+        "filters": {
+          "all": {
+            "match_all": {}
+          }
+        }
+      },
+      "aggs":{
+        "sum_booster":{
+          "sum": {
+            "field": "dose_addizionale_booster"
+          }
+        },
+        "booster_candidates": {
+          "filter": {
+            "range": {
+              "data_somministrazione": {
+                "lte": "2021-12-22||-5M"
+              }
+            }
+          },
+          "aggs": {
+            "sum_second_dose" : {
+              "sum" : {
+                "field" : "seconda_dose"
+              }
+            },
+            "sum_janssen": {
+              "filter": {
+                "term" : {
+                  "fornitore": "Janssen"
+                }
+              },
+              "aggs": {
+                "amount" : {
+                  "sum" : {
+                    "field": "prima_dose"
+                  }
+                }
+              }
+            },
+            "sum_previous_infection": {
+              "sum" : {
+                "field" : "pregressa_infezione"
+              }
+            }
+          }
+        },
+        "booster_percentage" : {
+          "bucket_script": {
+            "buckets_path": {
+              "second_dose" : "booster_candidates>sum_second_dose",
+              "janssen" : "booster_candidates>sum_janssen>amount",
+              "previous_infection" : "booster_candidates>sum_previous_infection",
+              "booster" : "sum_booster"
+            },
+            "script": "params.booster / (params.second_dose + params.janssen + params.previous_infection) * 100"
+          }
+        }
+      }
+    }
+  }
+}
 
 
 COMMANDS
