@@ -14,7 +14,7 @@ both indexes use codice_regione_ISTAT code to identify a region. The original da
 | Rank regions per vaccinations for a given day | ✅| ✅ |
 | Percentages or absolute number of people who completed the vaccination cycle | ✅| ❌ |
 | Percentages or absolute numbers of brand of vaccine per period| ✅ |✅  | 
-| Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago  |✅ |❌  |
+| Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago  |✅ |✅  |
 | Given a specific day, rank the age ranges per vaccinations Giovanni| ✅ |✅  | 
 | Percentages of first dose / second dose / booster administrations for a given period |✅ |✅  |
 
