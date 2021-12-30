@@ -9,7 +9,7 @@ both indexes use codice_regione_ISTAT code to identify a region. The original da
 ## queries
 | query | elastic seach| Kibana| 
 | ----------- | ----------- |  -----------
-| Increment of vaccinated people per region| ✅|❌|
+| Increment of vaccinated people per region| ✅|✅|
 | Trend of vaccines per day |✅ |✅| 
 | Rank regions per vaccinations for a given day | ✅| ✅ |
 | Percentages or absolute number of people who completed the vaccination cycle | ✅| ❌ |
