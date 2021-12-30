@@ -151,9 +151,9 @@ GET istat_vaccinations/_search
 
 GET istat_vaccinations/_search
 {
-  "size" : 0,
-  "aggs":{
-    "group_by": {
+  "size":0,
+  "aggs": {
+    "group_by_date": {
       "date_range": {
         "field": "data_somministrazione",
         "ranges": [
@@ -164,112 +164,61 @@ GET istat_vaccinations/_search
         ]
       },
       "aggs": {
-        "Janssen_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Janssen"
+        "total_vaccinations": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
             }
+          }
+        },
+        "group_by_brand": {
+          "terms": {
+            "field": "fornitore"
           },
           "aggs": {
-            "amount" : {
-              "sum" : {
+            "amount": {
+              "sum": {
                 "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
                 }
               }
             }
           }
         },
-        "Pfizer_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Pfizer/BioNTech"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Moderna_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Moderna"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Astrazeneca_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Vaxzevria (AstraZeneca)"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Prifez_Percentage" : {
+        "astrazeneca_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "astra": "group_by_brand['Vaxzevria (AstraZeneca)']> amount"
             },
-            "script": "(params.Pfizer)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.astra / params.tot) * 100"
           }
         },
-        "Moderna_Percentage" : {
+        "moderna_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "moderna": "group_by_brand['Moderna']>amount"
             },
-            "script": "(params.Moderna)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.moderna / params.tot) * 100"
           }
         },
-        "Astrazeneca_Percentage" : {
+        "pfizer_percentage":{
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "pfizer": "group_by_brand['Pfizer/BioNTech']>amount"
             },
-            "script": "(params.Astrazeneca)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.pfizer / params.tot) * 100"
           }
         },
-        "Janssen_Percentage" : {
+        "janssen_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "janssen": "group_by_brand['Janssen']>amount"
             },
-            "script": "(params.Janssen)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.janssen / params.tot) * 100"
           }
         }
       }
