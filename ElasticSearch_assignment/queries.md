@@ -12,7 +12,7 @@ both indexes use codice_regione_ISTAT code to identify a region. The original da
 - Rank regions per vaccinations for a given day Andrea ✅
 - Percentages or absolute number of people who completed the vaccination cycle ✅
 - Percentages or absolute numbers of brand of vaccine per period Giovanni ✅
-- Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago (https://www.governo.it/it/cscovid19/report-vaccini/) Andrea 
+- Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago (https://www.governo.it/it/cscovid19/report-vaccini/) Andrea ✅
 - Given a specific day, rank the age ranges per vaccinations Giovanni ✅
 - Percentages of first dose / second dose / booster administrations for a given period Giovanni ✅
 - ~~Percentages about second / booster dose compared to first dose / second dose (watch out for mixed doses)~~
