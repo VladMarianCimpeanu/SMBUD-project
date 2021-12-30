@@ -99,7 +99,7 @@ Andrea Cerasani - 10680486
 \subsection{Problem Specification}
 The aim of this project was to design, store and query data on a NoSQL DB supporting a data analysis scenario over data about COVID-19 vaccination statistics. The purpose is that of building a comprehensive database of vaccinations.
 
-A given vaccinations dataset has been assigned, with the purpose to pick a time interval of at least 3 months from it and, by using an ElasticSearch installation, import the data, apply the appropriate schema design choices, implement some queries aiming at exploring the data statistics and design a basic visualization dashboard of the results.
+A vaccinations dataset has been suggested, with the purpose to pick a time interval of at least 3 months from it and, by using an ElasticSearch installation, import the data, apply the appropriate schema design choices, implement some queries aiming at exploring the data statistics and design a basic visualization dashboard of the results.
 
 \subsection{Hypothesis}
 The assumptions taken into account are the following:
@@ -125,24 +125,7 @@ The assumptions taken into account are the following:
 %\end{center}
 \newpage
 \section{Datasets}
-In the table shown below, the data types written are the 'original' ones, so the ones used by the datasets creators. 
-
-The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed, except for the ISTAT region code field.
-It is better to keep all the ISTAT region codes as keywords instead of numbers for the following reason:
-
-they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, by the way, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
-
-As the original datasets does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
-
-\hfill\break
-\hfill\break
-Both datasets used have Istat region code as field, to understand what it is it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
-\hfill\break
-\hfill\break
-\hfill\break
-When the two datasets will be imported, both created indexes will use Istat region code to identify a region. The original dateset used for istat\_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento (22) provinces. For this reason codes have been corrected in order to link the two indexes.
-
-\newpage
+Two different datasets has been used for analysis purposes. A description of both can be found below.
 \subsection{Vaccine administration dataset}
 The Dataset used for the project is named {\fontfamily{qcr}\selectfont"somministrazioni-vaccini-latest.csv"} and it has been downloaded from the {\fontfamily{qcr}\selectfont"dati"} folder from the official Italian Government Github repository at the following link :\\ \url{https://github.com/italia/covid19-opendata-vaccini}.
 \subsubsection{Schema}
@@ -154,8 +137,6 @@ This dataset contains information about administered vaccines in Italy and it is
   \hline
   \bfseries{Field} & \bfseries{Data type} & \bfseries{Description} \\
   \hline\hline
-  index & integer & Record identification code\\
-  \hline
   area & string & Code of the delivery region\\
     \hline
       supplier & string & Complete name of the supplier of the vaccine\\
@@ -249,6 +230,23 @@ This dataset contains information about population number per region and age ran
 \end{center}
 \hfill\break
 
+\subsection{Other considerations}
+The data types written in the schema tables are the 'original' ones, so the ones used by the datasets creators. 
+
+The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed, except for the ISTAT region code field.
+It is better to keep all the ISTAT region codes as keywords instead of numbers for the following reason:
+
+they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, by the way, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
+
+As the original datasets does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
+
+\hfill\break
+Both datasets used have Istat region code as field, to understand what it is it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+\hfill\break
+\hfill\break
+When the two datasets will be imported, both created indexes will use Istat region code to identify a region. The original dateset used for istat\_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento (22) provinces. For this reason codes have been corrected in order to link the two indexes.
+
+
 \newpage
 \section{Queries and Commands}
 In the following chapter all the queries and commands parameters (part of the code to substitute with desired values) will be highlighted with {\color{magenta}{magenta}} bold text.
@@ -266,6 +264,8 @@ The first eight queries refer only on the vaccination dataset. Instead, the last
 For each region, this query returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
 
+This query has thought to be used during the current day, thus the parameters "{\color{magenta}{Date 1}}" and "{\color{magenta}{Date 2}}" should be respectively "now" and "now-1d/d". By the way, as the database is not up to date, the query will not be correctly performed, for this reason it is suggested to use the last dates available in the dataset which are "2021-12-22" and "2021-12-21". 
+
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
 GET istat_vaccinations/_search
@@ -280,7 +280,7 @@ GET istat_vaccinations/_search
         "today_vaccinations" :{
           "filter": {
             "term" : {
-              "data_somministrazione": "now-31d/d"
+              "data_somministrazione": "<@\textbf{\color{magenta}{Date 1}}@>"
             }
           },
           "aggs": {
@@ -296,7 +296,7 @@ GET istat_vaccinations/_search
         "yesterday_vaccinations" : {
           "filter": {
             "term" : {
-              "data_somministrazione": "now-32d/d"
+              "data_somministrazione": "<@\textbf{\color{magenta}{Date 2}}@>"
             }
           },
           "aggs" : {
@@ -426,9 +426,9 @@ The following query, given a period of time, returns the percentage of the admin
 
 GET istat_vaccinations/_search
 {
-  "size" : 0,
-  "aggs":{
-    "group_by": {
+  "size":0,
+  "aggs": {
+    "group_by_date": {
       "date_range": {
         "field": "data_somministrazione",
         "ranges": [
@@ -439,112 +439,61 @@ GET istat_vaccinations/_search
         ]
       },
       "aggs": {
-        "Janssen_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Janssen"
+        "total_vaccinations": {
+          "sum": {
+            "script": {
+              "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
             }
+          }
+        },
+        "group_by_brand": {
+          "terms": {
+            "field": "fornitore"
           },
           "aggs": {
-            "amount" : {
-              "sum" : {
+            "amount": {
+              "sum": {
                 "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
+                  "source": "doc['sesso_maschile'].value + doc['sesso_femminile'].value"
                 }
               }
             }
           }
         },
-        "Pfizer_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Pfizer/BioNTech"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Moderna_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Moderna"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Astrazeneca_vaccinations": {
-          "filter": {
-            "term" : {
-              "fornitore": "Vaxzevria (AstraZeneca)"
-            }
-          },
-          "aggs": {
-            "amount" : {
-              "sum" : {
-                "script": {
-                  "source": "doc['prima_dose'].value + doc['seconda_dose'].value + doc['dose_addizionale_booster'].value"
-                }
-              }
-            }
-          }
-        },
-        "Prifez_Percentage" : {
+        "astrazeneca_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "astra": "group_by_brand['Vaxzevria (AstraZeneca)']>amount"
             },
-            "script": "(params.Pfizer)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.astra / params.tot) * 100"
           }
         },
-        "Moderna_Percentage" : {
+        "moderna_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "moderna": "group_by_brand['Moderna']>amount"
             },
-            "script": "(params.Moderna)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.moderna / params.tot) * 100"
           }
         },
-        "Astrazeneca_Percentage" : {
+        "pfizer_percentage":{
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "pfizer": "group_by_brand['Pfizer/BioNTech']>amount"
             },
-            "script": "(params.Astrazeneca)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.pfizer / params.tot) * 100"
           }
         },
-        "Janssen_Percentage" : {
+        "janssen_percentage": {
           "bucket_script": {
             "buckets_path": {
-              "Pfizer": "Pfizer_vaccinations>amount",
-              "Moderna": "Moderna_vaccinations>amount",
-              "Janssen": "Janssen_vaccinations>amount",
-              "Astrazeneca": "Astrazeneca_vaccinations>amount"
+              "tot": "total_vaccinations",
+              "janssen": "group_by_brand['Janssen']>amount"
             },
-            "script": "(params.Janssen)/ (params.Pfizer + params.Moderna + params.Janssen + params.Astrazeneca) * 100"
+            "script": "(params.janssen / params.tot) * 100"
           }
         }
       }
@@ -801,7 +750,12 @@ GET istat_vaccinations/_search
 \end{lstlisting}
 \newpage
 \subsubsection{Percentage of booster administrated}
-The following query returns percentage of people who received booster dose over those who completed the vaccination cycle at least 5 months ago and are potentially subject to booster dose.
+The following query returns percentage of people who received booster dose over those who completed the vaccination cycle at least 5 months ago and are potentially subject to booster dose. The considered candidate people are the ones who belongs to the following categories:
+\begin{itemize}
+    \item Completed the vaccinations cycle with two vaccines doses
+    \item Vaccinated with Janssen
+    \item Recoveded and subsequently vaccined
+\end{itemize}
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -1009,23 +963,71 @@ POST /istat_vaccinations/_update/8FjS_H0BhG8f5U0W2n46
 \newpage
 
 \section{Dashboard description}
-The Kibana Dashboard is made by different section, each focusing on a sepxific analysis.
+The Kibana Dashboard is made by different section, each focusing on a specific analysis.
 Here there is a brief description of each part is given.
 
 \subsection{Percentage of Vaccines brand per age range}
 In this section a pie chart has been used to show two different things: in the inner layer there is the percentage of people vaccinated per age range, in the outer layer there is the percentage of brand vaccines used per age range.
 
-\subsection{First doses administrated}
-This histogram shows the trend of the total amount of first doses administrated and it division per vaccine brand.
+\begin{center}
+\includegraphics[scale=0.4]{perc_brand_age_range.png}
+\end{center}
 
-\subsection{Vaccines administrated per gender}
-This section shows the trend of the amount of vaccines administrated to men and to women 
+\subsection{First doses with proportion among vaccines brands}
+This histogram, fixed a specific interval of time, returns the amount of first doses administrated. In addition the histogram shows the division per vaccine brand for each interval.
+
+\begin{center}
+\includegraphics[scale=0.4]{first_doses_vacc_brand.png}
+\end{center}
+
+\subsection{Vaccinated people}
+This section, given a specific period of time, returns the amount of people who have:
+\begin{itemize}
+    \item vaccinated at least once
+    \item completed the vaccination cycle
+    \item received the booster dose
+\end{itemize}
+
+\begin{center}
+\includegraphics[scale=0.4]{cumulat_vacc.png}
+\end{center}
 
 \subsection{Vaccines administrated per region}
-Here a map has been used to show the percentage of first doses, second doses and boosters administrated from the beginning of the pandemic per region, with respect to its total population.
+Here an histogram has been used to show the amount of people who vaccinated at least once for a specific range of time per region.
 
-\subsection{Description}
-This section has been used to briefly describe all the different graphs of the dashboard.
+\begin{center}
+\includegraphics[scale=0.4]{ranking_regions.png}
+\end{center}
+
+\subsection{Vaccination administrated per day}
+This diagram shows the amount of vaccinations administrated per day during a given range of time. 
+
+\begin{center}
+\includegraphics[scale=0.4]{vacc_adm_per_day.png}
+\end{center}
+
+\subsection{Who can take booster}
+This histogram, fixed a specific interval of time, returns the amount of people who are eligible to receive the booster dose for each interval. The percentage has been considered with respect to all the people who have completed the vaccination cycle.
+
+\begin{center}
+\includegraphics[scale=0.4]{who_booster.png}
+\end{center}
+
+\subsection{Delta percentage of vaccinations with respect to yesterday}
+It returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
+If the vaccinations have increased, the percentage will be positive, negative otherwise.
+This widget has meant to be used in real time, thus it should refers to the current date. By the way, as the database is not up to date, the widget shows the last date available in the dataset which is "2021-12-22". 
+
+\begin{center}
+\includegraphics[scale=0.4]{delta_perc.png}
+\end{center}
+
+\subsection{Vaccinations type distribution during a given interval of time}
+Given period of time, splitted in fixed intervals, it represents the distribution among first doses, second doses and boosters for each interval.
+
+\begin{center}
+\includegraphics[scale=0.4]{vacc_distr.png}
+\end{center}
 
 \newpage
 
@@ -1038,7 +1040,7 @@ After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\se
 After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_vaccinations"} index name. In the mapping section, at line number 16, the word "long" must be replaced with "keyword".
 
 In the Ingest pipeline section, lines from number 36 to number 42 (both included) must be deleted.
-Then, by clicking the import button, vaccinations data will be imported succesfully.
+Then, by clicking the import button, vaccinations data will be imported successfully.
 
 \subsubsection{Import Istat population dataset}
 After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\selectfont"upload file"} button present in the home page. Now the file named {\fontfamily{qcr}\selectfont"new\_istat\_code.csv"} must be dragged and dropped in the opened page.
@@ -1046,17 +1048,15 @@ After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\se
 After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_population"} index name. In the mapping section, at line number 13, the word "long" must be replaced with "keyword".
 
 In the Ingest pipeline section, lines from number 33 to number 39 (both included) must be deleted.
-Then, by clicking the import button, vaccinations data will be imported succesfully.
+Then, by clicking the import button, vaccinations data will be imported successfully.
 
-\subsubsection{Create merged index}
-...
 
 \subsection{Import dashboard}
 After having opened Kibana it is necessary to go in the {\fontfamily{qcr}\selectfont"Stack management"} section. From this page, the {\fontfamily{qcr}\selectfont"Saved objects"} button present in the left bar, in the Kibana section, must be clicked. 
 
 In the new page it is necessary to click the {\fontfamily{qcr}\selectfont"Import data"} button and then upload the {\fontfamily{qcr}\selectfont"dashboard.ndjson"} file. 
 
-It is important to select as index the one referred to (?????? probabilmente ci andra quello misto tra istat e vaccini ?????).
+It may appear an index conflict, in this case it is important to select as index the one referred to {\fontfamily{qcr}\selectfont"istat\_vaccinations"}.
 After that just click the {\fontfamily{qcr}\selectfont"Import"} button; the dashboard will now be visible in {\fontfamily{qcr}\selectfont"Dashboard"} section.
 
 \newpage
