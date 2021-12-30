@@ -7,15 +7,16 @@ both indexes use codice_regione_ISTAT code to identify a region. The original da
   (22) provinces. For this reason codes have been corrected in order to link the two indexes.
 
 ## queries
-- Increment of vaccinated people per region (per age range) ✅
-- Trend of vaccines per day (per region) ✅
-- Rank regions per vaccinations for a given day Andrea ✅
-- Percentages or absolute number of people who completed the vaccination cycle ✅
-- Percentages or absolute numbers of brand of vaccine per period Giovanni ✅
-- Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago (https://www.governo.it/it/cscovid19/report-vaccini/) Andrea ✅
-- Given a specific day, rank the age ranges per vaccinations Giovanni ✅
-- Percentages of first dose / second dose / booster administrations for a given period Giovanni ✅
-- ~~Percentages about second / booster dose compared to first dose / second dose (watch out for mixed doses)~~
+| query | elastic seach| Kibana| 
+| ----------- | ----------- |  -----------
+| Increment of vaccinated people per region| ✅|❌|
+| Trend of vaccines per day |✅ |✅| 
+| Rank regions per vaccinations for a given day | ✅| ✅ |
+| Percentages or absolute number of people who completed the vaccination cycle | ✅| ❌ |
+| Percentages or absolute numbers of brand of vaccine per period| ✅ |✅  | 
+| Percentage of boosted people with respect to people that completed vaccine cycle at least 5 months ago  |✅ |❌  |
+| Given a specific day, rank the age ranges per vaccinations Giovanni| ✅ |✅  | 
+| Percentages of first dose / second dose / booster administrations for a given period |✅ |✅  |
 
 ## additional queries
 - We could integrate ISTAT data per region and get percentage of vaccinated people over total inhabitants / difference for sex ✅
