@@ -970,14 +970,14 @@ Here there is a brief description of each part is given.
 In this section a pie chart has been used to show two different things: in the inner layer there is the percentage of people vaccinated per age range, in the outer layer there is the percentage of brand vaccines used per age range.
 
 \begin{center}
-\includegraphics[scale=0.4]{perc_brand_age_range.png}
+\includegraphics[scale=0.5]{perc_brand_age_range.png}
 \end{center}
 
 \subsection{First doses with proportion among vaccines brands}
-This histogram, fixed a specific interval of time, returns the amount of first doses administrated. In addition the histogram shows the division per vaccine brand for each interval.
+This histogram, fixed a specific interval of time, returns the amount of first doses administrated for each week. In addition the histogram shows the division per vaccine brand for each week.
 
 \begin{center}
-\includegraphics[scale=0.4]{first_doses_vacc_brand.png}
+\includegraphics[scale=0.6]{first_doses_vacc_brand.png}
 \end{center}
 
 \subsection{Vaccinated people}
@@ -989,44 +989,44 @@ This section, given a specific period of time, returns the amount of people who 
 \end{itemize}
 
 \begin{center}
-\includegraphics[scale=0.4]{cumulat_vacc.png}
+\includegraphics[scale=0.6]{cumulat_vacc.png}
 \end{center}
 
 \subsection{Vaccines administrated per region}
 Here an histogram has been used to show the amount of people who vaccinated at least once for a specific range of time per region.
 
 \begin{center}
-\includegraphics[scale=0.4]{ranking_regions.png}
+\includegraphics[scale=0.6]{ranking_regions.png}
 \end{center}
 
 \subsection{Vaccination administrated per day}
-This diagram shows the amount of vaccinations administrated per day during a given range of time. 
+This diagram shows the amount of vaccinations administrated per day during a given range of time.
 
 \begin{center}
-\includegraphics[scale=0.4]{vacc_adm_per_day.png}
+\includegraphics[scale=0.6]{vacc_adm_per_day.png}
 \end{center}
 
 \subsection{Who can take booster}
-This histogram, fixed a specific interval of time, returns the amount of people who are eligible to receive the booster dose for each interval. The percentage has been considered with respect to all the people who have completed the vaccination cycle.
+This histogram, returns the percentage of people who received the booster dose for each day. The percentage has been considered with respect to all the people who are eligible to receive the booster dose, so all the people who completed the vaccination cycle at least 5 months before the analyzed date.
 
 \begin{center}
-\includegraphics[scale=0.4]{who_booster.png}
+\includegraphics[scale=0.6]{who_booster.png}
 \end{center}
 
 \subsection{Delta percentage of vaccinations with respect to yesterday}
 It returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
-This widget has meant to be used in real time, thus it should refers to the current date. By the way, as the database is not up to date, the widget shows the last date available in the dataset which is "2021-12-22". 
+This widget has meant to be used in real time, thus it should refers to the current date. By the way, as the database is not up to date, the widget shows the last date available in the dataset which is "2021-12-22".
 
 \begin{center}
-\includegraphics[scale=0.4]{delta_perc.png}
+\includegraphics[scale=0.6]{delta_perc.png}
 \end{center}
 
 \subsection{Vaccinations type distribution during a given interval of time}
-Given period of time, splitted in fixed intervals, it represents the distribution among first doses, second doses and boosters for each interval.
+Given period of time, it represents the distribution among first doses, second doses and boosters for each week.
 
 \begin{center}
-\includegraphics[scale=0.4]{vacc_distr.png}
+\includegraphics[scale=0.6]{vacc_distr.png}
 \end{center}
 
 \newpage
@@ -1037,18 +1037,13 @@ Given period of time, splitted in fixed intervals, it represents the distributio
 \subsubsection{Import vaccinations dataset}
 After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\selectfont"upload file"} button present in the home page. Now the file named {\fontfamily{qcr}\selectfont"cleaned\_data.csv"} must be dragged and dropped in the opened page.
 
-After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_vaccinations"} index name. In the mapping section, at line number 16, the word "long" must be replaced with "keyword".
+After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_vaccinations"} index name. In the mapping section, {\fontfamily{qcr}\selectfont"codice\_regione\_ISTAT"} type must be replaced with "keyword"(line 16).
 
-In the Ingest pipeline section, lines from number 36 to number 42 (both included) must be deleted.
-Then, by clicking the import button, vaccinations data will be imported successfully.
+In the Ingest pipeline section, the conversion part of {\fontfamily{qcr}\selectfont"codice\_regione\_ISTAT"} (lines from number 36 to number 42, both included) must be deleted.
+Then, by clicking the import button, vaccinations data will be successfully imported.
 
 \subsubsection{Import Istat population dataset}
-After having opened Kibana, it is necessary to click on the {\fontfamily{qcr}\selectfont"upload file"} button present in the home page. Now the file named {\fontfamily{qcr}\selectfont"new\_istat\_code.csv"} must be dragged and dropped in the opened page.
-
-After that, the {\fontfamily{qcr}\selectfont"import"} button must be clicked. In the new page, in the advanced setting section, it is necessary to use the {\fontfamily{qcr}\selectfont"istat\_population"} index name. In the mapping section, at line number 13, the word "long" must be replaced with "keyword".
-
-In the Ingest pipeline section, lines from number 33 to number 39 (both included) must be deleted.
-Then, by clicking the import button, vaccinations data will be imported successfully.
+In order to import the Istat population dataset, it is necessary to repeat the same procedure described before. First, upload the {\fontfamily{qcr}\selectfont"new\_istat\_code.csv"} file and use {\fontfamily{qcr}\selectfont"istat\_population"} as index name. Then, apply the same changes in mapping section (line 13) and ingest pipeline section (lines from number 33 to number 39, both included) as shown before.
 
 
 \subsection{Import dashboard}
