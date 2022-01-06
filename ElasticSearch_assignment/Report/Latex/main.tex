@@ -107,8 +107,14 @@ The assumptions taken into account are the following:
 \begin{itemize}
 
 
-\item ...
-
+\item It is assumed that people who completed the vaccination cycle belong to the following categories:
+\begin{itemize}
+    \item have taken two vaccine doses
+    \item have taken a Janssen dose
+    \item have taken a vaccine dose after previous infection
+\end{itemize}
+\item A person is considered vaccinated if he has already taken at least one dose or has already taken a vaccine dose after previous infection.
+\item A person who has been previously infected is not supposed to take any second vaccination dose.
 \end{itemize}
 %\newpage
 %\section{ER diagram}
@@ -149,7 +155,7 @@ This dataset contains information about administered vaccines in Italy and it is
                         \hline
           female count & integer & Number of vaccinations administered to females per day, region and age group\\
     \hline
-  first doses & integer & Number of people administered with the first dose\\ 
+  first doses & integer & Number of people administered with the first dose\\
     \hline
   second doses & integer & Number of people administered with the second dose\\
     \hline
@@ -161,17 +167,17 @@ This dataset contains information about administered vaccines in Italy and it is
 \begin{center}
 \begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
 \hline
-  post infection doses & integer & Number of administrations given to subjects with previous covid-19 infection in the 3-6 month period and who, therefore, conclude the vaccination cycle with a single dose\\ 
+  post infection doses & integer & Number of administrations given to subjects with previous covid-19 infection in the 3-6 month period and who, therefore, conclude the vaccination cycle with a single dose\\
     \hline
-  booster doses & integer & Number of people administered with an additional dose/recall\\ 
+  booster doses & integer & Number of people administered with an additional dose/recall\\
     \hline
-  NUTS1 code & string & European classification of NUTS territorial units: NUTS level 1\\ 
+  NUTS1 code & string & European classification of NUTS territorial units: NUTS level 1\\
     \hline
-  NUTS2 code & string & European classification of NUTS territorial units: NUTS level 2\\ 
+  NUTS2 code & string & European classification of NUTS territorial units: NUTS level 2\\
     \hline
   ISTAT region code & integer & ISTAT code of the Region\\
     \hline
-  region name & string & Standard denomination of the area (where necessary bilingual denomination)\\ 
+  region name & string & Standard denomination of the area (where necessary bilingual denomination)\\
   \hline
   \end{tabular}
 \end{center}
@@ -209,7 +215,7 @@ This dataset contains information about population number per region and age ran
                         \hline
           region longitude & float & Longitude coordinate of the region\\
     \hline
-    
+
 \end{tabular}
 \end{center}
 
@@ -217,21 +223,21 @@ This dataset contains information about population number per region and age ran
 \begin{center}
 \begin{tabular}{ |m{4cm}|m{2cm}|m{4.5cm}|}
 \hline
-  age range & string & Age range to which the population numbers refers\\ 
+  age range & string & Age range to which the population numbers refers\\
     \hline
   male count & integer & Number of males in the population, per region and age range\\
     \hline
 
-  female count & integer & Number of females in the population, per region and age range\\ 
+  female count & integer & Number of females in the population, per region and age range\\
     \hline
-  total count & integer & Number of males plus females in the population, per region and age range\\ 
+  total count & integer & Number of males plus females in the population, per region and age range\\
     \hline
   \end{tabular}
 \end{center}
 \hfill\break
 
 \subsection{Other considerations}
-The data types written in the schema tables are the 'original' ones, so the ones used by the datasets creators. 
+The data types written in the schema tables are the 'original' ones, so the ones used by the datasets creators.
 
 The same data types have been used to implement and use the dataset in ElasticSearch because they well represent the different parameters, so no changes were needed, except for the ISTAT region code field.
 It is better to keep all the ISTAT region codes as keywords instead of numbers for the following reason:
@@ -264,7 +270,7 @@ The first eight queries refer only on the vaccination dataset. Instead, the last
 For each region, this query returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
 
-This query has thought to be used during the current day, thus the parameters "{\color{magenta}{Date 1}}" and "{\color{magenta}{Date 2}}" should be respectively "now" and "now-1d/d". By the way, as the database is not up to date, the query will not be correctly performed, for this reason it is suggested to use the last dates available in the dataset which are "2021-12-22" and "2021-12-21". 
+This query has thought to be used during the current day, thus the parameters "{\color{magenta}{Date 1}}" and "{\color{magenta}{Date 2}}" should be respectively "now" and "now-1d/d". By the way, as the database is not up to date, the query will not be correctly performed, for this reason it is suggested to use the last dates available in the dataset which are "2021-12-22" and "2021-12-21".
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -272,7 +278,7 @@ GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
-    "group_by_date": {
+    "group_by_area": {
       "terms": {
         "field": "nome_area"
       },
@@ -374,14 +380,20 @@ GET istat_vaccinations/_search
             }
           }
         },
+        "after_infection": {
+          "sum": {
+            "field" : "pregressa_infezione"
+          }
+        },
         "full_coverage_percentage" : {
           "bucket_script": {
             "buckets_path": {
               "first_dose": "sum_first_dose",
               "second_dose": "sum_second_dose",
-              "janssen_vax": "sum_Janssen>amount"
+              "janssen_vax": "sum_Janssen>amount",
+              "infection": "after_infection"
             },
-            "script": "(params.second_dose + params.janssen_vax)/ params.first_dose * 100"
+            "script": "(params.second_dose + params.janssen_vax + params.infection)/ (params.first_dose + params.infection) * 100"
           }
         }
       }
@@ -391,7 +403,7 @@ GET istat_vaccinations/_search
 
 \end{lstlisting}
 \subsubsection{Vaccination trend}
-This query returns, for each day, all the vaccinations done.
+For each day, this query returns the vaccinations performed.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -517,15 +529,17 @@ GET istat_vaccinations/_search
         "field": "data_somministrazione",
         "ranges": [
           {
-            "from": "<@\textbf{\color{magenta}{Start date}}@>",
-            "to": "<@\textbf{\color{magenta}{End date}}@>"
+            "from": ""<@\textbf{\color{magenta}{Start date}}@>"",
+            "to": ""<@\textbf{\color{magenta}{End date}}@>""
           }
         ]
       },
       "aggs": {
         "first_doses": {
           "sum": {
-            "field" : "prima_dose"
+            "script": {
+              "source": "doc['prima_dose'].value + doc['pregressa_infezione'].value"
+            }
           }
         },
         "second_doses": {
@@ -844,9 +858,14 @@ GET /istat*/_search
         "field" : "codice_regione_ISTAT"
       },
       "aggs": {
-        "total_vaccinated": {
+        "total_first_doses": {
           "sum": {
             "field" : "prima_dose"
+          }
+        },
+        "total_previous_infections":{
+          "sum":{
+            "field": "pregressa_infezione"
           }
         },
         "total_people": {
@@ -857,10 +876,11 @@ GET /istat*/_search
         "ratio_vaccinated_people": {
           "bucket_script": {
             "buckets_path": {
-	      "vacc": "total_vaccinated",
-              "total" : "total_people"
+	            "first": "total_first_doses",
+              "total" : "total_people",
+              "inf": "total_previous_infections"
             },
-            "script":"(params.vacc/params.total)*100"
+            "script":"((params.first + params.inf)/params.total)*100"
          }
         }
       }
@@ -882,7 +902,7 @@ CODE
 \subsection{Commands}
 All the fields of the following commands are parameters, some will be highlighted in magenta, other won't, due to their exhaustive explanation that can be found in section \ref{subsec:vaccination schema}.
 \subsubsection{Create new document}
-This command creates a new database document. Here it is reported a complete example. 
+This command creates a new database document. Here it is reported a complete example.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 

@@ -8,7 +8,7 @@ GET istat_vaccinations/_search
 {
   "size" : 0,
   "aggs": {
-    "group_by_date": {
+    "group_by_area": {
       "terms": {
         "field": "nome_area"
       },
@@ -107,14 +107,20 @@ GET istat_vaccinations/_search
             }
           }
         },
+        "after_infection": {
+          "sum": {
+            "field" : "pregressa_infezione"
+          }
+        },
         "full_coverage_percentage" : {
           "bucket_script": {
             "buckets_path": {
               "first_dose": "sum_first_dose",
               "second_dose": "sum_second_dose",
-              "janssen_vax": "sum_Janssen>amount"
+              "janssen_vax": "sum_Janssen>amount",
+              "infection": "after_infection"
             },
-            "script": "(params.second_dose + params.janssen_vax)/ params.first_dose * 100"
+            "script": "(params.second_dose + params.janssen_vax + params.infection)/ (params.first_dose + params.infection) * 100"
           }
         }
       }
@@ -246,7 +252,9 @@ GET istat_vaccinations/_search
       "aggs": {
         "first_doses": {
           "sum": {
-            "field" : "prima_dose"
+            "script": {
+              "source": "doc['prima_dose'].value + doc['pregressa_infezione'].value"
+            }
           }
         },
         "second_doses": {
@@ -429,9 +437,14 @@ GET /istat*/_search
         "field" : "codice_regione_ISTAT"
       },
       "aggs": {
-        "total_vaccinated": {
+        "total_first_doses": {
           "sum": {
             "field" : "prima_dose"
+          }
+        },
+        "total_previous_infections":{
+          "sum":{
+            "field": "pregressa_infezione"
           }
         },
         "total_people": {
@@ -442,10 +455,11 @@ GET /istat*/_search
         "ratio_vaccinated_people": {
           "bucket_script": {
             "buckets_path": {
-	      "vacc": "total_vaccinated",
-              "total" : "total_people"
+	            "first": "total_first_doses",
+              "total" : "total_people",
+              "inf": "total_previous_infections"
             },
-            "script":"(params.vacc/params.total)*100"
+            "script":"((params.first + params.inf)/params.total)*100"
          }
         }
       }
