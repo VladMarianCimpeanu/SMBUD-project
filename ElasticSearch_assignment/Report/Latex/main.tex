@@ -131,7 +131,7 @@ The assumptions taken into account are the following:
 %\end{center}
 \newpage
 \section{Datasets}
-Two different datasets has been used for analysis purposes. A description of both can be found below.
+Two different datasets have been used for analysis purposes. A description of both can be found below.
 \subsection{Vaccine administration dataset}
 The Dataset used for the project is named {\fontfamily{qcr}\selectfont"somministrazioni-vaccini-latest.csv"} and it has been downloaded from the {\fontfamily{qcr}\selectfont"dati"} folder from the official Italian Government Github repository at the following link :\\ \url{https://github.com/italia/covid19-opendata-vaccini}.
 \subsubsection{Schema}
@@ -189,7 +189,7 @@ This dataset contains information about administered vaccines in Italy and it is
 
 \newpage
 \subsection{Istat population dataset}
-As optional point of this project, analysis has been integrated with another dataset which contains information about the Italian population, like number of people per age range and region or number of people per gender per region. The dataset has been downloaded from a Covid-19 related Github repository at the following link: \url{https://github.com/pcm-dpc/COVID-19}, it is located in the {\fontfamily{qcr}\selectfont"dati-statistici-riferimento"} folder and it is the one named {\fontfamily{qcr}\selectfont"popolazione-istat-regione-range.csv"}.
+As optional point of this project, analysis has been integrated with another dataset which contains information about the Italian population, such as number of people per age range and region or number of people per gender per region. The dataset has been downloaded from a Covid-19 related Github repository at the following link: \url{https://github.com/pcm-dpc/COVID-19}, it is located in the {\fontfamily{qcr}\selectfont"dati-statistici-riferimento"} folder and it is the one named {\fontfamily{qcr}\selectfont"popolazione-istat-regione-range.csv"}.
 
 \subsubsection{Schema}
 This dataset contains information about population number per region and age range in Italy. It is made by the following fields:
@@ -244,10 +244,10 @@ It is better to keep all the ISTAT region codes as keywords instead of numbers f
 
 they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, although, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
 
-As the original datasets does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
+As the original dataset does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
 
 \hfill\break
-Both datasets used have Istat region code as field, to understand what it is it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+Both datasets used have Istat region code as a field, to understand what it represents it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
 \hfill\break
 \hfill\break
 When the two datasets will be imported, both created indexes will use Istat region code to identify a region. The original dateset used for istat\_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento (22) provinces. For this reason codes have been corrected in order to link the two indexes.
@@ -274,7 +274,7 @@ The first eight queries refer only on the vaccination dataset. Instead, the last
 For each region, this query returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
 
-This query has thought to be used during the current day, thus the parameters "{\color{magenta}{Date 1}}" and "{\color{magenta}{Date 2}}" should be respectively "now" and "now-1d/d". By the way, as the database is not up to date, the query will not be correctly performed, for this reason it is suggested to use the last dates available in the dataset which are "2021-12-22" and "2021-12-21".
+This query is thought to be used during the current day, thus the parameters "{\color{magenta}{Date 1}}" and "{\color{magenta}{Date 2}}" should be respectively "now" and "now-1d/d". By the way, as the database is not up to date, the query will not be correctly performed, for this reason it is suggested to use the last dates available in the dataset which are "2021-12-22" and "2021-12-21".
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -402,7 +402,7 @@ GET istat_vaccinations/_search
 
 \end{lstlisting}
 \subsubsection{Vaccination trend}
-For each day, this query returns the vaccinations performed.
+For each day, this query returns the number of vaccinations performed.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
@@ -921,7 +921,7 @@ POST /istat_vaccinations/_doc
 \end{lstlisting}
 \newpage
 \subsubsection{Update of number of first doses}
-This command, given a specific document id, update the number of first doses. Here it is reported both the command and also the query useful to find a document it.
+This command, given a specific document id, updates the number of first doses. Here it is reported both the command and also the query useful to find the document to update.
 \hfill\break
 \hfill\break
 \textbf{Find document id}
@@ -1024,20 +1024,20 @@ This diagram shows the amount of vaccinations administrated per day during a giv
 This histogram, returns the percentage of people who received the booster dose for each day. The percentage has been considered with respect to all the people who are eligible to receive the booster dose, so all the people who completed the vaccination cycle at least 5 months before the analyzed date.
 
 \begin{center}
-\includegraphics[scale=0.6]{who_booster.png}
+\includegraphics[scale=1.2]{who_booster.png}
 \end{center}
 
 \subsection{Delta percentage of vaccinations with respect to yesterday}
 It returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
-This widget has meant to be used in real time, thus it should refers to the current date. By the way, as the database is not up to date, the widget shows the last date available in the dataset which is "2021-12-22".
+This widget is meant to be used in real time, thus it should refer to the current date. However, as the database is not up to date, the widget shows the last date available in the dataset which is "2021-12-22".
 
 \begin{center}
 \includegraphics[scale=0.6]{delta_perc.png}
 \end{center}
 
 \subsection{Vaccinations type distribution during a given interval of time}
-Given period of time, it represents the distribution among first doses, second doses and boosters for each week.
+Given a period of time, it represents the distribution among first doses, second doses and boosters for each week.
 
 \begin{center}
 \includegraphics[scale=0.6]{vacc_distr.png}
@@ -1086,6 +1086,7 @@ Kibana can be a useful tool to display complex analysis on the available data, e
     %\item \url{Flask package: https://flask.palletsprojects.com/en/2.0.x/}
     \item Elastic Guide: \url{https://www.elastic.co/guide/index.html}
     \item Italian Government repository: \url{https://github.com/italia/covid19-opendata-vaccini}
+    \item Istat population data: \url{https://github.com/pcm-dpc/COVID-19/blob/master/dati-statistici-riferimento/popolazione-istat-regione-range.csv}
     
     %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
 \end{itemize}
