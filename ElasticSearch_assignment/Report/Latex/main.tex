@@ -244,10 +244,10 @@ It is better to keep all the ISTAT region codes as keywords instead of numbers f
 
 they are numbers but for compatibility reasons they should be considered as keywords. In Kibana, there is the possibility to associate data to regions according to ISTAT code convention, although, the format used by Kibana is the following "01, 02, 03, 04, ...", thus, if ISTAT codes are imported as numbers they will not be compatible with that convention as Kibana will find the following codes "1, 2, 3, 4, ...".
 
-As the original dataset does not follow the Kibana convention, it has been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
+As the original datasets do not follow the Kibana convention, they have been adapted through the script {\fontfamily{qcr}\selectfont"dataset\_cleaner.py"}.
 
 \hfill\break
-Both datasets used have Istat region code as a field, to understand what it represents it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
+Both datasets used have Istat region code as a field, to understand what it represents, it is suggested to visit the following link: \\ \url{https://en.wikipedia.org/wiki/NUTS\_statistical\_regions\_of\_Italy}.
 \hfill\break
 \hfill\break
 When the two datasets will be imported, both created indexes will use Istat region code to identify a region. The original dateset used for istat\_population did not assign a code to Trentino region (04), instead it assigned codes for Bolzano(21) and Trento (22) provinces. For this reason codes have been corrected in order to link the two indexes.
@@ -256,6 +256,12 @@ When the two datasets will be imported, both created indexes will use Istat regi
 Elastic search admits two kinds of type to handle strings: Keyword and Text.
 For this project purposes, all the strings have been converted into keywords, indeed all string fields represent either an identification code (ISTAT\_region\_code, NUTS codes, ...) or an identification name (supplier, region name, ...) or an identification range (age group).
 For this reason, there is no need for text search as it is required perfect match to find certain documents.
+
+\hfill\break
+Last but not least, in order to correctly integrate the {\fontfamily{qcr}\selectfont"popolazione-istat-regione-range.csv"} it was needed to fix the age ranges fields. The main dataset contains the age range '0-19', whereas the integrated one contains '0-15' and '16-19', for this reason the two age ranges have been merged through the script {\fontfamily{qcr}\selectfont"merge datasets.ipynb"}.
+
+\hfill\break
+After the cleaning processing, {\fontfamily{qcr}\selectfont"cleaned\_data.csv"} is the fixed result of {\fontfamily{qcr}\selectfont"somministrazioni-vaccini-latest.csv"} whereas {\fontfamily{qcr}\selectfont"new\_isat\_code.csv"} is the final result of {\fontfamily{qcr}\selectfont"popolazione-istat-regione-range.csv"}
 
 \newpage
 \section{Queries and Commands}
@@ -967,7 +973,7 @@ Now it is possible to update the number of doses of the document found.
 
 \begin{lstlisting}[language=cypher, label=lst:cypher-example]
 
-POST /istat_vaccinations/_update/8FjS_H0BhG8f5U0W2n46
+POST /istat_vaccinations/_update/<@\textbf{\color{magenta}{\_id}}@>
 {
   "doc": {
     "prima_dose" : 3000
@@ -1068,6 +1074,16 @@ In the new page it is necessary to click the {\fontfamily{qcr}\selectfont"Import
 It may appear an index conflict, in this case it is important to select as index the one referred to {\fontfamily{qcr}\selectfont"istat\_vaccinations"}.
 After that just click the {\fontfamily{qcr}\selectfont"Import"} button; the dashboard will now be visible in {\fontfamily{qcr}\selectfont"Dashboard"} section.
 
+\subsection{Conversion ISTAT code format from csv files}
+Given a csv file containing the field {\fontfamily{qcr}\selectfont"codice\_regione\_ISTAT"},
+it is possible to convert it to the correct with the following command:
+\hfill \break
+{\fontfamily{qcr}\selectfont"python data\_cleaner.py -{}-input {\color{magenta}{original\_file}} -{}-output {\color{magenta}{destination\_file}}" }
+\hfill \break
+where {\fontfamily{qcr}\selectfont"original\_file"} is the file to convert, whereas {\fontfamily{qcr}\selectfont"destination\_file"} is the name of the file to generate with the new changes.
+
+In order to make the script correctly work, it is necessary to have installed {\fontfamily{qcr}\selectfont"pandas"} package in the working enviroment.
+
 \newpage
 
 \section{Conclusion}
@@ -1086,8 +1102,8 @@ Kibana can be a useful tool to display complex analysis on the available data, e
     %\item \url{Flask package: https://flask.palletsprojects.com/en/2.0.x/}
     \item Elastic Guide: \url{https://www.elastic.co/guide/index.html}
     \item Italian Government repository: \url{https://github.com/italia/covid19-opendata-vaccini}
-    \item Istat population data: \url{https://github.com/pcm-dpc/COVID-19/blob/master/dati-statistici-riferimento/popolazione-istat-regione-range.csv}
-    
+    \item Presidenza del Consiglio dei Ministri - Dipartimento della Protezione Civile repository:
+    \url{https://github.com/pcm-dpc/COVID-19}
     %\item Overpass turbo API: https://wiki.openstreetmap.org/wiki/Overpass\_API
 \end{itemize}
 
