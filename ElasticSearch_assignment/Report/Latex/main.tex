@@ -275,7 +275,7 @@ Some parameters information can be useful for different queries or commands so t
     \item {\color{magenta}{Age range}} must follow one of this format: 12-19, x0-x9 or 90+ (where x is a number between 2 and 8)
 \end{itemize}
 \subsection{Queries}
-The first eight queries refer only on the vaccination dataset. Instead, the last two queries refer to both vaccination and Istat population dataset.
+The first eight queries refer only on the vaccination dataset. Instead, the last one refers to both vaccination and Istat population dataset.
 \subsubsection{Delta vaccination per area}
 For each region, this query returns the percentage of the difference between vaccinations of a given date and its precedent day, calculated with respect to the amount of vaccinations performed the day before.
 If the vaccinations have increased, the percentage will be positive, negative otherwise.
@@ -889,15 +889,7 @@ GET /istat*/_search
 }
 
 \end{lstlisting}
-\newpage
-\subsubsection{Query 10}
-The following query...
 
-\begin{lstlisting}[language=cypher, label=lst:cypher-example]
-
-CODE
-
-\end{lstlisting}
 \newpage
 \subsection{Commands}
 All the fields of the following commands are parameters, some will be highlighted in magenta, other won't, due to their exhaustive explanation that can be found in section \ref{subsec:vaccination schema}.
