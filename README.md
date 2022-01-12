@@ -1,8 +1,8 @@
 # SMBUD data project
-### Introduction
+## Introduction
 This is the repository of **Systems and methods for big and unstructured data** project held at Politecnico
 di Milano in 2021. The aim of the project is to design and implement NoSQL databases for different scenarios.
-### First assignment - Neo4J
+## First assignment - Neo4J
 Design, store and query graph data structures in a NoSQL DB for supporting a contact tracing application for
 COVID-19.
 
@@ -11,7 +11,7 @@ Tasks to perform:
 - Store a sample dataset in Neo4J
 - Write basic Queries (minimum 5) and Commands (minimum 3) useful for typical usage scenarios
 - Implementation of some application / UI that exploits the Neo4J database.
-### Second assignment - MongoDB
+## Second assignment - MongoDB
 Design, store and query data on a NoSQL DB supporting a certification app for COVID-19.
 The data storage solution must keep track of people and information about their tests and vaccination status.
 In particular, it is required to record in a document-based storage the certificate of vaccination /testing and the
@@ -26,7 +26,7 @@ Tasks to perform:
 - Implementation of some application / UI that interacts with the MongoDB database.
 
 
-### Third assignment - ElasticSearch & Kibana
+## Third assignment - ElasticSearch & Kibana
 Design, store and query data on a NoSQL DB supporting a data analysis scenario over data about
 COVID-19 vaccination statistics. The purpose is that of building a comprehensive database of vaccinations.
 Data analysis is performed over the dataset that can be found at:
