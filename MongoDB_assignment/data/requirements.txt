@@ -1,7 +1,7 @@
 codicefiscale==0.9
 Flask==2.0.2
 Flask_PyMongo==2.3.0
-numpy==1.21.2
+numpy==1.22.0
 pandas==1.3.4
 pymongo==4.0
 python_codicefiscale==0.3.7
