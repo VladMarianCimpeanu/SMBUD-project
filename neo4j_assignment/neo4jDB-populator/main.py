@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 from neo4j import GraphDatabase
 from random import choices
-from mongoDB_assignment.data.random_italian_things import RandomItalianPerson, RandomItalianHouse
-from mongoDB_assignment.data.random_italian_things import random_amenity
-from mongoDB_assignment.data.random_italian_things.utils import date_facilities
-from mongoDB_assignment.data.random_italian_things.utils import date_generator as dg
+from random_italian_things import RandomItalianPerson, RandomItalianHouse
+from random_italian_things import random_amenity
+from random_italian_things.utils import date_facilities
+from random_italian_things.utils import date_generator as dg
 
 
 class PopulateDB:

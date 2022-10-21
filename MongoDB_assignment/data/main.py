@@ -1,16 +1,13 @@
-import sys
 import argparse
 
 # sys.path.insert(0, '../../')
 import random
 import string
 import datetime
-from random_italian_things import RandomItalianPerson, RandomItalianHouse, random_amenity
-from random_italian_things.utils import date_generator as dg, date_facilities
+from random_italian_things import RandomItalianPerson, RandomItalianHouse
+from random_italian_things.utils import date_generator as dg
 from pymongo import MongoClient
-from pprint import pprint
 import pandas as pd
-import numpy as np
 
 
 class MongoPopulate:

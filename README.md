@@ -2,6 +2,21 @@
 ## Introduction
 This is the repository of **Systems and methods for big and unstructured data** project held at Politecnico
 di Milano in 2021. The aim of the project is to design and implement NoSQL databases for different scenarios.
+
+## Table of contents
+* [Grading](https://github.com/VladMarianCimpeanu/SMBUD-project#grading)
+* [Neo4J assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#first-assignment---neo4j)
+* [MongoDB assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#second-assignment---mongodb)
+* [ElasticSearch assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#third-assignment---elasticsearch-&-kibana)
+
+## Grading
+| Assignment | Grade | Optional part | Total | 
+|------|---------|--------|--------|
+| Neo4J | 9/10 | :heavy_check_mark: | 10|
+| MongoDB | 9.5/10 | :heavy_check_mark: | 10.5 |
+| ElasticSearch | 10/10 | :heavy_check_mark: | 11 |
+
+Final score: 31.5/33
 ## First assignment - Neo4J
 Design, store and query graph data structures in a NoSQL DB for supporting a contact tracing application for
 COVID-19.
