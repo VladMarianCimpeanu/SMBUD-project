@@ -8,6 +8,7 @@ di Milano in 2021. The aim of the project is to design and implement NoSQL datab
 * [Neo4J assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#first-assignment---neo4j)
 * [MongoDB assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#second-assignment---mongodb)
 * [ElasticSearch assignment](https://github.com/VladMarianCimpeanu/SMBUD-project#third-assignment---elasticsearch-&-kibana)
+* [Repository structure](https://github.com/VladMarianCimpeanu/SMBUD-project#repository-structure)
 
 ## Grading
 | Assignment | Grade | Optional part | Total | 
@@ -56,3 +57,17 @@ scenarios
 - Implement a simple visualization dashboard using Kibana. Exploration, navigation and dynamicity of the
 dashboard will be considered a valuable contribution too
 - Integrate other datasets
+
+## Repository structure
+- **[random_italian_things](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/random_italian_things)**: this package is responsible for the random generation of the database's entities such as people, houses (group of people living together) and amenities such as restaurants, pubs and so on. This package is used in the Neo4J and MongoDB assignment.
+- **[neo4J assignment](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/neo4J_assignment)** content is divided in:
+  - [neo4JDB-populator](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/neo4j_assignment/neo4jDB-populator): package responsible for the automatic population of the graph database. The main.py file exploits the classes belonging to random_italian_things package.
+  - [GUI](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/neo4j_assignment/GUI): package containing all the necessary classes to run the python application supported by the Neo4j DB
+  - [deliverables](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/neo4j_assignment/deliverables) contains the [pdf report file](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/neo4j_assignment/deliverables/Project_1_Team_3.pdf) and the [example queries](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/neo4j_assignment/deliverables/queries_dump_example.cypher)
+- **[MongoDB_assignment](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/MongoDB_assignment)** content is divided in:
+  - [data](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/MongoDB_assignment/data) contains [main.py](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/MongoDB_assignment/data/main.py) used to populate the document oriented DB, [webapp](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/MongoDB_assignment/data/webapp) package containing all the necessary files to run the webapp application supported by the MongoDB database, finally, [queries and commands.txt](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/MongoDB_assignment/data/queries%20and%20commands.txt) is a list of example MongoDB queries.
+  - [Report] contains latex and png files to compile the [pdf report](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/MongoDB_assignment/Report/Project_2_Team_3.pdf)
+- **[ElasticSearch_assignment](https://github.com/VladMarianCimpeanu/SMBUD-project/tree/main/ElasticSearch_assignment)** contains:
+  - [kibana dashboard](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/ElasticSearch_assignment/dashboard.ndjson) file that can be imported in Kibana. See more details in the [report](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/ElasticSearch_assignment/Report/Project_3_Team_3.pdf)
+  - [queries.txt](https://github.com/VladMarianCimpeanu/SMBUD-project/blob/main/ElasticSearch_assignment/queries.txt) is an example set of queries for the ElasticSearch DB
+  - dataset_cleaner.py and merge dataset.ipynb are used to fix some format code in the csv file.
